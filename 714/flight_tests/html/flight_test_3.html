@@ -1,0 +1,626 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>flight_test_3</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-11-09"><meta name="DC.source" content="flight_test_3.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Tests</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>; clear; clc;
+</pre><h2 id="2">Tests</h2><pre class="codeinput">load(<span class="string">"Data_ft3.mat"</span>)
+filters = (Cessna0.vZ__ms)&lt;500 &amp; (Cessna0.vZ__ms)&gt;-500 <span class="keyword">...</span>
+    &amp; Cessna0.alt_1ftmsl &lt; 5200 &amp; Cessna0.alt_1ftmsl &gt; 4800;
+velocity = Cessna0.Vtrue_ktas(filters);
+<span class="comment">% figure</span>
+<span class="comment">% plot(Cessna0.Vind_kias,'.')</span>
+
+xvec = [497,578,628,719,787,869,951,1034,1119,1180,1243];
+
+<span class="keyword">for</span> ii = 1:11
+    table2(ii,:) = printItem2(Cessna0,xvec(ii),ii);
+<span class="keyword">end</span>
+table2(12,:)  = printItem2(Cessna02,425,12);
+disp(table2)
+
+
+
+
+BHP = [51,52,52,53,55,57,62,72,80,90,103,103];
+<span class="keyword">for</span> ii = 1:11
+    table3(ii,:) = printItem3(Cessna0,xvec(ii),table2(ii,:),BHP(ii));
+<span class="keyword">end</span>
+table3(12,:) = printItem3(Cessna02,425,table2(12,:),BHP(12));
+
+figure
+hold <span class="string">on</span>
+cdtas = fit(table2(:,13),table2(:,5), <span class="string">'exp2'</span>);
+plot(cdtas,table2(:,13),table2(:,5),<span class="string">'*'</span>)
+cdtas3 = fit(table3(:,6),table3(:,3), <span class="string">'exp2'</span>);
+plot(cdtas3,table3(:,6),table3(:,3),<span class="string">'*'</span>)
+xlabel(<span class="string">'CD'</span>)
+ylabel(<span class="string">'TAS'</span>)
+legend(<span class="string">"X-Plane Data"</span>,<span class="string">"X-Plane Curve Fit"</span>, <span class="string">"Calculated Data"</span>, <span class="string">"Calculated Curve Fit"</span>)
+hold <span class="string">off</span>
+
+figure
+hold <span class="string">on</span>
+claoa = fit(table2(:,8),table2(:,7), <span class="string">'poly1'</span>);
+plot(claoa,table2(:,8),table2(:,7),<span class="string">'*'</span>)
+claoa = fit(table3(:,7),table3(:,8), <span class="string">'poly1'</span>);
+plot(claoa,table3(:,7),table3(:,8),<span class="string">'*'</span>)
+hold <span class="string">off</span>
+xlabel(<span class="string">'CL'</span>)
+ylabel(<span class="string">'AoA'</span>)
+legend(<span class="string">"X-Plane Data"</span>,<span class="string">"X-Plane Curve Fit"</span>, <span class="string">"Calculated Data"</span>, <span class="string">"Calculated Curve Fit"</span>)
+
+figure
+hold <span class="string">on</span>
+cdcl = fit(table2(:,13),table2(:,8), <span class="string">'exp2'</span>);
+plot(cdcl,table2(:,13),table2(:,8),<span class="string">'*'</span>)
+cdcl = fit(table3(:,6),table3(:,7), <span class="string">'exp2'</span>);
+plot(cdcl,table3(:,6),table3(:,7),<span class="string">'*'</span>)
+hold <span class="string">off</span>
+xlabel(<span class="string">'CD'</span>)
+ylabel(<span class="string">'CL'</span>)
+legend(<span class="string">"X-Plane Data"</span>,<span class="string">"X-Plane Curve Fit"</span>, <span class="string">"Calculated Data"</span>, <span class="string">"Calculated Curve Fit"</span>)
+
+
+disp(table3)
+<span class="keyword">function</span> row = printItem2(data,x,num)
+    row(1) = num;
+    row(2) = data.real_time(x-5);
+    row(3) = data.real_time(x);
+    row(4) = data.Vind_kias(x);
+    row(5) = data.Vtrue_ktas(x);
+    row(6) = data.alt_1ftmsl(x);
+    row(7) = data.alpha__deg(x);
+    row(8) = data.cltotal(x);
+    row(9) = data.curnt___lb(x);
+    row(10) = data.MP__1_inhg(x);
+    row(11) = data.rpm_1_prop(x);
+    row(12) = data.thrst_1lb(x);
+    row(13) = data.cdtotal(x);
+    fprintf(<span class="string">"\nTest Point Number: \t%d \n"</span>, num)
+    fprintf(<span class="string">"Start Time: \t\t%f \n"</span>, data.real_time(x-5))
+    fprintf(<span class="string">"End Time: \t\t%f\n"</span>, data.real_time(x))
+    fprintf(<span class="string">"IAS: \t\t\t%f \n"</span>, data.Vind_kias(x))
+    fprintf(<span class="string">"TAS: \t\t\t%f \n"</span>, data.Vtrue_ktas(x))
+    fprintf(<span class="string">"Altitude: \t\t%f \n"</span>, data.alt_1ftmsl(x))
+    fprintf(<span class="string">"AoA: \t\t\t%f \n"</span>, data.alpha__deg(x))
+    fprintf(<span class="string">"CL: \t\t\t%f \n"</span>, data.cltotal(x))
+    fprintf(<span class="string">"Weight: \t\t%f \n"</span>, data.curnt___lb(x))
+    fprintf(<span class="string">"Manifold Pressure: \t%f \n"</span>, data.MP__1_inhg(x))
+    fprintf(<span class="string">"RPM: \t\t\t%f \n"</span>, data.rpm_1_prop(x))
+    fprintf(<span class="string">"Thrust: \t\t%f \n"</span>, data.thrst_1lb(x))
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> row = printItem3(data,x,point,BHP)
+    qbar = .5*(20.48e-4)*(point(5)*1.68781)^2;
+    TAS = point(4)*sqrt(23.77e-4/20.48e-4);
+    thrust = 325*.8*BHP/TAS;
+    cd = thrust/(qbar*174);
+    row(1) = point(1);
+    row(2) = data.flaphandl(x);
+    row(3) = TAS;
+    row(4) = thrust;
+    row(5) = qbar;
+    row(6) = cd;
+    row(7) = point(8);
+    row(8) = point(7);
+
+    fprintf(<span class="string">"\nTest Point Number: \t%d \n"</span>, point(1))
+    fprintf(<span class="string">"Flap Setting: \t\t%f \n"</span>, data.flaphandl(x))
+    fprintf(<span class="string">"TAS: \t\t\t%f \n"</span>, point(4)*sqrt(23.77e-4/20.48e-4))
+    fprintf(<span class="string">"Drag: \t\t\t%f \n"</span>, thrust)
+    fprintf(<span class="string">"Q_bar: \t\t\t%f \n"</span>, qbar)
+    fprintf(<span class="string">"C_D: \t\t\t%f \n"</span>, cd)
+    fprintf(<span class="string">"C_L: \t\t\t%f \n"</span>, data.cltotal(x))
+    fprintf(<span class="string">"AoA: \t\t\t%f \n"</span>, data.alpha__deg(x))
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+Test Point Number: 	1 
+Start Time: 		541.218750 
+End Time: 		546.171940
+IAS: 			52.012650 
+TAS: 			61.023350 
+Altitude: 		4996.754390 
+AoA: 			7.494790 
+CL: 			0.901000 
+Weight: 		2014.065430 
+Manifold Pressure: 	15.504460 
+RPM: 			1786.898560 
+Thrust: 		200.761860 
+
+Test Point Number: 	2 
+Start Time: 		621.967160 
+End Time: 		626.960020
+IAS: 			58.000890 
+TAS: 			65.819170 
+Altitude: 		4996.490230 
+AoA: 			5.986520 
+CL: 			0.777110 
+Weight: 		2013.285030 
+Manifold Pressure: 	15.517410 
+RPM: 			1813.291750 
+Thrust: 		191.503160 
+
+Test Point Number: 	3 
+Start Time: 		671.928040 
+End Time: 		683.014950
+IAS: 			63.052110 
+TAS: 			69.894190 
+Altitude: 		4996.514650 
+AoA: 			4.934160 
+CL: 			0.690490 
+Weight: 		2012.796260 
+Manifold Pressure: 	15.084600 
+RPM: 			1821.302250 
+Thrust: 		177.272370 
+
+Test Point Number: 	4 
+Start Time: 		768.951290 
+End Time: 		773.960080
+IAS: 			68.922090 
+TAS: 			74.684720 
+Altitude: 		4996.738770 
+AoA: 			3.883820 
+CL: 			0.605770 
+Weight: 		2011.909670 
+Manifold Pressure: 	15.346590 
+RPM: 			1873.680660 
+Thrust: 		176.780610 
+
+Test Point Number: 	5 
+Start Time: 		837.097720 
+End Time: 		842.125310
+IAS: 			74.040380 
+TAS: 			79.835850 
+Altitude: 		4996.216310 
+AoA: 			2.949980 
+CL: 			0.530830 
+Weight: 		2011.235840 
+Manifold Pressure: 	15.133150 
+RPM: 			1910.238530 
+Thrust: 		167.783570 
+
+Test Point Number: 	6 
+Start Time: 		919.227420 
+End Time: 		924.223570
+IAS: 			79.985450 
+TAS: 			86.198360 
+Altitude: 		4996.644040 
+AoA: 			2.024780 
+CL: 			0.456040 
+Weight: 		2010.417720 
+Manifold Pressure: 	15.146370 
+RPM: 			1971.705810 
+Thrust: 		162.397780 
+
+Test Point Number: 	7 
+Start Time: 		1001.114870 
+End Time: 		1006.119020
+IAS: 			85.021840 
+TAS: 			91.581000 
+Altitude: 		4996.454590 
+AoA: 			1.366410 
+CL: 			0.404340 
+Weight: 		2009.583250 
+Manifold Pressure: 	15.442930 
+RPM: 			2042.219730 
+Thrust: 		164.687320 
+
+Test Point Number: 	8 
+Start Time: 		1084.080930 
+End Time: 		1089.108150
+IAS: 			91.034320 
+TAS: 			98.031770 
+Altitude: 		4996.497070 
+AoA: 			0.715160 
+CL: 			0.353200 
+Weight: 		2008.700200 
+Manifold Pressure: 	15.940220 
+RPM: 			2134.572750 
+Thrust: 		170.524930 
+
+Test Point Number: 	9 
+Start Time: 		1169.255370 
+End Time: 		1174.268070
+IAS: 			97.009850 
+TAS: 			104.457110 
+Altitude: 		4996.478030 
+AoA: 			0.179380 
+CL: 			0.311360 
+Weight: 		2007.758180 
+Manifold Pressure: 	16.809790 
+RPM: 			2239.847660 
+Thrust: 		182.513850 
+
+Test Point Number: 	10 
+Start Time: 		1230.318730 
+End Time: 		1235.342770
+IAS: 			103.008240 
+TAS: 			110.910960 
+Altitude: 		4996.596680 
+AoA: 			-0.269610 
+CL: 			0.276420 
+Weight: 		2007.012820 
+Manifold Pressure: 	17.676140 
+RPM: 			2337.765140 
+Thrust: 		191.444500 
+
+Test Point Number: 	11 
+Start Time: 		1293.419560 
+End Time: 		1298.419680
+IAS: 			107.953670 
+TAS: 			116.239200 
+Altitude: 		4996.639650 
+AoA: 			-0.586030 
+CL: 			0.251830 
+Weight: 		2006.182370 
+Manifold Pressure: 	18.794650 
+RPM: 			2425.913820 
+Thrust: 		202.965840 
+
+Test Point Number: 	12 
+Start Time: 		480.825470 
+End Time: 		485.793610
+IAS: 			114.503300 
+TAS: 			122.761490 
+Altitude: 		4996.130860 
+AoA: 			-0.931980 
+CL: 			0.224480 
+Weight: 		2004.092530 
+Manifold Pressure: 	15.012760 
+RPM: 			2369.143550 
+Thrust: 		130.997190 
+   1.0e+03 *
+
+  Columns 1 through 7
+
+    0.0010    0.5412    0.5462    0.0520    0.0610    4.9968    0.0075
+    0.0020    0.6220    0.6270    0.0580    0.0658    4.9965    0.0060
+    0.0030    0.6719    0.6830    0.0631    0.0699    4.9965    0.0049
+    0.0040    0.7690    0.7740    0.0689    0.0747    4.9967    0.0039
+    0.0050    0.8371    0.8421    0.0740    0.0798    4.9962    0.0029
+    0.0060    0.9192    0.9242    0.0800    0.0862    4.9966    0.0020
+    0.0070    1.0011    1.0061    0.0850    0.0916    4.9965    0.0014
+    0.0080    1.0841    1.0891    0.0910    0.0980    4.9965    0.0007
+    0.0090    1.1693    1.1743    0.0970    0.1045    4.9965    0.0002
+    0.0100    1.2303    1.2353    0.1030    0.1109    4.9966   -0.0003
+    0.0110    1.2934    1.2984    0.1080    0.1162    4.9966   -0.0006
+    0.0120    0.4808    0.4858    0.1145    0.1228    4.9961   -0.0009
+
+  Columns 8 through 13
+
+    0.0009    2.0141    0.0155    1.7869    0.2008    0.0001
+    0.0008    2.0133    0.0155    1.8133    0.1915    0.0001
+    0.0007    2.0128    0.0151    1.8213    0.1773    0.0001
+    0.0006    2.0119    0.0153    1.8737    0.1768    0.0001
+    0.0005    2.0112    0.0151    1.9102    0.1678    0.0000
+    0.0005    2.0104    0.0151    1.9717    0.1624    0.0000
+    0.0004    2.0096    0.0154    2.0422    0.1647    0.0000
+    0.0004    2.0087    0.0159    2.1346    0.1705    0.0000
+    0.0003    2.0078    0.0168    2.2398    0.1825    0.0000
+    0.0003    2.0070    0.0177    2.3378    0.1914    0.0000
+    0.0003    2.0062    0.0188    2.4259    0.2030    0.0000
+    0.0002    2.0041    0.0150    2.3691    0.1310    0.0000
+
+
+Test Point Number: 	1 
+Flap Setting: 		0.000000 
+TAS: 			56.034899 
+Drag: 			236.638241 
+Q_bar: 			10.862734 
+C_D: 			0.125198 
+C_L: 			0.901000 
+AoA: 			7.494790 
+
+Test Point Number: 	2 
+Flap Setting: 		0.000000 
+TAS: 			62.486223 
+Drag: 			216.367695 
+Q_bar: 			12.637229 
+C_D: 			0.098399 
+C_L: 			0.777110 
+AoA: 			5.986520 
+
+Test Point Number: 	3 
+Flap Setting: 		0.000000 
+TAS: 			67.928064 
+Drag: 			199.034083 
+Q_bar: 			14.250471 
+C_D: 			0.080269 
+C_L: 			0.690490 
+AoA: 			4.934160 
+
+Test Point Number: 	4 
+Flap Setting: 		0.000000 
+TAS: 			74.251982 
+Drag: 			185.584271 
+Q_bar: 			16.270863 
+C_D: 			0.065551 
+C_L: 			0.605770 
+AoA: 			3.883820 
+
+Test Point Number: 	5 
+Flap Setting: 		0.000000 
+TAS: 			79.766081 
+Drag: 			179.274196 
+Q_bar: 			18.592722 
+C_D: 			0.055415 
+C_L: 			0.530830 
+AoA: 			2.949980 
+
+Test Point Number: 	6 
+Flap Setting: 		0.000000 
+TAS: 			86.170896 
+Drag: 			171.983822 
+Q_bar: 			21.674300 
+C_D: 			0.045603 
+C_L: 			0.456040 
+AoA: 			2.024780 
+
+Test Point Number: 	7 
+Flap Setting: 		0.000000 
+TAS: 			91.596760 
+Drag: 			175.988757 
+Q_bar: 			24.465710 
+C_D: 			0.041341 
+C_L: 			0.404340 
+AoA: 			1.366410 
+
+Test Point Number: 	8 
+Flap Setting: 		0.000000 
+TAS: 			98.074198 
+Drag: 			190.875891 
+Q_bar: 			28.033722 
+C_D: 			0.039131 
+C_L: 			0.353200 
+AoA: 			0.715160 
+
+Test Point Number: 	9 
+Flap Setting: 		0.000000 
+TAS: 			104.511829 
+Drag: 			199.020534 
+Q_bar: 			31.829006 
+C_D: 			0.035936 
+C_L: 			0.311360 
+AoA: 			0.179380 
+
+Test Point Number: 	10 
+Flap Setting: 		0.000000 
+TAS: 			110.974087 
+Drag: 			210.860036 
+Q_bar: 			35.883599 
+C_D: 			0.033771 
+C_L: 			0.276420 
+AoA: 			-0.269610 
+
+Test Point Number: 	11 
+Flap Setting: 		0.000000 
+TAS: 			116.301958 
+Drag: 			230.262676 
+Q_bar: 			39.414162 
+C_D: 			0.033575 
+C_L: 			0.251830 
+AoA: 			-0.586030 
+
+Test Point Number: 	12 
+Flap Setting: 		0.000000 
+TAS: 			123.358085 
+Drag: 			217.091568 
+Q_bar: 			43.961385 
+C_D: 			0.028381 
+C_L: 			0.224480 
+AoA: 			-0.931980 
+  Columns 1 through 7
+
+    1.0000         0   56.0349  236.6382   10.8627    0.1252    0.9010
+    2.0000         0   62.4862  216.3677   12.6372    0.0984    0.7771
+    3.0000         0   67.9281  199.0341   14.2505    0.0803    0.6905
+    4.0000         0   74.2520  185.5843   16.2709    0.0656    0.6058
+    5.0000         0   79.7661  179.2742   18.5927    0.0554    0.5308
+    6.0000         0   86.1709  171.9838   21.6743    0.0456    0.4560
+    7.0000         0   91.5968  175.9888   24.4657    0.0413    0.4043
+    8.0000         0   98.0742  190.8759   28.0337    0.0391    0.3532
+    9.0000         0  104.5118  199.0205   31.8290    0.0359    0.3114
+   10.0000         0  110.9741  210.8600   35.8836    0.0338    0.2764
+   11.0000         0  116.3020  230.2627   39.4142    0.0336    0.2518
+   12.0000         0  123.3581  217.0916   43.9614    0.0284    0.2245
+
+  Column 8
+
+    7.4948
+    5.9865
+    4.9342
+    3.8838
+    2.9500
+    2.0248
+    1.3664
+    0.7152
+    0.1794
+   -0.2696
+   -0.5860
+   -0.9320
+
+</pre><img vspace="5" hspace="5" src="flight_test_3_01.png" alt=""> <img vspace="5" hspace="5" src="flight_test_3_02.png" alt=""> <img vspace="5" hspace="5" src="flight_test_3_03.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+close all; clear; clc;
+
+%% Tests
+load("Data_ft3.mat")
+filters = (Cessna0.vZ__ms)<500 & (Cessna0.vZ__ms)>-500 ...
+    & Cessna0.alt_1ftmsl < 5200 & Cessna0.alt_1ftmsl > 4800;
+velocity = Cessna0.Vtrue_ktas(filters);
+% figure
+% plot(Cessna0.Vind_kias,'.')
+
+xvec = [497,578,628,719,787,869,951,1034,1119,1180,1243];
+
+for ii = 1:11
+    table2(ii,:) = printItem2(Cessna0,xvec(ii),ii);
+end
+table2(12,:)  = printItem2(Cessna02,425,12);
+disp(table2)
+
+
+
+
+BHP = [51,52,52,53,55,57,62,72,80,90,103,103];
+for ii = 1:11
+    table3(ii,:) = printItem3(Cessna0,xvec(ii),table2(ii,:),BHP(ii));
+end
+table3(12,:) = printItem3(Cessna02,425,table2(12,:),BHP(12));
+
+figure
+hold on
+cdtas = fit(table2(:,13),table2(:,5), 'exp2');
+plot(cdtas,table2(:,13),table2(:,5),'*')
+cdtas3 = fit(table3(:,6),table3(:,3), 'exp2');
+plot(cdtas3,table3(:,6),table3(:,3),'*')
+xlabel('CD')
+ylabel('TAS')
+legend("X-Plane Data","X-Plane Curve Fit", "Calculated Data", "Calculated Curve Fit")
+hold off
+
+figure
+hold on
+claoa = fit(table2(:,8),table2(:,7), 'poly1');
+plot(claoa,table2(:,8),table2(:,7),'*')
+claoa = fit(table3(:,7),table3(:,8), 'poly1');
+plot(claoa,table3(:,7),table3(:,8),'*')
+hold off
+xlabel('CL')
+ylabel('AoA')
+legend("X-Plane Data","X-Plane Curve Fit", "Calculated Data", "Calculated Curve Fit")
+
+figure
+hold on
+cdcl = fit(table2(:,13),table2(:,8), 'exp2');
+plot(cdcl,table2(:,13),table2(:,8),'*')
+cdcl = fit(table3(:,6),table3(:,7), 'exp2');
+plot(cdcl,table3(:,6),table3(:,7),'*')
+hold off
+xlabel('CD')
+ylabel('CL')
+legend("X-Plane Data","X-Plane Curve Fit", "Calculated Data", "Calculated Curve Fit")
+
+
+disp(table3)
+function row = printItem2(data,x,num)
+    row(1) = num;
+    row(2) = data.real_time(x-5);
+    row(3) = data.real_time(x);
+    row(4) = data.Vind_kias(x);
+    row(5) = data.Vtrue_ktas(x);
+    row(6) = data.alt_1ftmsl(x);
+    row(7) = data.alpha__deg(x);
+    row(8) = data.cltotal(x);
+    row(9) = data.curnt___lb(x);
+    row(10) = data.MP__1_inhg(x);
+    row(11) = data.rpm_1_prop(x);
+    row(12) = data.thrst_1lb(x);
+    row(13) = data.cdtotal(x);
+    fprintf("\nTest Point Number: \t%d \n", num)
+    fprintf("Start Time: \t\t%f \n", data.real_time(x-5))
+    fprintf("End Time: \t\t%f\n", data.real_time(x))
+    fprintf("IAS: \t\t\t%f \n", data.Vind_kias(x))
+    fprintf("TAS: \t\t\t%f \n", data.Vtrue_ktas(x))
+    fprintf("Altitude: \t\t%f \n", data.alt_1ftmsl(x))
+    fprintf("AoA: \t\t\t%f \n", data.alpha__deg(x))
+    fprintf("CL: \t\t\t%f \n", data.cltotal(x))
+    fprintf("Weight: \t\t%f \n", data.curnt___lb(x))
+    fprintf("Manifold Pressure: \t%f \n", data.MP__1_inhg(x))
+    fprintf("RPM: \t\t\t%f \n", data.rpm_1_prop(x))
+    fprintf("Thrust: \t\t%f \n", data.thrst_1lb(x))
+end
+
+function row = printItem3(data,x,point,BHP)
+    qbar = .5*(20.48e-4)*(point(5)*1.68781)^2;
+    TAS = point(4)*sqrt(23.77e-4/20.48e-4);
+    thrust = 325*.8*BHP/TAS;
+    cd = thrust/(qbar*174);
+    row(1) = point(1);
+    row(2) = data.flaphandl(x);
+    row(3) = TAS;
+    row(4) = thrust;
+    row(5) = qbar;
+    row(6) = cd;
+    row(7) = point(8);
+    row(8) = point(7);
+
+    fprintf("\nTest Point Number: \t%d \n", point(1))
+    fprintf("Flap Setting: \t\t%f \n", data.flaphandl(x))
+    fprintf("TAS: \t\t\t%f \n", point(4)*sqrt(23.77e-4/20.48e-4))
+    fprintf("Drag: \t\t\t%f \n", thrust)
+    fprintf("Q_bar: \t\t\t%f \n", qbar)
+    fprintf("C_D: \t\t\t%f \n", cd)
+    fprintf("C_L: \t\t\t%f \n", data.cltotal(x))
+    fprintf("AoA: \t\t\t%f \n", data.alpha__deg(x))
+end
+
+
+
+##### SOURCE END #####
+--></body></html>

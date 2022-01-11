@@ -1,0 +1,225 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW1</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-01-23"><meta name="DC.source" content="HW1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clear ; close <span class="string">all</span> ; clc ;
+<span class="comment">% element4 = readmatrix( 'Truss4element.txt' ) ;</span>
+<span class="comment">% element8 = readmatrix( 'Truss8element.txt' ) ;</span>
+<span class="comment">% element16 = readmatrix( 'Truss16element.txt' ) ;</span>
+<span class="comment">% element32 = readmatrix( 'Truss32element.txt' ) ;</span>
+
+element4 = [0,4.84375000000000e-32;2.51211000000000,0.0121094000000000;5.02266000000000,0.0226563000000000;7.53008000000000,0.0300781000000000;10.0328000000000,0.0328125000000000;0,500000000;2.51211000000000,468750000;5.02266000000000,375000000;7.53008000000000,218750000;10.0328000000000,-4] ;
+element8 = [0,4.96090000000000e-32;1.25620000000000,0.00620117000000000;2.51221000000000,0.0122070000000000;3.76782000000000,0.0178223000000000;5.02285000000000,0.0228516000000000;6.27710000000000,0.0270996000000000;7.53037000000000,0.0303711000000000;8.78247000000000,0.0324707000000000;10.0332000000000,0.0332031000000000;0,500000000;1.25620000000000,492187000;2.51221000000000,468750000;3.76782000000000,429688000;5.02285000000000,375000000;6.27710000000000,304688000;7.53037000000000,218750000;8.78247000000000,117187000;10.0332000000000,-2];
+element16 = [0,4.99023000000000e-32;0.628119000000000,0.00311890000000000;1.25621000000000,0.00621338000000000;1.88426000000000,0.00925900000000000;2.51223000000000,0.0122314000000000;3.14011000000000,0.0151062000000000;3.76786000000000,0.0178589000000000;4.39546000000000,0.0204651000000000;5.02290000000000,0.0229004000000000;5.65014000000000,0.0251404000000000;6.27716000000000,0.0271606000000000;6.90394000000000,0.0289368000000000;7.53044000000000,0.0304443000000000;8.15666000000000,0.0316589000000000;8.78256000000000,0.0325562000000000;9.40811000000000,0.0331116000000000;10.0333000000000,0.0333008000000000;0,500000000;0.628119000000000,498047000;1.25621000000000,492188000;1.88426000000000,482422000;2.51223000000000,468750000;3.14011000000000,451172000;3.76786000000000,429687000;4.39546000000000,404297000;5.02290000000000,375000000;5.65014000000000,341797000;6.27716000000000,304688000;6.90394000000000,263672000;7.53044000000000,218750000;8.15666000000000,169922000;8.78256000000000,117187000;9.40811000000000,60546900;10.0333000000000,-1] ;
+element32 = [0,4.99756000000000e-32;0.314062000000000,0.00156174000000000;0.628120000000000,0.00312042000000000;0.942173000000000,0.00467300000000000;1.25622000000000,0.00621643000000000;1.57025000000000,0.00774765000000000;1.88426000000000,0.00926361000000000;2.19826000000000,0.0107613000000000;2.51224000000000,0.0122375000000000;2.82619000000000,0.0136894000000000;3.14011000000000,0.0151138000000000;3.45401000000000,0.0165077000000000;3.76787000000000,0.0178680000000000;4.08169000000000,0.0191917000000000;4.39548000000000,0.0204758000000000;4.70922000000000,0.0217171000000000;5.02291000000000,0.0229126000000000;5.33656000000000,0.0240593000000000;5.65015000000000,0.0251541000000000;5.96369000000000,0.0261940000000000;6.27718000000000,0.0271759000000000;6.59060000000000,0.0280968000000000;6.90395000000000,0.0289536000000000;7.21724000000000,0.0297432000000000;7.53046000000000,0.0304626000000000;7.84361000000000,0.0311089000000000;8.15668000000000,0.0316788000000000;8.46967000000000,0.0321693000000000;8.78258000000000,0.0325775000000000;9.09540000000000,0.0329002000000000;9.40813000000000,0.0331345000000000;9.72078000000000,0.0332771000000000;10.0333000000000,0.0333252000000000;0,500000000;0.314062000000000,499512000;0.628120000000000,498047000;0.942173000000000,495605000;1.25622000000000,492187000;1.57025000000000,487793000;1.88426000000000,482422000;2.19826000000000,476074000;2.51224000000000,468750000;2.82619000000000,460449000;3.14011000000000,451172000;3.45401000000000,440918000;3.76787000000000,429688000;4.08169000000000,417480000;4.39548000000000,404297000;4.70922000000000,390137000;5.02291000000000,375000000;5.33656000000000,358887000;5.65015000000000,341797000;5.96369000000000,323730000;6.27718000000000,304688000;6.59060000000000,284668000;6.90395000000000,263672000;7.21724000000000,241699000;7.53046000000000,218750000;7.84361000000000,194824000;8.15668000000000,169922000;8.46967000000000,144043000;8.78258000000000,117187000;9.09540000000000,89355500;9.40813000000000,60546900;9.72078000000000,30761700;10.0333000000000,0.500000000000000] ;
+
+x4 = element4(1:(end/2),1) ;
+d4 = element4(1:end/2,2)*1e3 ;
+s4 = element4((end/2+1):end,2)*1e-6 ;
+
+x8 = element8(1:end/2,1) ;
+d8 = element8(1:end/2,2)*1e3 ;
+s8 = element8((end/2+1):end,2)*1e-6 ;
+
+x16 = element16(1:end/2,1) ;
+d16 = element16(1:end/2,2)*1e3 ;
+s16 = element16((end/2+1):end,2)*1e-6 ;
+
+x32 = element32(1:end/2,1) ;
+d32 = element32(1:end/2,2)*1e3 ;
+s32 = element32((end/2+1):end,2)*1e-6 ;
+
+element = [ 4 , 8 , 16 , 32 ]' ;
+tip_disp = [ d4(end) , d8(end) , d16(end) , d32(end) ]' ;
+f_0 = [ s4(1) , s8(1) , s16(1) , s32(1) ]' ;
+f_h = [ s4(ceil(end/2)) , s8(ceil(end/2)) , s16(ceil(end/2)) , s32(ceil(end/2)) ]' ;
+f_L = [ s4(end) , s8(end) , s16(end) , s32(end) ]' ;
+columnNames = { <span class="string">'Element_Type'</span> , <span class="string">'Displacement_at_Tip_mm'</span> , <span class="string">'Stress_at_Support_MPa'</span> , <span class="string">'Stress_at_Half_Length_MPa'</span> , <span class="string">'Stress_at_Full_Length_MPa'</span> } ;
+T = table( element , tip_disp , f_0 , f_h , f_L ) ;
+T.Properties.VariableNames = columnNames ;
+disp( T )
+
+figure
+plot( x4 , d4 , x8 , d8 , x16 , d16 , x32 , d32 )
+xlabel( <span class="string">'X Position [m]'</span> )
+ylabel( <span class="string">'Displacement [mm]'</span> )
+legend( <span class="string">'4 Elements'</span> , <span class="string">'8'</span> , <span class="string">'16'</span> , <span class="string">'32'</span> )
+
+figure
+plot( x4 , s4 , x8 , s8 , x16 , s16 , x32 , s32 )
+xlabel( <span class="string">'X Position [m]'</span> )
+ylabel( <span class="string">'Stress [MPa]'</span> )
+legend( <span class="string">'4 Elements'</span> , <span class="string">'8'</span> , <span class="string">'16'</span> , <span class="string">'32'</span> )
+
+figure
+plot( element , tip_disp )
+xlabel( <span class="string">'Number of Elements'</span> )
+ylabel( <span class="string">'Tip Displacement [mm]'</span> )
+
+figure
+subplot( 3 , 1 , 1 )
+plot( element , f_0 )
+<span class="comment">% xlabel( 'Number of Elements' )</span>
+ylabel( <span class="string">'Stress [MPa]'</span> )
+title( <span class="string">'At support'</span> )
+
+subplot( 3 , 1 , 2 )
+plot( element , f_h )
+<span class="comment">% xlabel( 'Number of Elements' )</span>
+ylabel( <span class="string">'Stress [MPa]'</span> )
+title( <span class="string">'Half Length'</span> )
+
+subplot( 3 , 1 , 3 )
+plot( element , f_L )
+xlabel( <span class="string">'Number of Elements'</span> )
+ylabel( <span class="string">'Stress [MPa]'</span> )
+title( <span class="string">'Full Length'</span> )
+</pre><pre class="codeoutput">    Element_Type    Displacement_at_Tip_mm    Stress_at_Support_MPa    Stress_at_Half_Length_MPa    Stress_at_Full_Length_MPa
+    ____________    ______________________    _____________________    _________________________    _________________________
+
+          4                 32.813                     500                        375                        -4e-06          
+          8                 33.203                     500                        375                        -2e-06          
+         16                 33.301                     500                        375                        -1e-06          
+         32                 33.325                     500                        375                         5e-07          
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear ; close all ; clc ;
+% element4 = readmatrix( 'Truss4element.txt' ) ;
+% element8 = readmatrix( 'Truss8element.txt' ) ;
+% element16 = readmatrix( 'Truss16element.txt' ) ;
+% element32 = readmatrix( 'Truss32element.txt' ) ;
+
+element4 = [0,4.84375000000000e-32;2.51211000000000,0.0121094000000000;5.02266000000000,0.0226563000000000;7.53008000000000,0.0300781000000000;10.0328000000000,0.0328125000000000;0,500000000;2.51211000000000,468750000;5.02266000000000,375000000;7.53008000000000,218750000;10.0328000000000,-4] ;
+element8 = [0,4.96090000000000e-32;1.25620000000000,0.00620117000000000;2.51221000000000,0.0122070000000000;3.76782000000000,0.0178223000000000;5.02285000000000,0.0228516000000000;6.27710000000000,0.0270996000000000;7.53037000000000,0.0303711000000000;8.78247000000000,0.0324707000000000;10.0332000000000,0.0332031000000000;0,500000000;1.25620000000000,492187000;2.51221000000000,468750000;3.76782000000000,429688000;5.02285000000000,375000000;6.27710000000000,304688000;7.53037000000000,218750000;8.78247000000000,117187000;10.0332000000000,-2];
+element16 = [0,4.99023000000000e-32;0.628119000000000,0.00311890000000000;1.25621000000000,0.00621338000000000;1.88426000000000,0.00925900000000000;2.51223000000000,0.0122314000000000;3.14011000000000,0.0151062000000000;3.76786000000000,0.0178589000000000;4.39546000000000,0.0204651000000000;5.02290000000000,0.0229004000000000;5.65014000000000,0.0251404000000000;6.27716000000000,0.0271606000000000;6.90394000000000,0.0289368000000000;7.53044000000000,0.0304443000000000;8.15666000000000,0.0316589000000000;8.78256000000000,0.0325562000000000;9.40811000000000,0.0331116000000000;10.0333000000000,0.0333008000000000;0,500000000;0.628119000000000,498047000;1.25621000000000,492188000;1.88426000000000,482422000;2.51223000000000,468750000;3.14011000000000,451172000;3.76786000000000,429687000;4.39546000000000,404297000;5.02290000000000,375000000;5.65014000000000,341797000;6.27716000000000,304688000;6.90394000000000,263672000;7.53044000000000,218750000;8.15666000000000,169922000;8.78256000000000,117187000;9.40811000000000,60546900;10.0333000000000,-1] ;
+element32 = [0,4.99756000000000e-32;0.314062000000000,0.00156174000000000;0.628120000000000,0.00312042000000000;0.942173000000000,0.00467300000000000;1.25622000000000,0.00621643000000000;1.57025000000000,0.00774765000000000;1.88426000000000,0.00926361000000000;2.19826000000000,0.0107613000000000;2.51224000000000,0.0122375000000000;2.82619000000000,0.0136894000000000;3.14011000000000,0.0151138000000000;3.45401000000000,0.0165077000000000;3.76787000000000,0.0178680000000000;4.08169000000000,0.0191917000000000;4.39548000000000,0.0204758000000000;4.70922000000000,0.0217171000000000;5.02291000000000,0.0229126000000000;5.33656000000000,0.0240593000000000;5.65015000000000,0.0251541000000000;5.96369000000000,0.0261940000000000;6.27718000000000,0.0271759000000000;6.59060000000000,0.0280968000000000;6.90395000000000,0.0289536000000000;7.21724000000000,0.0297432000000000;7.53046000000000,0.0304626000000000;7.84361000000000,0.0311089000000000;8.15668000000000,0.0316788000000000;8.46967000000000,0.0321693000000000;8.78258000000000,0.0325775000000000;9.09540000000000,0.0329002000000000;9.40813000000000,0.0331345000000000;9.72078000000000,0.0332771000000000;10.0333000000000,0.0333252000000000;0,500000000;0.314062000000000,499512000;0.628120000000000,498047000;0.942173000000000,495605000;1.25622000000000,492187000;1.57025000000000,487793000;1.88426000000000,482422000;2.19826000000000,476074000;2.51224000000000,468750000;2.82619000000000,460449000;3.14011000000000,451172000;3.45401000000000,440918000;3.76787000000000,429688000;4.08169000000000,417480000;4.39548000000000,404297000;4.70922000000000,390137000;5.02291000000000,375000000;5.33656000000000,358887000;5.65015000000000,341797000;5.96369000000000,323730000;6.27718000000000,304688000;6.59060000000000,284668000;6.90395000000000,263672000;7.21724000000000,241699000;7.53046000000000,218750000;7.84361000000000,194824000;8.15668000000000,169922000;8.46967000000000,144043000;8.78258000000000,117187000;9.09540000000000,89355500;9.40813000000000,60546900;9.72078000000000,30761700;10.0333000000000,0.500000000000000] ;
+
+x4 = element4(1:(end/2),1) ;
+d4 = element4(1:end/2,2)*1e3 ;
+s4 = element4((end/2+1):end,2)*1e-6 ;
+
+x8 = element8(1:end/2,1) ;
+d8 = element8(1:end/2,2)*1e3 ;
+s8 = element8((end/2+1):end,2)*1e-6 ;
+
+x16 = element16(1:end/2,1) ;
+d16 = element16(1:end/2,2)*1e3 ;
+s16 = element16((end/2+1):end,2)*1e-6 ;
+
+x32 = element32(1:end/2,1) ;
+d32 = element32(1:end/2,2)*1e3 ;
+s32 = element32((end/2+1):end,2)*1e-6 ;
+
+element = [ 4 , 8 , 16 , 32 ]' ;
+tip_disp = [ d4(end) , d8(end) , d16(end) , d32(end) ]' ;
+f_0 = [ s4(1) , s8(1) , s16(1) , s32(1) ]' ;
+f_h = [ s4(ceil(end/2)) , s8(ceil(end/2)) , s16(ceil(end/2)) , s32(ceil(end/2)) ]' ;
+f_L = [ s4(end) , s8(end) , s16(end) , s32(end) ]' ;
+columnNames = { 'Element_Type' , 'Displacement_at_Tip_mm' , 'Stress_at_Support_MPa' , 'Stress_at_Half_Length_MPa' , 'Stress_at_Full_Length_MPa' } ;
+T = table( element , tip_disp , f_0 , f_h , f_L ) ;
+T.Properties.VariableNames = columnNames ;
+disp( T )
+
+figure
+plot( x4 , d4 , x8 , d8 , x16 , d16 , x32 , d32 )
+xlabel( 'X Position [m]' )
+ylabel( 'Displacement [mm]' )
+legend( '4 Elements' , '8' , '16' , '32' )
+
+figure
+plot( x4 , s4 , x8 , s8 , x16 , s16 , x32 , s32 )
+xlabel( 'X Position [m]' )
+ylabel( 'Stress [MPa]' )
+legend( '4 Elements' , '8' , '16' , '32' )
+
+figure
+plot( element , tip_disp )
+xlabel( 'Number of Elements' )
+ylabel( 'Tip Displacement [mm]' )
+
+figure
+subplot( 3 , 1 , 1 )
+plot( element , f_0 )
+% xlabel( 'Number of Elements' )
+ylabel( 'Stress [MPa]' )
+title( 'At support' )
+
+subplot( 3 , 1 , 2 )
+plot( element , f_h )
+% xlabel( 'Number of Elements' )
+ylabel( 'Stress [MPa]' )
+title( 'Half Length' )
+
+subplot( 3 , 1 , 3 )
+plot( element , f_L )
+xlabel( 'Number of Elements' )
+ylabel( 'Stress [MPa]' )
+title( 'Full Length' )
+
+##### SOURCE END #####
+--></body></html>

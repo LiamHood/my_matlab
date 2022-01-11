@@ -1,0 +1,281 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ft_4</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-11-23"><meta name="DC.source" content="ft_4.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+load(<span class="string">"Data_ft4.mat"</span>)
+
+cg = 4.9;
+
+figure
+plot(ft40.Vind_kias,<span class="string">'.'</span>)
+indexes = [1438, 1482, 201, 1558, 541];
+
+figure
+plot(ft4n6.Vind_kias,<span class="string">'.'</span>)
+indexes_n4 = [8191, 9264, 12096, 887, 12776];
+
+figure
+plot(ft42.Vind_kias,<span class="string">'.'</span>)
+indexes_2 = [1079, 1020, 671, 887, 928];
+
+tables = analysis_1_2(ft40,indexes);
+tables_n6 = analysis_1_2(ft4n6,indexes_n4);
+tables_2 = analysis_1_2(ft42,indexes_2);
+
+figure
+hold <span class="string">on</span>
+tas_ea = fit(tables_n6{1}(:,1),tables_n6{1}(:,2), <span class="string">'poly2'</span>);
+plot(tas_ea,tables_n6{1}(:,1),tables_n6{1}(:,2),<span class="string">'*-'</span>)
+xlabel(<span class="string">'True Air Speed (knots)'</span>)
+ylabel(<span class="string">'Elevator Angle (degrees)'</span>)
+title(<span class="string">'Datum'</span>)
+hold <span class="string">off</span>
+
+figure
+hold <span class="string">on</span>
+cl_ea = fit(tables_n6{2}(:,2),tables_n6{2}(:,3), <span class="string">'poly1'</span>);
+plot(cl_ea,tables_n6{2}(:,2),tables_n6{2}(:,3),<span class="string">'*-'</span>)
+xlabel(<span class="string">'CL'</span>)
+ylabel(<span class="string">'Elevator Angle (degrees)'</span>)
+title(<span class="string">'Datum'</span>)
+hold <span class="string">off</span>
+table3(1,:) = [cg,cl_ea.p1,cl_ea.p2];
+
+figure
+hold <span class="string">on</span>
+tas_ea = fit(tables{1}(:,1),tables{1}(:,2), <span class="string">'poly2'</span>);
+plot(tas_ea,tables{1}(:,1),tables{1}(:,2),<span class="string">'*-'</span>)
+xlabel(<span class="string">'True Air Speed (knots)'</span>)
+ylabel(<span class="string">'Elevator Angle (degrees)'</span>)
+title(<span class="string">'Datum minus 6'</span>)
+hold <span class="string">off</span>
+
+figure
+hold <span class="string">on</span>
+cl_ea = fit(tables{2}(:,2),tables{2}(:,3), <span class="string">'poly1'</span>);
+plot(cl_ea,tables{2}(:,2),tables{2}(:,3),<span class="string">'*-'</span>)
+xlabel(<span class="string">'CL'</span>)
+ylabel(<span class="string">'Elevator Angle (degrees)'</span>)
+title(<span class="string">'Datum plus 6'</span>)
+hold <span class="string">off</span>
+table3(2,:) = [cg+.5,cl_ea.p1,cl_ea.p2];
+
+figure
+hold <span class="string">on</span>
+tas_ea = fit(tables_2{1}(:,1),tables_2{1}(:,2), <span class="string">'poly2'</span>);
+plot(tas_ea,tables_2{1}(:,1),tables_2{1}(:,2),<span class="string">'*-'</span>)
+xlabel(<span class="string">'True Air Speed (knots)'</span>)
+ylabel(<span class="string">'Elevator Angle (degrees)'</span>)
+title(<span class="string">'Datum minus 2'</span>)
+hold <span class="string">off</span>
+
+figure
+hold <span class="string">on</span>
+cl_ea = fit(tables_2{2}(:,2),tables_2{2}(:,3), <span class="string">'poly1'</span>);
+plot(cl_ea,tables_2{2}(:,2),tables_2{2}(:,3),<span class="string">'*-'</span>)
+xlabel(<span class="string">'CL'</span>)
+ylabel(<span class="string">'Elevator Angle (degrees)'</span>)
+title(<span class="string">'Datum minus 2'</span>)
+hold <span class="string">off</span>
+table3(3,:) = [cg-(2/12),cl_ea.p1,cl_ea.p2];
+
+figure
+hold <span class="string">on</span>
+cg_slope = fit(table3(:,1),table3(:,2), <span class="string">'poly1'</span>);
+plot(cg_slope,table3(:,1),table3(:,2),<span class="string">'*'</span>)
+xlabel(<span class="string">'cg'</span>)
+ylabel(<span class="string">'d_d_e/d_C_L'</span>)
+hold <span class="string">off</span>
+
+fprintf(<span class="string">"The neutral point is %f \n"</span>, cg_slope.p2)
+static_margin = cg_slope.p2 + cg_slope.p1*(cg+1);
+fprintf(<span class="string">"The stick fixed static margin is %f \n"</span>, static_margin)
+cl_at_100 = mean([tables{2}(3,2),tables_2{2}(3,2),tables_n6{2}(3,2)]);
+fprintf(<span class="string">"The elevator deflection is %f \n"</span>, static_margin*cl_at_100+mean(table3(:,3)))
+
+
+<span class="keyword">function</span> tables = analysis_1_2(data,ind)
+    rho = 20.48;
+    <span class="keyword">for</span> ii = 1:5
+        table1(ii,:) = [data.Vtrue_ktas(ind(ii)), -data.elev1__deg(ind(ii))];
+        qbar = .5*rho*(data.Vtrue_ktas(ind(ii))*1.68781)^2;
+        table2(ii,:) = [qbar, data.cltotal(ind(ii)), -data.elev1__deg(ind(ii))];
+    <span class="keyword">end</span>
+    tables = {table1, table2};
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">The neutral point is 2.549760 
+The stick fixed static margin is 7.944244 
+The elevator deflection is -1.189888 
+</pre><img vspace="5" hspace="5" src="ft_4_01.png" alt=""> <img vspace="5" hspace="5" src="ft_4_02.png" alt=""> <img vspace="5" hspace="5" src="ft_4_03.png" alt=""> <img vspace="5" hspace="5" src="ft_4_04.png" alt=""> <img vspace="5" hspace="5" src="ft_4_05.png" alt=""> <img vspace="5" hspace="5" src="ft_4_06.png" alt=""> <img vspace="5" hspace="5" src="ft_4_07.png" alt=""> <img vspace="5" hspace="5" src="ft_4_08.png" alt=""> <img vspace="5" hspace="5" src="ft_4_09.png" alt=""> <img vspace="5" hspace="5" src="ft_4_10.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all; clc;
+load("Data_ft4.mat")
+
+cg = 4.9;
+
+figure
+plot(ft40.Vind_kias,'.')
+indexes = [1438, 1482, 201, 1558, 541];
+
+figure
+plot(ft4n6.Vind_kias,'.')
+indexes_n4 = [8191, 9264, 12096, 887, 12776];
+
+figure
+plot(ft42.Vind_kias,'.')
+indexes_2 = [1079, 1020, 671, 887, 928];
+
+tables = analysis_1_2(ft40,indexes);
+tables_n6 = analysis_1_2(ft4n6,indexes_n4);
+tables_2 = analysis_1_2(ft42,indexes_2);
+
+figure
+hold on
+tas_ea = fit(tables_n6{1}(:,1),tables_n6{1}(:,2), 'poly2');
+plot(tas_ea,tables_n6{1}(:,1),tables_n6{1}(:,2),'*-')
+xlabel('True Air Speed (knots)')
+ylabel('Elevator Angle (degrees)')
+title('Datum')
+hold off
+
+figure
+hold on
+cl_ea = fit(tables_n6{2}(:,2),tables_n6{2}(:,3), 'poly1');
+plot(cl_ea,tables_n6{2}(:,2),tables_n6{2}(:,3),'*-')
+xlabel('CL')
+ylabel('Elevator Angle (degrees)')
+title('Datum')
+hold off
+table3(1,:) = [cg,cl_ea.p1,cl_ea.p2];
+
+figure
+hold on
+tas_ea = fit(tables{1}(:,1),tables{1}(:,2), 'poly2');
+plot(tas_ea,tables{1}(:,1),tables{1}(:,2),'*-')
+xlabel('True Air Speed (knots)')
+ylabel('Elevator Angle (degrees)')
+title('Datum minus 6')
+hold off
+
+figure
+hold on
+cl_ea = fit(tables{2}(:,2),tables{2}(:,3), 'poly1');
+plot(cl_ea,tables{2}(:,2),tables{2}(:,3),'*-')
+xlabel('CL')
+ylabel('Elevator Angle (degrees)')
+title('Datum plus 6')
+hold off
+table3(2,:) = [cg+.5,cl_ea.p1,cl_ea.p2];
+
+figure
+hold on
+tas_ea = fit(tables_2{1}(:,1),tables_2{1}(:,2), 'poly2');
+plot(tas_ea,tables_2{1}(:,1),tables_2{1}(:,2),'*-')
+xlabel('True Air Speed (knots)')
+ylabel('Elevator Angle (degrees)')
+title('Datum minus 2')
+hold off
+
+figure
+hold on
+cl_ea = fit(tables_2{2}(:,2),tables_2{2}(:,3), 'poly1');
+plot(cl_ea,tables_2{2}(:,2),tables_2{2}(:,3),'*-')
+xlabel('CL')
+ylabel('Elevator Angle (degrees)')
+title('Datum minus 2')
+hold off
+table3(3,:) = [cg-(2/12),cl_ea.p1,cl_ea.p2];
+
+figure
+hold on
+cg_slope = fit(table3(:,1),table3(:,2), 'poly1');
+plot(cg_slope,table3(:,1),table3(:,2),'*')
+xlabel('cg')
+ylabel('d_d_e/d_C_L')
+hold off
+
+fprintf("The neutral point is %f \n", cg_slope.p2)
+static_margin = cg_slope.p2 + cg_slope.p1*(cg+1);
+fprintf("The stick fixed static margin is %f \n", static_margin)
+cl_at_100 = mean([tables{2}(3,2),tables_2{2}(3,2),tables_n6{2}(3,2)]);
+fprintf("The elevator deflection is %f \n", static_margin*cl_at_100+mean(table3(:,3)))
+
+
+function tables = analysis_1_2(data,ind)
+    rho = 20.48;
+    for ii = 1:5
+        table1(ii,:) = [data.Vtrue_ktas(ind(ii)), -data.elev1__deg(ind(ii))];
+        qbar = .5*rho*(data.Vtrue_ktas(ind(ii))*1.68781)^2;
+        table2(ii,:) = [qbar, data.cltotal(ind(ii)), -data.elev1__deg(ind(ii))];
+    end
+    tables = {table1, table2};
+end
+
+##### SOURCE END #####
+--></body></html>

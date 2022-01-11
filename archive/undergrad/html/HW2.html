@@ -1,0 +1,219 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW2</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-05-02"><meta name="DC.source" content="HW2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Sphere</a></li></ul></div><pre class="codeinput">clear ; close <span class="string">all</span>; clc;
+disp( <span class="string">'For a rectangular prism s/c'</span> )
+Qdis = 200 ; <span class="comment">% Heat dissipated</span>
+rad = 1 ; <span class="comment">% radius in AU</span>
+A = 2*2*6 ; <span class="comment">% total surface area in square meters</span>
+Awet = 1/6 * A ; <span class="comment">% lit surface area in square meters</span>
+S = 1370 ; <span class="comment">% Energy from sun in W/m^2</span>
+sbc = 5.67e-8 ; <span class="comment">% stefan boltzmann constant</span>
+alpha = linspace(0,1,1e2) ; <span class="comment">% range of possible absorbance</span>
+Tc = -5 ; <span class="comment">% Temperature in celsius</span>
+T = 273.15 + Tc ; <span class="comment">% Temp in kelvin</span>
+Tch = 50 ; <span class="comment">% Temperature in celsius</span>
+Th = 273.15 + Tch ; <span class="comment">% Temp in kelvin</span>
+
+Qsun = ( S / ( rad^2 )) * Awet * alpha ; <span class="comment">% Heat from sun</span>
+intermediate = ( Qsun + Qdis )/(sbc*T^4) ;
+eps = intermediate/A ; <span class="comment">% emmissivity as a function of alpha</span>
+intermediateh = ( Qsun + Qdis )/(sbc*Th^4) ;
+epsh = intermediateh/A ; <span class="comment">% emmissivity as a function of alpha</span>
+figure
+plot( alpha , eps , alpha , epsh )
+xlabel( <span class="string">'Absorbtance'</span> )
+ylabel( <span class="string">'Emmissivity'</span> )
+title( <span class="string">'Surface properties of coating'</span> )
+legend( <span class="string">'To maintain cold temperature'</span> , <span class="string">'To maintain hot temperature'</span> )
+
+disp( <span class="string">'bare aluminum will work as a coating at its highest alpha and epsilon'</span> )
+disp( <span class="string">'to keep the s/c within operating temp at 1 AU'</span> )
+disp( <span class="string">' '</span> )
+
+alpha2 = .17 ; <span class="comment">% using aluminumm</span>
+eps2 = .1 ; <span class="comment">% using aluminum</span>
+rad2 = 19.2 ; <span class="comment">% radius in AU</span>
+Tc2 =  5 ; <span class="comment">% temp to maintain in Celsius</span>
+T2 = 273.15 + Tc2 ; <span class="comment">% temp in kelvin</span>
+
+Qsun2 = ( S / ( rad2^2 )) * Awet * alpha2 ; <span class="comment">% heat from sun at Uranus</span>
+Qout2 = A*eps2*sbc*T2^4 ; <span class="comment">% Heat leaving due to radiation</span>
+Qheat2 = Qout2 - Qsun2 - Qdis ; <span class="comment">% heat heater needs to generate in watts</span>
+disp([ <span class="string">'Need a heater of more than '</span> ,  num2str(Qheat2) , <span class="string">' watts to keep above 5 degrees C at Uranus'</span> ])
+disp( <span class="string">' '</span> )
+</pre><pre class="codeoutput">For a rectangular prism s/c
+bare aluminum will work as a coating at its highest alpha and epsilon
+to keep the s/c within operating temp at 1 AU
+ 
+Need a heater of more than 612.0094 watts to keep above 5 degrees C at Uranus
+ 
+</pre><h2 id="2">Sphere</h2><pre class="codeinput">disp( <span class="string">'For a spherical s/c'</span> )
+A2 = 4*pi ;
+Awet2 = 1/2 * A2 ;
+
+Qsun3 = ( S / ( rad^2 )) * Awet2 * alpha ; <span class="comment">% heat from sun</span>
+intermediate3 = ( Qsun3 + Qdis )/(sbc*T2^4) ;
+eps3 = intermediate3/A2 ; <span class="comment">% emissitivity</span>
+intermediate3h = ( Qsun3 + Qdis )/(sbc*Th^4) ;
+eps3h = intermediate3h/A2 ;
+figure
+plot( alpha , eps3 , alpha , eps3h )
+xlabel( <span class="string">'Absorbtance'</span> )
+ylabel( <span class="string">'Emmissivity'</span> )
+title( <span class="string">'Surface properties of coating on Spherical S/C'</span> )
+legend( <span class="string">'To maintain cold temperature'</span> , <span class="string">'To maintain hot temperature'</span> , <span class="string">'Location'</span> , <span class="string">'northwest'</span> )
+
+disp( <span class="string">'Any aluminized kapton will keep the s/c within temp range at Earth'</span> )
+disp( <span class="string">' '</span> )
+
+alpha4 = .38 ;
+eps4 = .67 ;
+
+Qsun4 = ( S / ( rad2^2 )) * Awet2 * alpha4 ;
+Qout4 = A2*eps4*sbc*T2^4 ;
+Qheat4 = Qout4 - Qsun4 - Qdis ;
+
+disp([ <span class="string">'Need a heater of more than '</span> ,  num2str(Qheat4) , <span class="string">' watts to keep above 5 degrees C at Uranus'</span> ])
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear ; close all; clc;
+disp( 'For a rectangular prism s/c' )
+Qdis = 200 ; % Heat dissipated
+rad = 1 ; % radius in AU
+A = 2*2*6 ; % total surface area in square meters
+Awet = 1/6 * A ; % lit surface area in square meters
+S = 1370 ; % Energy from sun in W/m^2
+sbc = 5.67e-8 ; % stefan boltzmann constant
+alpha = linspace(0,1,1e2) ; % range of possible absorbance
+Tc = -5 ; % Temperature in celsius
+T = 273.15 + Tc ; % Temp in kelvin
+Tch = 50 ; % Temperature in celsius
+Th = 273.15 + Tch ; % Temp in kelvin
+
+Qsun = ( S / ( rad^2 )) * Awet * alpha ; % Heat from sun
+intermediate = ( Qsun + Qdis )/(sbc*T^4) ;
+eps = intermediate/A ; % emmissivity as a function of alpha
+intermediateh = ( Qsun + Qdis )/(sbc*Th^4) ;
+epsh = intermediateh/A ; % emmissivity as a function of alpha
+figure
+plot( alpha , eps , alpha , epsh )
+xlabel( 'Absorbtance' )
+ylabel( 'Emmissivity' )
+title( 'Surface properties of coating' )
+legend( 'To maintain cold temperature' , 'To maintain hot temperature' )
+
+disp( 'bare aluminum will work as a coating at its highest alpha and epsilon' )
+disp( 'to keep the s/c within operating temp at 1 AU' )
+disp( ' ' )
+
+alpha2 = .17 ; % using aluminumm
+eps2 = .1 ; % using aluminum
+rad2 = 19.2 ; % radius in AU
+Tc2 =  5 ; % temp to maintain in Celsius
+T2 = 273.15 + Tc2 ; % temp in kelvin
+
+Qsun2 = ( S / ( rad2^2 )) * Awet * alpha2 ; % heat from sun at Uranus
+Qout2 = A*eps2*sbc*T2^4 ; % Heat leaving due to radiation
+Qheat2 = Qout2 - Qsun2 - Qdis ; % heat heater needs to generate in watts
+disp([ 'Need a heater of more than ' ,  num2str(Qheat2) , ' watts to keep above 5 degrees C at Uranus' ])
+disp( ' ' )
+
+%% Sphere
+disp( 'For a spherical s/c' )
+A2 = 4*pi ;
+Awet2 = 1/2 * A2 ;
+
+Qsun3 = ( S / ( rad^2 )) * Awet2 * alpha ; % heat from sun
+intermediate3 = ( Qsun3 + Qdis )/(sbc*T2^4) ;
+eps3 = intermediate3/A2 ; % emissitivity
+intermediate3h = ( Qsun3 + Qdis )/(sbc*Th^4) ;
+eps3h = intermediate3h/A2 ;
+figure
+plot( alpha , eps3 , alpha , eps3h )
+xlabel( 'Absorbtance' )
+ylabel( 'Emmissivity' )
+title( 'Surface properties of coating on Spherical S/C' )
+legend( 'To maintain cold temperature' , 'To maintain hot temperature' , 'Location' , 'northwest' )
+
+disp( 'Any aluminized kapton will keep the s/c within temp range at Earth' )
+disp( ' ' )
+
+alpha4 = .38 ;
+eps4 = .67 ;
+
+Qsun4 = ( S / ( rad2^2 )) * Awet2 * alpha4 ;
+Qout4 = A2*eps4*sbc*T2^4 ;
+Qheat4 = Qout4 - Qsun4 - Qdis ;
+
+disp([ 'Need a heater of more than ' ,  num2str(Qheat4) , ' watts to keep above 5 degrees C at Uranus' ])
+
+
+
+##### SOURCE END #####
+--></body></html>

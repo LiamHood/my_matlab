@@ -1,0 +1,340 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>bumper</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-03-15"><meta name="DC.source" content="bumper.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Shaggy Head Angle</a></li><li><a href="#2">Angular velocity</a></li><li><a href="#3">Cart velocity</a></li></ul></div><h2 id="1">Shaggy Head Angle</h2><pre class="codeinput">    <span class="comment">%Set up</span>
+    clear <span class="string">all</span> ;
+    t(1) = .233 ;
+    ii = 2 ;
+
+    <span class="comment">%Conversion factor from video seconds to real seconds</span>
+    tc = .137 / 4.567 ;
+    lc = .0254 / 30.4 ;
+
+    <span class="comment">%Position in the x-direction constants</span>
+    a1 = -5.849 ;
+    b1 = 30.28 ;
+    c1 = -22.19 ;
+    d1 = 36.08 ;
+
+    <span class="comment">%Position in the y-direction constants</span>
+    a2 = 6.829 ;
+    b2 = -48.88 ;
+    c2 = 58.34 ;
+    d2 = 60.15 ;
+
+    <span class="comment">%Position of head in x and y coordinates relative to shoulder</span>
+    r_y(1) = a2 * t(1)^3 + b2 * t(1)^2 + c2 * t(1) + d2  ;
+    r_x(1) = a1 * t(1)^3 + b1 * t(1)^2 + c1 * t(1) + d1 ;
+    theta(1) = atand( r_y(1) / r_x(1) ) ;
+
+
+    <span class="comment">%Angle of Shaggy's head relative to the horizontal</span>
+    <span class="keyword">while</span> t(ii-1) &lt; 3.6
+
+        t(ii) = t(ii-1) + .033 ;
+        r_y = a2 * t(ii)^3 + b2 * t(ii)^2 + c2 * t(ii) + d2 ;
+        r_x = a1 * t(ii)^3 + b1 * t(ii)^2 + c1 * t(ii) + d1 ;
+
+        theta(ii) = atand( r_y / r_x ) ;
+
+        ii = ii + 1 ;
+
+    <span class="keyword">end</span>
+
+    <span class="comment">%graph of the angle vs time</span>
+    t_c = t * tc ;
+    plot( t_c , theta )
+    title( <span class="string">'Angle vs Time'</span> )
+    xlabel( <span class="string">'Time (s)'</span> )
+    ylabel( <span class="string">'Angle (deg)'</span> )
+
+    <span class="comment">%finding the total change in theta</span>
+    theta_max = max(theta) ;
+    theta_min = min(theta) ;
+    delta_theta = theta_max - theta_min ;
+    disp( [ <span class="string">'The maximum angular displacement was '</span> , num2str( delta_theta ) , <span class="string">' degrees'</span> ] )
+</pre><pre class="codeoutput">The maximum angular displacement was 99.2026 degrees
+</pre><img vspace="5" hspace="5" src="bumper_01.png" alt=""> <h2 id="2">Angular velocity</h2><pre class="codeinput">kk = 2 ;
+<span class="keyword">while</span> kk &lt; ii
+    omega(kk) = (theta( kk ) - theta( kk - 1 )) / ( .033 * tc ) ;
+    kk = kk + 1 ;
+<span class="keyword">end</span>
+
+<span class="comment">%This isn't an accurate piece of data but it makes the graph less weird</span>
+<span class="comment">%looking than when it the first point is 0. There will be a missing point</span>
+<span class="comment">%because I need a value on either side to calculate a difference.</span>
+omega(1) = omega(2) ;
+
+<span class="comment">%graph of omega vs time</span>
+figure
+plot( t_c , omega )
+title( <span class="string">'Angular Velocity vs Time'</span> )
+ylabel( <span class="string">'Angular Velocity (deg/s)'</span> )
+xlabel( <span class="string">'Time (s)'</span> )
+
+<span class="comment">%finding max angular velocity</span>
+max_omega = max( abs( omega ) ) ;
+disp( [ <span class="string">'The maximum angular velocity was '</span> , num2str( max_omega ) , <span class="string">' deg/s'</span> ] )
+</pre><pre class="codeoutput">The maximum angular velocity was 1597.3873 deg/s
+</pre><img vspace="5" hspace="5" src="bumper_02.png" alt=""> <h2 id="3">Cart velocity</h2><pre class="codeinput">    <span class="comment">%Constants for Cart kinematics</span>
+    ac = 12.79 ;
+    bc = -77.91 ;
+    cc = 116.4 ;
+    dc = 35.23 ;
+
+    <span class="comment">%Counter begins at 2</span>
+    jj = 2 ;
+
+    <span class="comment">%time begins at .233 subjective seconds</span>
+    t2(1) = .233 ;
+
+    <span class="comment">%Initial velocities of v and a</span>
+    v_c(1) = ( 3 * ac * t2(1)^2 + 2 * bc * t2(1) + cc )  ;
+    a_c(1) = ( 6 * ac * t2(1) + 2 * bc ) ;
+
+     <span class="keyword">while</span> t2(jj-1) + .033 &lt; 2.1 <span class="comment">%calculates v and a from .233 to 2.1 subjective seconds</span>
+
+        t2(jj) = t2(jj-1) + .033 ;
+        v_c(jj) = ( 3 * ac * t2(jj)^2 + 2 * bc * t2(jj) + cc )  ;
+        a_c(jj) = ( 6 * ac * t2(jj) + 2 * bc ) ;
+
+        jj = jj + 1 ;
+
+
+     <span class="keyword">end</span>
+
+     <span class="comment">%Applying conversion factors to fix scales and values</span>
+     t2_c = t2 * tc ;
+     v_cc = v_c * ( lc / tc ) ;
+     a_cc = a_c * ( lc / tc^2 ) ;
+
+     <span class="comment">%Acceleration and Velocity graphs</span>
+     figure
+     subplot( 2 , 1 , 1 )
+     plot( t2_c , v_cc )
+     title( <span class="string">'Velocity vs Time for the Cart'</span> )
+     xlabel( <span class="string">'Time (s)'</span> )
+     ylabel( <span class="string">'Velocity (m/s)'</span> )
+     subplot( 2 , 1 , 2 ) , plot( t2_c , a_cc )
+     title( <span class="string">'Acceleration vs Time for the Cart'</span> )
+     xlabel( <span class="string">'Time (s)'</span> )
+     ylabel( <span class="string">'Acceleration (m/s^2)'</span> )
+
+     <span class="comment">%Finding intitial and final velocity as well as the maximum</span>
+     <span class="comment">%acceleration</span>
+     v_initial = v_cc(1) ;
+     v_final = v_cc(jj-1) ;
+     disp( [ <span class="string">'The velocity before the collision was '</span> , num2str( v_initial ) , <span class="string">' m/s'</span> ] );
+     disp( [ <span class="string">'The velocity after the collision was '</span> , num2str( v_final ) , <span class="string">' m/s'</span> ] );
+     a_max = max( abs( a_cc ) ) ;
+     disp( [ <span class="string">'The maximum acceleration was '</span> , num2str( a_max ) , <span class="string">' m/s^2'</span> ] )
+</pre><pre class="codeoutput">The velocity before the collision was 2.2889 m/s
+The velocity after the collision was -1.1614 m/s
+The maximum acceleration was 128.0766 m/s^2
+</pre><img vspace="5" hspace="5" src="bumper_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Shaggy Head Angle
+
+    %Set up
+    clear all ;
+    t(1) = .233 ;
+    ii = 2 ;
+    
+    %Conversion factor from video seconds to real seconds
+    tc = .137 / 4.567 ;
+    lc = .0254 / 30.4 ;
+
+    %Position in the x-direction constants
+    a1 = -5.849 ;
+    b1 = 30.28 ;
+    c1 = -22.19 ;
+    d1 = 36.08 ;
+
+    %Position in the y-direction constants
+    a2 = 6.829 ;
+    b2 = -48.88 ;
+    c2 = 58.34 ;
+    d2 = 60.15 ;
+    
+    %Position of head in x and y coordinates relative to shoulder 
+    r_y(1) = a2 * t(1)^3 + b2 * t(1)^2 + c2 * t(1) + d2  ;
+    r_x(1) = a1 * t(1)^3 + b1 * t(1)^2 + c1 * t(1) + d1 ;
+    theta(1) = atand( r_y(1) / r_x(1) ) ;
+
+
+    %Angle of Shaggy's head relative to the horizontal
+    while t(ii-1) < 3.6
+        
+        t(ii) = t(ii-1) + .033 ;
+        r_y = a2 * t(ii)^3 + b2 * t(ii)^2 + c2 * t(ii) + d2 ;
+        r_x = a1 * t(ii)^3 + b1 * t(ii)^2 + c1 * t(ii) + d1 ;
+
+        theta(ii) = atand( r_y / r_x ) ;
+
+        ii = ii + 1 ;
+
+    end
+
+    %graph of the angle vs time
+    t_c = t * tc ;
+    plot( t_c , theta )
+    title( 'Angle vs Time' )
+    xlabel( 'Time (s)' )
+    ylabel( 'Angle (deg)' )
+    
+    %finding the total change in theta
+    theta_max = max(theta) ;
+    theta_min = min(theta) ;
+    delta_theta = theta_max - theta_min ;
+    disp( [ 'The maximum angular displacement was ' , num2str( delta_theta ) , ' degrees' ] )
+    
+%% Angular velocity 
+kk = 2 ;
+while kk < ii
+    omega(kk) = (theta( kk ) - theta( kk - 1 )) / ( .033 * tc ) ;
+    kk = kk + 1 ;
+end
+
+%This isn't an accurate piece of data but it makes the graph less weird
+%looking than when it the first point is 0. There will be a missing point
+%because I need a value on either side to calculate a difference. 
+omega(1) = omega(2) ;
+
+%graph of omega vs time
+figure
+plot( t_c , omega )
+title( 'Angular Velocity vs Time' )
+ylabel( 'Angular Velocity (deg/s)' )
+xlabel( 'Time (s)' )
+
+%finding max angular velocity
+max_omega = max( abs( omega ) ) ;
+disp( [ 'The maximum angular velocity was ' , num2str( max_omega ) , ' deg/s' ] )
+    
+%% Cart velocity
+    
+    %Constants for Cart kinematics
+    ac = 12.79 ;
+    bc = -77.91 ;
+    cc = 116.4 ;
+    dc = 35.23 ;
+    
+    %Counter begins at 2 
+    jj = 2 ;
+    
+    %time begins at .233 subjective seconds
+    t2(1) = .233 ;
+    
+    %Initial velocities of v and a
+    v_c(1) = ( 3 * ac * t2(1)^2 + 2 * bc * t2(1) + cc )  ;
+    a_c(1) = ( 6 * ac * t2(1) + 2 * bc ) ;
+    
+     while t2(jj-1) + .033 < 2.1 %calculates v and a from .233 to 2.1 subjective seconds
+         
+        t2(jj) = t2(jj-1) + .033 ;
+        v_c(jj) = ( 3 * ac * t2(jj)^2 + 2 * bc * t2(jj) + cc )  ;
+        a_c(jj) = ( 6 * ac * t2(jj) + 2 * bc ) ;
+
+        jj = jj + 1 ;
+        
+
+     end
+     
+     %Applying conversion factors to fix scales and values 
+     t2_c = t2 * tc ;
+     v_cc = v_c * ( lc / tc ) ;
+     a_cc = a_c * ( lc / tc^2 ) ;
+     
+     %Acceleration and Velocity graphs
+     figure
+     subplot( 2 , 1 , 1 )
+     plot( t2_c , v_cc )
+     title( 'Velocity vs Time for the Cart' )
+     xlabel( 'Time (s)' )
+     ylabel( 'Velocity (m/s)' )
+     subplot( 2 , 1 , 2 ) , plot( t2_c , a_cc )
+     title( 'Acceleration vs Time for the Cart' )
+     xlabel( 'Time (s)' )
+     ylabel( 'Acceleration (m/s^2)' )
+     
+     %Finding intitial and final velocity as well as the maximum
+     %acceleration
+     v_initial = v_cc(1) ;
+     v_final = v_cc(jj-1) ;
+     disp( [ 'The velocity before the collision was ' , num2str( v_initial ) , ' m/s' ] );
+     disp( [ 'The velocity after the collision was ' , num2str( v_final ) , ' m/s' ] );
+     a_max = max( abs( a_cc ) ) ;
+     disp( [ 'The maximum acceleration was ' , num2str( a_max ) , ' m/s^2' ] )
+    
+      
+     
+    
+    
+
+##### SOURCE END #####
+--></body></html>

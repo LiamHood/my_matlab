@@ -1,0 +1,218 @@
+clear ; close all ; clc ;
+T = .1 ;
+ve = .9 ;
+    
+x = 1.05 ;
+y = 0 ; 
+xdot = 0 ;
+ydot = sqrt( 1/x ) ;
+mass = 1 ;
+lambda = [ -2.5 ; -1.5 ; -1.5 ; -2 ; 1 ] ;
+sto0 = [ 2 ; 0 ; 0 ; 1/sqrt(2) ; 1 ; lambda ] ;
+% lambda = [-0.239372260294265;-0.0556680224646008;-0.0918464476280169;-0.280637483375427;-0.268997461768512] ;
+tg = 5 ;
+tol = 1e-8 ;
+s0fp = [ x ; y ; xdot ; ydot ; mass ; lambda ; tg ] ;
+opts = optimoptions( 'fsolve' , 'Display' , 'iter-detailed'  , 'FunctionTolerance' , tol ,  ...
+    'OptimalityTolerance' , tol , 'MaxIterations' , 1e6 , 'MaxFunctionEvaluations' , 1e6 , 'Algorithm' , 'levenberg-marquardt' ) ; % 
+optsode = odeset( 'RelTol' , 1e-8 , 'AbsTol' , 1e-8 ) ;
+[ s0fp , F ] = fsolve( @BCBfpFun , s0fp , opts ) ;
+[ t , sfp ] = ode45( @BCBEOM , [ 0 , s0fp(end) ] , s0fp(1:10) , optsode , T , ve ) ;
+    [ tso , sso ] = ode45( @BCBEOM , [ 0 , 10 ] , s0fp(1:10) , optsode , 0 , ve ) ;
+    [ teo , seo ] = ode45( @BCBEOM , [ 0 , 30 ] , sfp(end,1:10) , optsode , 0 , ve ) ;
+    [ tto , sto ] = ode45( @BCBEOM , [ 0 , 30 ] , sto0 , optsode , 0 , ve ) ;
+lamfp = sfp(:,6:10) ;
+for ii = 1:length( t )
+    lamv = sqrt( lamfp(ii,3)^2 + lamfp(ii,4)^2 ) ;
+    switching(ii) = (lamv)*ve + lamfp(ii,5)*sfp(ii,5) ;
+end
+figure
+plot( t , switching )
+
+figure
+axis equal
+hold on
+plot( sso(:,1) , sso(:,2) )
+plot( sfp(:,1) , sfp(:,2) )
+plot( seo(:,1) , seo(:,2) )
+plot( sto(:,1) , sto(:,2) )
+
+
+% sto0 = [ 2 ; 0 ; 0 ; 1/sqrt(2) ; 1 ; lambda ] ;
+% t1 = 2.78 ;
+% t2 = 4.8 - t1 ; 
+% tf = 4.8*1.2 - t2 - t1 ;
+% s0 = [ x ; y ; xdot ; ydot ; mass ; lambda ; t1 ; t2 ; tf ] ;
+% [ s0 , F ] = fsolve( @BCBSolveFun , s0 , opts ) ;
+% [ tb1 , sb1 ] = ode45( @BCBEOM , [ 0 , abs( s0(11) ) ] , s0(1:10) , opts , T , ve ) ;
+% [ tc , sc ] = ode45( @BCBEOM , [ abs( s0(11) ) , abs( s0(12) ) + abs( s0(11) ) ] , sb1(end,:) , opts , 0 , ve ) ;
+% [ tb2 , sb2 ] = ode45( @BCBEOM , [ abs( s0(12) ) + abs( s0(11) ) , abs( s0(12) ) + abs( s0(11) ) + abs( s0(13) ) ] , sc(end,:) , opts , T , ve ) ;
+% t = [ tb1 ; tc ; tb2 ] ;
+% s = [ sb1 ; sc ; sb2 ] ;
+% lam = s(:,6:10) ;
+%     [ tso , sso ] = ode45( @BCBEOM , [ 0 , 10 ] , s0(1:10) , optsode , 0 , ve ) ;
+%     [ teo , seo ] = ode45( @BCBEOM , [ 0 , 30 ] , s(end,1:10) , optsode , 0 , ve ) ;
+%     [ tto , sto ] = ode45( @BCBEOM , [ 0 , 30 ] , sto0 , optsode , 0 , ve ) ;
+% for ii = 1:length( t )
+%     lamv = sqrt( lam(ii,3)^2 + lam(ii,4)^2 ) ;
+%     switching(ii) = lamv*ve + lam(ii,5)*s(ii,5) ;
+% end
+% figure
+% plot( t , switching )
+% figure
+% axis equal
+% hold on
+% plot( s(:,1) , s(:,2) ) 
+% plot( sso(:,1) , sso(:,2) )
+% plot( seo(:,1) , seo(:,2) )
+% plot( sto(:,1) , sto(:,2) )
+% legend( 'Transfer' , 'Starting Orbit' , 'Final Orbit' , 'Target Orbit' )
+
+function F = BCBfpFun( s0t )
+    T = .1 ;
+    ve = .9 ;
+    s0 = s0t(1:10) ;
+    lam0 = s0(6:10) ;
+    
+    optsode = odeset( 'RelTol' , 1e-8 , 'AbsTol' , 1e-8 ) ;
+    [ t , s ] = ode45( @BCBEOM , [ 0 , abs( s0t(end) ) ] , s0 , optsode , T , ve ) ;
+
+    lamf = s(end,6:10) ;
+    sf = s(end,1:5) ;
+    
+    
+    % omega 
+    rf = sqrt( sf(1)^2 + sf(2)^2 ) ;
+    vf = sqrt( 1/rf ) ;
+    F(1,1) = sf(1)^2 + sf(2)^2 - 4 ;
+    F(2,1) = ( sf(3)^2 + sf(4)^2 - 1/2 ) ;
+    F(3,1) = ( sf(4)*sf(1) - sf(3)*sf(2) - 2/sqrt(2) ) ;
+    
+    % lambda final
+    F(4,1) = lamf(5) + 1 ;
+    
+    % Switching
+        lam0v = sqrt( lam0(3)^2 + lam0(4)^2 ) ;
+    F(5,1) = ((lam0v)*ve + lam0(5)*s0(5))*10 ;
+        lamfv = sqrt( lamf(3)^2 + lamf(4)^2 ) ;
+    F(6,1) = (lamfv)*ve + lamf(5)*sf(5) ;
+    
+    % dependency
+    F(7,1) = -lamf(1)*( sf(2)/sf(1) ) + lamf(2) - lamf(3)*( sf(4)/sf(3) )*...
+        ( ( sf(3) + ( sf(2)/sf(1) )*sf(4) )/( sf(1) + ( sf(4)/sf(3) )*sf(2) ) )...
+        + lamf(4)*( ( sf(3) + ( sf(2)/sf(1) )*sf(4) )/( sf(1) + ( sf(4)/sf(3) )*sf(2) ) ) ;
+    
+    % Hf
+    lamv = sqrt( lamf(3)^2 + lamf(4)^2 ) ;
+    c1 = -lamf(3)/lamv ;
+    c2 = -lamf(4)/lamv ;
+    F(8,1) = lamf(1)*sf(3) + lamf(2)*sf(4) + lamf(3)*( -sf(1)/rf^3 )*c1 ...
+        + lamf(4)*( -sf(2)/rf^3 )*c2 ;
+
+    % force intitial conditions
+    F(9,1) = s0(1) - 1.05 ;
+    F(10,1) = s0(2) ;
+    F(11,1) = s0(3) ;
+    F(12,1) = s0(4) - 1/sqrt( 1.05 ) ;
+    F(13,1) = s0(5) - 1 ;
+
+end
+
+function F = BCBSolveFun( s0t )
+    T = .1 ;
+    ve = .9 ;
+    s0 = s0t(1:10) ;
+    t = s0t(11:13) ;
+    t1 = abs( t(1) ) ;
+    t2 = abs( t(2) ) + t1 ; 
+    tf = abs( t(3) ) + t2 ;
+    lam0 = s0t( 6:10 ) ;
+    
+    opts = odeset( 'RelTol' , 1e-8 , 'AbsTol' , 1e-8 ) ;
+    [ tb1 , sb1 ] = ode45( @BCBEOM , [ 0 , t1 ] , s0 , opts , T , ve ) ;
+    [ tc , sc ] = ode45( @BCBEOM , [ t1 , t2 ] , sb1(end,:) , opts , 0 , ve ) ;
+    [ tb2 , sb2 ] = ode45( @BCBEOM , [ t2 , tf ] , sc(end,:) , opts , T , ve ) ;
+    t = [ tb1 ; tc ; tb2 ] ; 
+    s = [ sb1 ; sc ; sb2 ] ;
+    lamb = sb1(end,6:10) ;
+    lamc = sc(end,6:10) ;
+    lamf = s(end,6:10) ;
+    sb = sb1(end,1:5) ;
+    sc = sc(end,1:5) ;
+    sf = s(end,1:5) ;
+    
+
+    % force intitial conditions
+    F(1,1) = ( s0(1) - 1.05 ) * 100;
+    F(2,1) = s0(2)*100 ;
+    F(3,1) = s0(3)*100 ;
+    F(4,1) = ( s0(4) - 1/sqrt( 1.05 ) ) ;
+    F(5,1) = (s0(5) - 1)*100 ;
+    
+    % omega 
+    rf = sqrt( sf(1)^2 + sf(2)^2 ) ;
+    vf = sqrt( 1/rf ) ;
+    F(6,1) = sf(1)^2 + sf(2)^2 - 4 ;
+    F(7,1) = ( sf(3)^2 + sf(4)^2 - 1/2  )*10 ;
+    F(8,1) = ( sf(4)*sf(1) - sf(3)*sf(2) - 2/sqrt(2) )*10 ;
+    
+    % lambda final
+    F(9,1) = lamf(5) + 1;
+    
+    % Switching
+        lam0v = sqrt( lam0(3)^2 + lam0(4)^2 ) ;
+    F(10,1) = ((lam0v)*ve + lam0(5)*s0(5)) ;
+        lambv = sqrt( lamb(3)^2 + lamb(4)^2 ) ;
+    F(13,1) = (lambv*ve + lamb(5)*sb(5)) ;
+        lamcv = sqrt( lamc(3)^2 + lamc(4)^2 ) ;
+    F(14,1) = (lamcv*ve + lamc(5)*sc(5)) ;
+        lamfv = sqrt( lamf(3)^2 + lamf(4)^2 ) ;
+    F(15,1) = ((lamfv)*ve + lamf(5)*sf(5)) ;
+    
+    % dependency
+    F(16,1) = -lamf(1)*( sf(2)/sf(1) ) + lamf(2) - lamf(3)*( sf(4)/sf(3) )*...
+        ( ( sf(3) + ( sf(2)/sf(1) )*sf(4) )/( sf(1) + ( sf(4)/sf(3) )*sf(2) ) )...
+        + lamf(4)*( ( sf(3) + ( sf(2)/sf(1) )*sf(4) )/( sf(1) + ( sf(4)/sf(3) )*sf(2) ) ) ;
+    
+    % Hf
+    rf = sqrt( sf(1)^2 + sf(2)^2 ) ;
+    lamv = sqrt( lamf(3)^2 + lamf(4)^2 ) ;
+    c1 = -lamf(3)/lamv ;
+    c2 = -lamf(4)/lamv ;
+    F(17,1) = lamf(1)*sf(3) + lamf(2)*sf(4) + lamf(3)*( -sf(1)/rf^3 )*c1 ...
+        + lamf(4)*( -sf(2)/rf^3 )*c2 ;
+end
+
+function ds = BCBEOM( t , s , T , ve )
+    lam = s(6:10) ;
+    lamv = sqrt( lam(3)^2 + lam(4)^2 ) ;
+    c1 = -lam(3)/lamv ;
+    c2 = -lam(4)/lamv ;
+    r = sqrt( s(1)^2 + s(2)^2 ) ;
+    
+    % f
+    ds(1,1) = s(3) ;
+    ds(2,1) = s(4) ;
+    ds(3,1) = -s(1)/r^3 + (T/s(5))*c1 ;
+    ds(4,1) = -s(2)/r^3 + (T/s(5))*c2 ;
+    ds(5,1) = -T/ve ;
+    
+    % lambda dot
+    ds(6,1) = lam(3)/r^3 - ( 3*s(1)/r^5 )*( lam(3)*s(1) + lam(4)*s(2) ) ;
+    ds(7,1) = lam(4)/r^3 - ( 3*s(2)/r^5 )*( lam(4)*s(2) + lam(3)*s(1) ) ;
+    ds(8,1) = -lam(1) ;
+    ds(9,1) = -lam(2) ;
+    ds(10,1) = ( T/s(5)^2 )*( lam(3)*c1 + lam(4)*c2 ) ;
+%     ds(6,1) = lam(3)*(1/(s(1)^2 + s(2)^2)^(3/2) - 3*s(1)^2/(s(1)^2 + s(2)^2)^(5/2))...
+%         - (3*lam(4)*s(1)*s(2))/(s(1)^2 + s(2)^2)^(5/2) ;
+%     ds(7,1) = lam(4)*(1/(s(1)^2 + s(2)^2)^(3/2) - 3*s(2)^2/(s(1)^2 + s(2)^2)^(5/2)) - ...
+%         (3*lam(3)*s(1)*s(2))/(s(1)^2 + s(2)^2)^(5/2) ;
+%     ds(8,1) = -lam(1) ;
+%     ds(9,1) = -lam(2) ;
+%     ds(10,1) = (c1*T*lam(3))/s(5)^2 + (c2*T*lam(4))/s(5)^2 ;
+%     ds(6,1) = lam(3)*(1/r^3 - (3*s(1)^2)/r^5) - (3*lam(4)*s(1)*s(2))/r^5 ;
+%     ds(7,1) = lam(4)*(1/r^3 - (3*s(2)^2)/r^5) - (3*lam(3)*s(1)*s(2))/r^5 ;
+%     ds(8,1) = -lam(1) ;
+%     ds(9,1) = -lam(2) ;
+%     ds(10,1) = -( T*lam(3)^2)/(s(5)^2*lamv) - (T*lam(4)^2)/(s(5)^2*lamv) ;
+end

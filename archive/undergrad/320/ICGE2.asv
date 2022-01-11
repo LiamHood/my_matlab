@@ -1,0 +1,67 @@
+%% ICGE 2 
+% Liam Hood, Michael Watkins, and Michael Randolph
+clear ; close all; clc;
+
+L = 4 ; % Cylinder length in meters
+RR = 0.25 ; % Rocket radius in meters
+hn = 1 ; % nose height in meters
+Mb = 600 ; % Mass of body in kg
+Mn = 50 ; % Mass of nose in kg
+rW = 0.2 ; % radius of wheel in meters
+tW = 0.04 ; % thickness of wheel in meters
+mW = 10 ; % mass of wheel in kg
+
+% inertia matrix of the rocket body
+Ib=[ (1/12)*Mb*(3*RR^2+L^2) , 0 , 0 ; ...
+    0 , (1/12)*Mb*(3*RR^2+L^2) , 0 ; ...
+    0 , 0 , 0.5*Mb*RR^2 ] ;
+
+% inertia matrix of the rocket nose
+In = [ ((1/10)*Mn*hn^2)+((3/20)*Mn*RR^2) , 0 , 0 ; ...
+    0 , ((1/10)*Mn*hn^2)+((3/20)*Mn*RR^2) , 0 ; ...
+    0 , 0 , (3/10)*Mn*RR^2 ] ;
+
+% inertia matrix of the wheel
+Iw=[ (1/12)*mW*(3*rW^2+tW^2) , 0 , 0 ; ...
+    0 , (1/12)*mW*(3*rW^2+tW^2) , 0 ; ...
+    0 , 0 , 0.5*mW*rW^2 ] ;
+
+% Centers of mass from bottom of rocket in meters
+CoM_rocket = [ 0 ; 0 ; (2*600+4.25*50)/650 ] ;
+CoM_cone = [ 0 ; 0 ; 4.25 ] ;
+CoM_body = [ 0 ; 0 ; 2 ] ;
+
+% distance of center of mass of piece from system center of mass
+rwc = [ 0 ; 0 ; 0 ] ;
+rbc = CoM_rocket - CoM_body ;
+rnc = CoM_rocket - CoM_cone ;
+
+% inertia matrix about rockets center of mass
+Jb = Ib - Mb*crossmatrix(rbc)*crossmatrix(rbc) ;
+Jn = In - Mn*crossmatrix(rnc)*crossmatrix(rnc) ;
+Ir = Jb + Jn ;
+
+% Set up 
+opts = odeset( 'AbsTol' , 10^-8 , 'RelTol' , 10^-8 ) ;
+tspan = [ 0 1000 ] ; % Time span to integrate over
+dwrel = [ 0 ; 0 ; 0.05 ] ; % angular acceleration
+
+%% 3 
+Td = [ 0 ; 0 ; 0 ] ;
+state = [ 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ] ;
+RocketAndWheelPlots( tspan , state , opts , dwrel , Td , Iw , Ir ) ;
+
+%4a
+statea = [0;0;0;0;0; 0;0;0;0];
+funy(tspan,statea,opts,dwrel,Td,Iw,Ir)
+
+%4b
+stateb = [0;0;0;0;0; 0.1;0;0;0];
+funy(tspan,stateb,opts,dwrel,Td,Iw,Ir)
+
+%4c
+statec = [0;0;0;0;0; 0;0;0;100];
+funy(tspan,statec,opts,dwrel,Td,Iw,Ir)
+%4d
+stated = [0;0;0;0;0; 0.1;0;0;100];
+funy(tspan,stated,opts,dwrel,Td,Iw,Ir)

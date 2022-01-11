@@ -1,0 +1,822 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>hw4_722</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-11-04"><meta name="DC.source" content="hw4_722.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Problem 1</a></li><li><a href="#2">Problem 2</a></li><li><a href="#3">Problem 3</a></li><li><a href="#4">Problem 4</a></li><li><a href="#5">Problem 5</a></li><li><a href="#6">Problem 6</a></li></ul></div><h2 id="1">Problem 1</h2><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+syms <span class="string">x1</span> <span class="string">x</span> <span class="string">h</span> <span class="string">del1</span> <span class="string">del2</span> <span class="string">del3</span> <span class="string">del4</span> <span class="string">del5</span> <span class="string">del6</span> <span class="string">phi</span>;
+xmatrix = [ 1, x1, x1^2, x1^3, x1^4, x1^5;
+            0, 1, 2*x1, 3*x1^2, 4*x1^3, 5*x1^4;
+            0, 0, 2, 6*x1, 12*x1^2, 20*x1^3;
+            1, x1+h, (x1+h)^2, (x1+h)^3, (x1+h)^4, (x1+h)^5;
+            0, 1, 2*(x1+h), 3*(x1+h)^2, 4*(x1+h)^3, 5*(x1+h)^4;
+            0, 0, 2, 6*(x1+h), 12*(x1+h)^2, 20*(x1+h)^3];
+delvec = [del1;del2;del3;del4;del5;del6];
+cvec = inv(xmatrix)*delvec;
+wcluttered = cvec(1) + cvec(2)*x + cvec(3)*x^2 + cvec(4)*x^3 + cvec(5)*x^4 + cvec(6)*x^5;
+w = collect(wcluttered, [del1, del2, del3, del4, del5, del6]);
+phi1 = simplify(solve( del1*phi == subs(w,[del2, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi2 = simplify(solve( del2*phi == subs(w,[del1, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi3 = simplify(solve( del3*phi == subs(w,[del1, del2, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi4 = simplify(solve( del4*phi == subs(w,[del1, del2, del3, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi5 = simplify(solve( del5*phi == subs(w,[del1, del2, del3, del4, del6, x1], [0 0 0 0 0 0]),phi));
+phi6 = simplify(solve( del6*phi == subs(w,[del1, del2, del3, del4, del5, x1], [0 0 0 0 0 0]),phi));
+fprintf(<span class="string">"Problem 1 \n"</span>)
+fprintf(<span class="string">"phi1 = %s \n"</span>,phi1)
+fprintf(<span class="string">"phi2 = %s \n"</span>,phi2)
+fprintf(<span class="string">"phi3 = %s \n"</span>,phi3)
+fprintf(<span class="string">"phi4 = %s \n"</span>,phi4)
+fprintf(<span class="string">"phi5 = %s \n"</span>,phi5)
+fprintf(<span class="string">"phi6 = %s \n"</span>,phi6)
+fprintf(<span class="string">"phi1, phi2, phi3 are for node 1\n"</span>)
+</pre><pre class="codeoutput">Problem 1 
+phi1 = ((h - x)^3*(3*h*x + h^2 + 6*x^2))/h^5 
+phi2 = (x*(h - x)^3*(h + 3*x))/h^4 
+phi3 = (x^2*(h - x)^3)/(2*h^3) 
+phi4 = (x^3*(10*h^2 - 15*h*x + 6*x^2))/h^5 
+phi5 = -(x^3*(4*h^2 - 7*h*x + 3*x^2))/h^4 
+phi6 = (x^3*(h - x)^2)/(2*h^3) 
+phi1, phi2, phi3 are for node 1
+</pre><h2 id="2">Problem 2</h2><pre class="codeinput">clear;
+syms <span class="string">x1</span> <span class="string">x</span> <span class="string">h</span> <span class="string">del1</span> <span class="string">del2</span> <span class="string">del3</span> <span class="string">del4</span> <span class="string">del5</span> <span class="string">del6</span> <span class="string">phi</span>;
+xmatrix = [ 1, x1, x1^2, x1^3, x1^4, x1^5;
+            0, -1, -2*x1, -3*x1^2, -4*x1^3, -5*x1^4;
+            1, (x1+h/2), (x1+h/2)^2, (x1+h/2)^3, (x1+h/2)^4, (x1+h/2)^5;
+            0, -1, -2*(x1+h/2), -3*(x1+h/2)^2, -4*(x1+h/2)^3, -5*(x1+h/2)^4;
+            1, (x1+h), (x1+h)^2, (x1+h)^3, (x1+h)^4, (x1+h)^5;
+            0, -1, -2*(x1+h), -3*(x1+h)^2, -4*(x1+h)^3, -5*(x1+h)^4];
+delvec = [del1;del2;del3;del4;del5;del6];
+cvec = inv(xmatrix)*delvec;
+wcluttered = cvec(1) + cvec(2)*x + cvec(3)*x^2 + cvec(4)*x^3 + cvec(5)*x^4 + cvec(6)*x^5;
+w = collect(wcluttered, [del1, del2, del3, del4, del5, del6]);
+phi1 = simplify(solve( del1*phi == subs(w,[del2, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi2 = simplify(solve( del2*phi == subs(w,[del1, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi3 = simplify(solve( del3*phi == subs(w,[del1, del2, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi4 = simplify(solve( del4*phi == subs(w,[del1, del2, del3, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi5 = simplify(solve( del5*phi == subs(w,[del1, del2, del3, del4, del6, x1], [0 0 0 0 0 0]),phi));
+phi6 = simplify(solve( del6*phi == subs(w,[del1, del2, del3, del4, del5, x1], [0 0 0 0 0 0]),phi));
+fprintf(<span class="string">"\nProblem 2 \n"</span>)
+fprintf(<span class="string">"phi1 = %s \n"</span>,phi1)
+fprintf(<span class="string">"phi2 = %s \n"</span>,phi2)
+fprintf(<span class="string">"phi3 = %s \n"</span>,phi3)
+fprintf(<span class="string">"phi4 = %s \n"</span>,phi4)
+fprintf(<span class="string">"phi5 = %s \n"</span>,phi5)
+fprintf(<span class="string">"phi6 = %s \n"</span>,phi6)
+fprintf(<span class="string">"phi1, phi2 are for node 1\n"</span>)
+</pre><pre class="codeoutput">
+Problem 2 
+phi1 = ((h + 6*x)*(h^2 - 3*h*x + 2*x^2)^2)/h^5 
+phi2 = -(x*(h^2 - 3*h*x + 2*x^2)^2)/h^4 
+phi3 = (16*x^2*(h - x)^2)/h^4 
+phi4 = (8*x^2*(h - x)^2*(h - 2*x))/h^4 
+phi5 = (x^2*(h - 2*x)^2*(7*h - 6*x))/h^5 
+phi6 = (x^2*(h - x)*(h - 2*x)^2)/h^4 
+phi1, phi2 are for node 1
+</pre><h2 id="3">Problem 3</h2><pre class="codeinput">clear;
+syms <span class="string">x1</span> <span class="string">x</span> <span class="string">h</span> <span class="string">del1</span> <span class="string">del2</span> <span class="string">del3</span> <span class="string">del4</span> <span class="string">del5</span> <span class="string">del6</span> <span class="string">phi</span> <span class="string">q1</span> <span class="string">q2</span>;
+xmatrix = [ 1, x1, x1^2, x1^3, x1^4, x1^5;
+            0, 1, 2*x1, 3*x1^2, 4*x1^3, 5*x1^4;
+            0, 0, 2, 6*x1, 12*x1^2, 20*x1^3;
+            1, x1+h, (x1+h)^2, (x1+h)^3, (x1+h)^4, (x1+h)^5;
+            0, 1, 2*(x1+h), 3*(x1+h)^2, 4*(x1+h)^3, 5*(x1+h)^4;
+            0, 0, 2, 6*(x1+h), 12*(x1+h)^2, 20*(x1+h)^3];
+delvec = [del1;del2;del3;del4;del5;del6];
+cvec = inv(xmatrix)*delvec;
+wcluttered = cvec(1) + cvec(2)*x + cvec(3)*x^2 + cvec(4)*x^3 + cvec(5)*x^4 + cvec(6)*x^5;
+w = collect(wcluttered, [del1, del2, del3, del4, del5, del6]);
+phi1 = simplify(solve( del1*phi == subs(w,[del2, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi2 = simplify(solve( del2*phi == subs(w,[del1, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi3 = simplify(solve( del3*phi == subs(w,[del1, del2, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi4 = simplify(solve( del4*phi == subs(w,[del1, del2, del3, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi5 = simplify(solve( del5*phi == subs(w,[del1, del2, del3, del4, del6, x1], [0 0 0 0 0 0]),phi));
+phi6 = simplify(solve( del6*phi == subs(w,[del1, del2, del3, del4, del5, x1], [0 0 0 0 0 0]),phi));
+fprintf(<span class="string">"\nProblem 3 \n"</span>)
+fprintf(<span class="string">"phi1 = %s \n"</span>,phi1)
+fprintf(<span class="string">"phi2 = %s \n"</span>,phi2)
+fprintf(<span class="string">"phi3 = %s \n"</span>,phi3)
+fprintf(<span class="string">"phi4 = %s \n"</span>,phi4)
+fprintf(<span class="string">"phi5 = %s \n"</span>,phi5)
+fprintf(<span class="string">"phi6 = %s \n"</span>,phi6)
+q = [   int(((q1+x*(q2-q1)/h)*phi1),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi2),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi3),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi4),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi5),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi6),x,0,h)];
+<span class="keyword">for</span> ii = 1:6
+    fprintf(<span class="string">"q_%i = %s \n"</span>,ii, q(ii))
+<span class="keyword">end</span>
+fprintf(<span class="string">"q_1, q_2, q_3 are the components of the source vector for node 1\n"</span>)
+</pre><pre class="codeoutput">
+Problem 3 
+phi1 = ((h - x)^3*(3*h*x + h^2 + 6*x^2))/h^5 
+phi2 = (x*(h - x)^3*(h + 3*x))/h^4 
+phi3 = (x^2*(h - x)^3)/(2*h^3) 
+phi4 = (x^3*(10*h^2 - 15*h*x + 6*x^2))/h^5 
+phi5 = -(x^3*(4*h^2 - 7*h*x + 3*x^2))/h^4 
+phi6 = (x^3*(h - x)^2)/(2*h^3) 
+q_1 = (h*(5*q1 + 2*q2))/14 
+q_2 = (h^2*(13*q1 + 8*q2))/210 
+q_3 = (h^3*(4*q1 + 3*q2))/840 
+q_4 = (h*(2*q1 + 5*q2))/14 
+q_5 = -(h^2*(8*q1 + 13*q2))/210 
+q_6 = (h^3*(3*q1 + 4*q2))/840 
+q_1, q_2, q_3 are the components of the source vector for node 1
+</pre><h2 id="4">Problem 4</h2><pre class="codeinput">clear;
+syms <span class="string">x1</span> <span class="string">x</span> <span class="string">h</span> <span class="string">del1</span> <span class="string">del2</span> <span class="string">del3</span> <span class="string">del4</span> <span class="string">del5</span> <span class="string">del6</span> <span class="string">phi</span> <span class="string">q1</span> <span class="string">q2</span>;
+xmatrix = [ 1, x1, x1^2, x1^3, x1^4, x1^5;
+            0, -1, -2*x1, -3*x1^2, -4*x1^3, -5*x1^4;
+            1, (x1+h/2), (x1+h/2)^2, (x1+h/2)^3, (x1+h/2)^4, (x1+h/2)^5;
+            0, -1, -2*(x1+h/2), -3*(x1+h/2)^2, -4*(x1+h/2)^3, -5*(x1+h/2)^4;
+            1, (x1+h), (x1+h)^2, (x1+h)^3, (x1+h)^4, (x1+h)^5;
+            0, -1, -2*(x1+h), -3*(x1+h)^2, -4*(x1+h)^3, -5*(x1+h)^4];
+delvec = [del1;del2;del3;del4;del5;del6];
+cvec = inv(xmatrix)*delvec;
+wcluttered = cvec(1) + cvec(2)*x + cvec(3)*x^2 + cvec(4)*x^3 + cvec(5)*x^4 + cvec(6)*x^5;
+w = collect(wcluttered, [del1, del2, del3, del4, del5, del6]);
+phi1 = simplify(solve( del1*phi == subs(w,[del2, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi2 = simplify(solve( del2*phi == subs(w,[del1, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi3 = simplify(solve( del3*phi == subs(w,[del1, del2, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi4 = simplify(solve( del4*phi == subs(w,[del1, del2, del3, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi5 = simplify(solve( del5*phi == subs(w,[del1, del2, del3, del4, del6, x1], [0 0 0 0 0 0]),phi));
+phi6 = simplify(solve( del6*phi == subs(w,[del1, del2, del3, del4, del5, x1], [0 0 0 0 0 0]),phi));
+fprintf(<span class="string">"\nProblem 4 \n"</span>)
+fprintf(<span class="string">"phi1 = %s \n"</span>,phi1)
+fprintf(<span class="string">"phi2 = %s \n"</span>,phi2)
+fprintf(<span class="string">"phi3 = %s \n"</span>,phi3)
+fprintf(<span class="string">"phi4 = %s \n"</span>,phi4)
+fprintf(<span class="string">"phi5 = %s \n"</span>,phi5)
+fprintf(<span class="string">"phi6 = %s \n"</span>,phi6)
+q = [   int(((q1+x*(q2-q1)/h)*phi1),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi2),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi3),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi4),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi5),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi6),x,0,h)];
+<span class="keyword">for</span> ii = 1:6
+    fprintf(<span class="string">"q_%i = %s \n"</span>,ii, q(ii))
+<span class="keyword">end</span>
+fprintf(<span class="string">"The source vector components for node 1 are q_1 and q_2\n"</span>)
+fprintf(<span class="string">"The source vector components for node 2 are q_3 and q_4\n"</span>)
+fprintf(<span class="string">"The source vector components for node 1 are q_5 and q_6\n"</span>)
+</pre><pre class="codeoutput">
+Problem 4 
+phi1 = ((h + 6*x)*(h^2 - 3*h*x + 2*x^2)^2)/h^5 
+phi2 = -(x*(h^2 - 3*h*x + 2*x^2)^2)/h^4 
+phi3 = (16*x^2*(h - x)^2)/h^4 
+phi4 = (8*x^2*(h - x)^2*(h - 2*x))/h^4 
+phi5 = (x^2*(h - 2*x)^2*(7*h - 6*x))/h^5 
+phi6 = (x^2*(h - x)*(h - 2*x)^2)/h^4 
+q_1 = (h*(79*q1 + 19*q2))/420 
+q_2 = -(h^2*(5*q1 + 2*q2))/420 
+q_3 = (4*h*(q1 + q2))/15 
+q_4 = (2*h^2*(q1 - q2))/105 
+q_5 = (h*(19*q1 + 79*q2))/420 
+q_6 = (h^2*(2*q1 + 5*q2))/420 
+The source vector components for node 1 are q_1 and q_2
+The source vector components for node 2 are q_3 and q_4
+The source vector components for node 1 are q_5 and q_6
+</pre><h2 id="5">Problem 5</h2><pre class="codeinput">clear;
+syms <span class="string">xbar</span> <span class="string">x</span>
+L = 144;
+h = L/2;
+E = 30e6;
+b = 3;
+c = 2;
+I = b*(2*c)^3/12;
+EI = E*I;
+q0 = 50;
+
+phi(1) = 1 - 3.*(xbar/h).^2 + 2.*(xbar/h).^2;
+phi(2) = -xbar.*(1-xbar/h).^2;
+phi(3) = 3.*(xbar/h).^2 - 2.*(xbar/h).^3;
+phi(4) = -xbar.*((xbar/h).^2 - (xbar/h));
+
+q1 = zeros(4,1);
+q2 = zeros(4,1);
+<span class="keyword">for</span> ii = 1:4
+    q1(ii) = int(q0*phi(ii),xbar,0,h);
+    q2(ii) = int(q0*phi(ii),xbar,0,h);
+<span class="keyword">end</span>
+q = [q1(1); q1(2); q1(3) + q2(1); q1(4) + q2(2); q2(3); q2(4)];
+
+k = @(ii,jj) int(EI*diff(diff(phi(ii)))*diff(diff(phi(jj))),xbar,0,h);
+K1 = zeros(4);
+K2 = zeros(4);
+<span class="keyword">for</span> ii = 1:4
+    <span class="keyword">for</span> jj = 1:4
+        K1(ii,jj) = k(ii,jj);
+        K2(ii,jj) = k(ii,jj);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+Kg = zeros(6);
+<span class="keyword">for</span> ii = 1:4
+    <span class="keyword">for</span> jj = 1:4
+        Kg(ii,jj) = K1(ii,jj);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> ii = 1:4
+    <span class="keyword">for</span> jj = 1:4
+        Kg(ii+2,jj+2) = Kg(ii+2,jj+2) + K2(ii,jj);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+Qtop = Kg(1:3,1:3)*[0;0;0]-q(1:3);
+Q = [Qtop; 0; 0; 0];
+DELbot = inv(Kg(4:6,4:6))*(q(1:3)+Q(4:6));
+DEL = [0;0;0;DELbot];
+
+w1 = 0;
+w2 = 0;
+<span class="keyword">for</span> ii = 1:4
+    w1 = w1 + DEL(ii).*phi(ii);
+    w2 = w2 + DEL(ii+2).*phi(ii);
+<span class="keyword">end</span>
+w1 = simplify(w1);
+w2 = simplify(w2);
+M1 = EI*diff(diff(w1));
+M2 = EI*diff(diff(w2));
+sigma1 = M1*c/I;
+sigma2 = M2*c/I;
+fprintf(<span class="string">"\nProblem5\n"</span>)
+fprintf(<span class="string">"Q_equil force at left: %f lb\n"</span>, Q(1))
+fprintf(<span class="string">"Q_equil moment at left: %f in*lb\n"</span>, Q(2))
+fprintf(<span class="string">"Q_equil force at right: %f lb\n"</span>, Q(5))
+fprintf(<span class="string">"Q_equil moment at right: %f in*lb\n"</span>, Q(6))
+Qdef(1) = subs(diff(M1),xbar,0);
+Qdef(2) = subs(M1,xbar,0);
+Qdef(3) = -subs(diff(M2),xbar,L/2);
+Qdef(4) = -subs(M2,xbar,L/2);
+fprintf(<span class="string">"Q_def force at left: %f lb\n"</span>, Qdef(1))
+fprintf(<span class="string">"Q_def moment at left: %f in*lb\n"</span>, Qdef(2))
+fprintf(<span class="string">"Q_def force at right: %f lb\n"</span>, Qdef(3))
+fprintf(<span class="string">"Q_def moment at right: %f in*lb\n"</span>, Qdef(4))
+
+xvec1 = linspace(0,L/2);
+xvec2 = linspace(L/2,L);
+figure
+hold <span class="string">on</span>
+title(<span class="string">"Problem 5 w(x)"</span>)
+plot(xvec1, subs(w1, xbar, xvec1))
+plot(xvec2, subs(w2, xbar, xvec2-L/2))
+xlabel(<span class="string">"x (in)"</span>)
+ylabel(<span class="string">"Vertical displacement (in)"</span>)
+hold <span class="string">off</span>
+figure
+hold <span class="string">on</span>
+title(<span class="string">"Problem 5 \sigma(x)"</span>)
+plot(xvec1, subs(sigma1, xbar, xvec1))
+plot(xvec2, subs(sigma2, xbar, xvec2-L/2))
+xlabel(<span class="string">"x (in)"</span>)
+ylabel(<span class="string">"Bending Stress (psi)"</span>)
+hold <span class="string">off</span>
+
+fprintf(<span class="string">"vertical dispalacement for 0&lt;=x&lt;=L/2 is w(x)=%s\n"</span>, subs(w1,xbar,x))
+fprintf(<span class="string">"vertical dispalacement for L/2&lt;=x&lt;=L is w(x)=%s\n"</span>, simplify(subs(w2,xbar,x-L/2)))
+fprintf(<span class="string">"bending stress for 0&lt;=x&lt;=L/2 is sigma(x)=%s\n"</span>, subs(sigma1,xbar,x))
+fprintf(<span class="string">"bending stress for L/2&lt;=x&lt;=L is sigma(x)=%s\n"</span>, simplify(subs(sigma2,xbar,x-L/2)))
+</pre><pre class="codeoutput">
+Problem5
+Q_equil force at left: -2400.000000 lb
+Q_equil moment at left: 21600.000000 in*lb
+Q_equil force at right: 0.000000 lb
+Q_equil moment at right: 0.000000 in*lb
+Q_def force at left: -32537.500000 lb
+Q_def moment at left: 780900.000000 in*lb
+Q_def force at right: -21600.000000 lb
+Q_def moment at right: 4200.000000 in*lb
+vertical dispalacement for 0&lt;=x&lt;=L/2 is w(x)=-(1406744379605447*x^2*(x - 72))/124515522497539473408
+vertical dispalacement for L/2&lt;=x&lt;=L is w(x)=((x - 72)*(15758995816094758739*x^2 - 5682431241353511222624*x + 204378416738933075165952))/2101199442145978613760000
+bending stress for 0&lt;=x&lt;=L/2 is sigma(x)=109901904656675546875/1125899906842624 - (109901904656675546875*x)/27021597764222976
+bending stress for L/2&lt;=x&lt;=L is sigma(x)=(1969874477011844842375*x)/729583139634020352 - 1315022943694508844875/3377699720527872
+</pre><img vspace="5" hspace="5" src="hw4_722_01.png" alt=""> <img vspace="5" hspace="5" src="hw4_722_02.png" alt=""> <h2 id="6">Problem 6</h2><pre class="codeinput">clear;
+syms <span class="string">xbar</span> <span class="string">x</span>
+L = 144;
+h = L/2;
+E = 30e6;
+b = 3;
+c = 2;
+I = b*(2*c)^3/12;
+EI = E*I;
+
+q0 = 50;
+Ks = 2000;
+M0 = 10000;
+F0 = 2000;
+
+phi(1) = 1 - 3.*(xbar/h).^2 + 2.*(xbar/h).^2;
+phi(2) = -xbar.*(1-xbar/h).^2;
+phi(3) = 3.*(xbar/h).^2 - 2.*(xbar/h).^3;
+phi(4) = -xbar.*((xbar/h).^2 - (xbar/h));
+
+q1 = zeros(4,1);
+q2 = zeros(4,1);
+<span class="keyword">for</span> ii = 1:4
+    q1(ii) = int(q0*phi(ii),xbar,0,h);
+    q2(ii) = 0;
+<span class="keyword">end</span>
+q = [q1(1); q1(2); q1(3) + q2(1); q1(4) + q2(2); q2(3); q2(4)];
+
+k = @(ii,jj) int(EI*diff(diff(phi(ii)))*diff(diff(phi(jj))),xbar,0,h);
+K1 = zeros(4);
+K2 = zeros(4);
+<span class="keyword">for</span> ii = 1:4
+    <span class="keyword">for</span> jj = 1:4
+        K1(ii,jj) = k(ii,jj);
+        K2(ii,jj) = k(ii,jj);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+K2(3,3) = K2(3,3) + Ks;
+Kg = zeros(6);
+<span class="keyword">for</span> ii = 1:4
+    <span class="keyword">for</span> jj = 1:4
+        Kg(ii,jj) = K1(ii,jj);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> ii = 1:4
+    <span class="keyword">for</span> jj = 1:4
+        Kg(ii+2,jj+2) = Kg(ii+2,jj+2) + K2(ii,jj);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+Qtop = Kg(1:3,1:3)*[0;0;0]-q(1:3);
+Q = [Qtop; -M0; F0; 0];
+DELbot = inv(Kg(4:6,4:6))*(q(1:3)+Q(4:6));
+DEL = [0;0;0;DELbot];
+Q(5) = Q(5) - Ks*DEL(5);
+
+w1 = 0;
+w2 = 0;
+<span class="keyword">for</span> ii = 1:4
+    w1 = w1 + DEL(ii).*phi(ii);
+    w2 = w2 + DEL(ii+2).*phi(ii);
+<span class="keyword">end</span>
+w1 = simplify(w1);
+w2 = simplify(w2);
+M1 = EI*diff(diff(w1));
+M2 = EI*diff(diff(w2));
+sigma1 = M1*c/I;
+sigma2 = M2*c/I;
+fprintf(<span class="string">"\nProblem 6\n"</span>)
+fprintf(<span class="string">"Q_equil force at left: %f lb\n"</span>, Q(1))
+fprintf(<span class="string">"Q_equil moment at left: %f in*lb\n"</span>, Q(2))
+fprintf(<span class="string">"Q_equil force at right: %f lb\n"</span>, Q(5))
+fprintf(<span class="string">"Q_equil moment at right: %f in*lb\n"</span>, Q(6))
+Qdef(1) = subs(diff(M1),xbar,0);
+Qdef(2) = subs(M1,xbar,0);
+Qdef(3) = -subs(diff(M2),xbar,L/2);
+Qdef(4) = -subs(M2,xbar,L/2);
+fprintf(<span class="string">"Q_def force at left: %f lb\n"</span>, Qdef(1))
+fprintf(<span class="string">"Q_def moment at left: %f in*lb\n"</span>, Qdef(2))
+fprintf(<span class="string">"Q_def force at right: %f lb\n"</span>, Qdef(3))
+fprintf(<span class="string">"Q_def moment at right: %f in*lb\n"</span>, Qdef(4))
+
+xvec1 = linspace(0,L/2);
+xvec2 = linspace(L/2,L);
+figure
+hold <span class="string">on</span>
+plot(xvec1, subs(w1, xbar, xvec1))
+plot(xvec2, subs(w2, xbar, xvec2-L/2))
+title(<span class="string">"Problem 6 w(x)"</span>)
+xlabel(<span class="string">"x (in)"</span>)
+ylabel(<span class="string">"Vertical displacement (in)"</span>)
+hold <span class="string">off</span>
+figure
+hold <span class="string">on</span>
+plot(xvec1, subs(sigma1, xbar, xvec1))
+plot(xvec2, subs(sigma2, xbar, xvec2-L/2))
+title(<span class="string">"Problem 6 \sigma(x)"</span>)
+xlabel(<span class="string">"x (in)"</span>)
+ylabel(<span class="string">"Bending Stress (psi)"</span>)
+hold <span class="string">off</span>
+
+fprintf(<span class="string">"vertical dispalacement for 0&lt;=x&lt;=L/2 is w(x)=%s\n"</span>, subs(w1,xbar,x))
+fprintf(<span class="string">"vertical dispalacement for L/2&lt;=x&lt;=L is w(x)=%s\n"</span>, simplify(subs(w2,xbar,x-L/2)))
+fprintf(<span class="string">"bending stress for 0&lt;=x&lt;=L/2 is sigma(x)=%s\n"</span>, subs(sigma1,xbar,x))
+fprintf(<span class="string">"bending stress for L/2&lt;=x&lt;=L is sigma(x)=%s\n"</span>, simplify(subs(sigma2,xbar,x-L/2)))
+</pre><pre class="codeoutput">
+Problem 6
+Q_equil force at left: -2400.000000 lb
+Q_equil moment at left: 21600.000000 in*lb
+Q_equil force at right: 11316.925336 lb
+Q_equil moment at right: 0.000000 in*lb
+Q_def force at left: -15303.778663 lb
+Q_def moment at left: 367290.687919 in*lb
+Q_def force at right: -10283.074664 lb
+Q_def moment at right: 1800.000000 in*lb
+vertical dispalacement for 0&lt;=x&lt;=L/2 is w(x)=-(294067592044577*x^2*(x - 72))/55340232221128654848
+vertical dispalacement for L/2&lt;=x&lt;=L is w(x)=((x - 72)*(48015090552099481*x^2 - 17310646992061559232*x + 627015879496690373376))/13447676429734263128064
+bending stress for 0&lt;=x&lt;=L/2 is sigma(x)=206766275656343203125/4503599627370496 - (68922091885447734375*x)/36028797018963968
+bending stress for L/2&lt;=x&lt;=L is sigma(x)=(3751178949382771953125*x)/2918332558536081408 - 2503825896003655703125/13510798882111488
+</pre><img vspace="5" hspace="5" src="hw4_722_03.png" alt=""> <img vspace="5" hspace="5" src="hw4_722_04.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Problem 1
+clear; close all; clc;
+syms x1 x h del1 del2 del3 del4 del5 del6 phi;
+xmatrix = [ 1, x1, x1^2, x1^3, x1^4, x1^5;
+            0, 1, 2*x1, 3*x1^2, 4*x1^3, 5*x1^4;
+            0, 0, 2, 6*x1, 12*x1^2, 20*x1^3;
+            1, x1+h, (x1+h)^2, (x1+h)^3, (x1+h)^4, (x1+h)^5;
+            0, 1, 2*(x1+h), 3*(x1+h)^2, 4*(x1+h)^3, 5*(x1+h)^4;
+            0, 0, 2, 6*(x1+h), 12*(x1+h)^2, 20*(x1+h)^3];
+delvec = [del1;del2;del3;del4;del5;del6];
+cvec = inv(xmatrix)*delvec;
+wcluttered = cvec(1) + cvec(2)*x + cvec(3)*x^2 + cvec(4)*x^3 + cvec(5)*x^4 + cvec(6)*x^5;
+w = collect(wcluttered, [del1, del2, del3, del4, del5, del6]);
+phi1 = simplify(solve( del1*phi == subs(w,[del2, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi2 = simplify(solve( del2*phi == subs(w,[del1, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi3 = simplify(solve( del3*phi == subs(w,[del1, del2, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi4 = simplify(solve( del4*phi == subs(w,[del1, del2, del3, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi5 = simplify(solve( del5*phi == subs(w,[del1, del2, del3, del4, del6, x1], [0 0 0 0 0 0]),phi));
+phi6 = simplify(solve( del6*phi == subs(w,[del1, del2, del3, del4, del5, x1], [0 0 0 0 0 0]),phi));
+fprintf("Problem 1 \n")
+fprintf("phi1 = %s \n",phi1)
+fprintf("phi2 = %s \n",phi2)
+fprintf("phi3 = %s \n",phi3)
+fprintf("phi4 = %s \n",phi4)
+fprintf("phi5 = %s \n",phi5)
+fprintf("phi6 = %s \n",phi6)
+fprintf("phi1, phi2, phi3 are for node 1\n")
+
+%% Problem 2
+clear;
+syms x1 x h del1 del2 del3 del4 del5 del6 phi;
+xmatrix = [ 1, x1, x1^2, x1^3, x1^4, x1^5;
+            0, -1, -2*x1, -3*x1^2, -4*x1^3, -5*x1^4;
+            1, (x1+h/2), (x1+h/2)^2, (x1+h/2)^3, (x1+h/2)^4, (x1+h/2)^5;
+            0, -1, -2*(x1+h/2), -3*(x1+h/2)^2, -4*(x1+h/2)^3, -5*(x1+h/2)^4;
+            1, (x1+h), (x1+h)^2, (x1+h)^3, (x1+h)^4, (x1+h)^5;
+            0, -1, -2*(x1+h), -3*(x1+h)^2, -4*(x1+h)^3, -5*(x1+h)^4];
+delvec = [del1;del2;del3;del4;del5;del6];
+cvec = inv(xmatrix)*delvec;
+wcluttered = cvec(1) + cvec(2)*x + cvec(3)*x^2 + cvec(4)*x^3 + cvec(5)*x^4 + cvec(6)*x^5;
+w = collect(wcluttered, [del1, del2, del3, del4, del5, del6]);
+phi1 = simplify(solve( del1*phi == subs(w,[del2, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi2 = simplify(solve( del2*phi == subs(w,[del1, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi3 = simplify(solve( del3*phi == subs(w,[del1, del2, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi4 = simplify(solve( del4*phi == subs(w,[del1, del2, del3, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi5 = simplify(solve( del5*phi == subs(w,[del1, del2, del3, del4, del6, x1], [0 0 0 0 0 0]),phi));
+phi6 = simplify(solve( del6*phi == subs(w,[del1, del2, del3, del4, del5, x1], [0 0 0 0 0 0]),phi));
+fprintf("\nProblem 2 \n")
+fprintf("phi1 = %s \n",phi1)
+fprintf("phi2 = %s \n",phi2)
+fprintf("phi3 = %s \n",phi3)
+fprintf("phi4 = %s \n",phi4)
+fprintf("phi5 = %s \n",phi5)
+fprintf("phi6 = %s \n",phi6)
+fprintf("phi1, phi2 are for node 1\n")
+
+
+%% Problem 3
+clear;
+syms x1 x h del1 del2 del3 del4 del5 del6 phi q1 q2;
+xmatrix = [ 1, x1, x1^2, x1^3, x1^4, x1^5;
+            0, 1, 2*x1, 3*x1^2, 4*x1^3, 5*x1^4;
+            0, 0, 2, 6*x1, 12*x1^2, 20*x1^3;
+            1, x1+h, (x1+h)^2, (x1+h)^3, (x1+h)^4, (x1+h)^5;
+            0, 1, 2*(x1+h), 3*(x1+h)^2, 4*(x1+h)^3, 5*(x1+h)^4;
+            0, 0, 2, 6*(x1+h), 12*(x1+h)^2, 20*(x1+h)^3];
+delvec = [del1;del2;del3;del4;del5;del6];
+cvec = inv(xmatrix)*delvec;
+wcluttered = cvec(1) + cvec(2)*x + cvec(3)*x^2 + cvec(4)*x^3 + cvec(5)*x^4 + cvec(6)*x^5;
+w = collect(wcluttered, [del1, del2, del3, del4, del5, del6]);
+phi1 = simplify(solve( del1*phi == subs(w,[del2, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi2 = simplify(solve( del2*phi == subs(w,[del1, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi3 = simplify(solve( del3*phi == subs(w,[del1, del2, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi4 = simplify(solve( del4*phi == subs(w,[del1, del2, del3, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi5 = simplify(solve( del5*phi == subs(w,[del1, del2, del3, del4, del6, x1], [0 0 0 0 0 0]),phi));
+phi6 = simplify(solve( del6*phi == subs(w,[del1, del2, del3, del4, del5, x1], [0 0 0 0 0 0]),phi));
+fprintf("\nProblem 3 \n")
+fprintf("phi1 = %s \n",phi1)
+fprintf("phi2 = %s \n",phi2)
+fprintf("phi3 = %s \n",phi3)
+fprintf("phi4 = %s \n",phi4)
+fprintf("phi5 = %s \n",phi5)
+fprintf("phi6 = %s \n",phi6)
+q = [   int(((q1+x*(q2-q1)/h)*phi1),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi2),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi3),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi4),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi5),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi6),x,0,h)];
+for ii = 1:6
+    fprintf("q_%i = %s \n",ii, q(ii))
+end
+fprintf("q_1, q_2, q_3 are the components of the source vector for node 1\n")
+
+%% Problem 4
+clear;
+syms x1 x h del1 del2 del3 del4 del5 del6 phi q1 q2;
+xmatrix = [ 1, x1, x1^2, x1^3, x1^4, x1^5;
+            0, -1, -2*x1, -3*x1^2, -4*x1^3, -5*x1^4;
+            1, (x1+h/2), (x1+h/2)^2, (x1+h/2)^3, (x1+h/2)^4, (x1+h/2)^5;
+            0, -1, -2*(x1+h/2), -3*(x1+h/2)^2, -4*(x1+h/2)^3, -5*(x1+h/2)^4;
+            1, (x1+h), (x1+h)^2, (x1+h)^3, (x1+h)^4, (x1+h)^5;
+            0, -1, -2*(x1+h), -3*(x1+h)^2, -4*(x1+h)^3, -5*(x1+h)^4];
+delvec = [del1;del2;del3;del4;del5;del6];
+cvec = inv(xmatrix)*delvec;
+wcluttered = cvec(1) + cvec(2)*x + cvec(3)*x^2 + cvec(4)*x^3 + cvec(5)*x^4 + cvec(6)*x^5;
+w = collect(wcluttered, [del1, del2, del3, del4, del5, del6]);
+phi1 = simplify(solve( del1*phi == subs(w,[del2, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi2 = simplify(solve( del2*phi == subs(w,[del1, del3, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi3 = simplify(solve( del3*phi == subs(w,[del1, del2, del4, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi4 = simplify(solve( del4*phi == subs(w,[del1, del2, del3, del5, del6, x1], [0 0 0 0 0 0]),phi));
+phi5 = simplify(solve( del5*phi == subs(w,[del1, del2, del3, del4, del6, x1], [0 0 0 0 0 0]),phi));
+phi6 = simplify(solve( del6*phi == subs(w,[del1, del2, del3, del4, del5, x1], [0 0 0 0 0 0]),phi));
+fprintf("\nProblem 4 \n")
+fprintf("phi1 = %s \n",phi1)
+fprintf("phi2 = %s \n",phi2)
+fprintf("phi3 = %s \n",phi3)
+fprintf("phi4 = %s \n",phi4)
+fprintf("phi5 = %s \n",phi5)
+fprintf("phi6 = %s \n",phi6)
+q = [   int(((q1+x*(q2-q1)/h)*phi1),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi2),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi3),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi4),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi5),x,0,h);
+        int(((q1+x*(q2-q1)/h)*phi6),x,0,h)];
+for ii = 1:6
+    fprintf("q_%i = %s \n",ii, q(ii))
+end
+fprintf("The source vector components for node 1 are q_1 and q_2\n")
+fprintf("The source vector components for node 2 are q_3 and q_4\n")
+fprintf("The source vector components for node 1 are q_5 and q_6\n")
+
+%% Problem 5
+clear;
+syms xbar x
+L = 144;
+h = L/2;
+E = 30e6;
+b = 3;
+c = 2;
+I = b*(2*c)^3/12;
+EI = E*I;
+q0 = 50;
+
+phi(1) = 1 - 3.*(xbar/h).^2 + 2.*(xbar/h).^2;
+phi(2) = -xbar.*(1-xbar/h).^2;
+phi(3) = 3.*(xbar/h).^2 - 2.*(xbar/h).^3;
+phi(4) = -xbar.*((xbar/h).^2 - (xbar/h));
+
+q1 = zeros(4,1);
+q2 = zeros(4,1);
+for ii = 1:4
+    q1(ii) = int(q0*phi(ii),xbar,0,h);
+    q2(ii) = int(q0*phi(ii),xbar,0,h);
+end
+q = [q1(1); q1(2); q1(3) + q2(1); q1(4) + q2(2); q2(3); q2(4)];
+
+k = @(ii,jj) int(EI*diff(diff(phi(ii)))*diff(diff(phi(jj))),xbar,0,h);
+K1 = zeros(4);
+K2 = zeros(4);
+for ii = 1:4
+    for jj = 1:4
+        K1(ii,jj) = k(ii,jj);
+        K2(ii,jj) = k(ii,jj);
+    end
+end
+Kg = zeros(6);
+for ii = 1:4
+    for jj = 1:4
+        Kg(ii,jj) = K1(ii,jj);
+    end
+end
+
+for ii = 1:4
+    for jj = 1:4
+        Kg(ii+2,jj+2) = Kg(ii+2,jj+2) + K2(ii,jj);
+    end
+end
+
+Qtop = Kg(1:3,1:3)*[0;0;0]-q(1:3);
+Q = [Qtop; 0; 0; 0];
+DELbot = inv(Kg(4:6,4:6))*(q(1:3)+Q(4:6));
+DEL = [0;0;0;DELbot];
+
+w1 = 0;
+w2 = 0;
+for ii = 1:4
+    w1 = w1 + DEL(ii).*phi(ii);
+    w2 = w2 + DEL(ii+2).*phi(ii);
+end
+w1 = simplify(w1);
+w2 = simplify(w2);
+M1 = EI*diff(diff(w1));
+M2 = EI*diff(diff(w2));
+sigma1 = M1*c/I;
+sigma2 = M2*c/I;
+fprintf("\nProblem5\n")
+fprintf("Q_equil force at left: %f lb\n", Q(1))
+fprintf("Q_equil moment at left: %f in*lb\n", Q(2))
+fprintf("Q_equil force at right: %f lb\n", Q(5))
+fprintf("Q_equil moment at right: %f in*lb\n", Q(6))
+Qdef(1) = subs(diff(M1),xbar,0);
+Qdef(2) = subs(M1,xbar,0);
+Qdef(3) = -subs(diff(M2),xbar,L/2);
+Qdef(4) = -subs(M2,xbar,L/2);
+fprintf("Q_def force at left: %f lb\n", Qdef(1))
+fprintf("Q_def moment at left: %f in*lb\n", Qdef(2))
+fprintf("Q_def force at right: %f lb\n", Qdef(3))
+fprintf("Q_def moment at right: %f in*lb\n", Qdef(4))
+
+xvec1 = linspace(0,L/2);
+xvec2 = linspace(L/2,L);
+figure
+hold on
+title("Problem 5 w(x)")
+plot(xvec1, subs(w1, xbar, xvec1))
+plot(xvec2, subs(w2, xbar, xvec2-L/2))
+xlabel("x (in)")
+ylabel("Vertical displacement (in)")
+hold off
+figure
+hold on
+title("Problem 5 \sigma(x)")
+plot(xvec1, subs(sigma1, xbar, xvec1))
+plot(xvec2, subs(sigma2, xbar, xvec2-L/2))
+xlabel("x (in)")
+ylabel("Bending Stress (psi)")
+hold off
+
+fprintf("vertical dispalacement for 0<=x<=L/2 is w(x)=%s\n", subs(w1,xbar,x))
+fprintf("vertical dispalacement for L/2<=x<=L is w(x)=%s\n", simplify(subs(w2,xbar,x-L/2)))
+fprintf("bending stress for 0<=x<=L/2 is sigma(x)=%s\n", subs(sigma1,xbar,x))
+fprintf("bending stress for L/2<=x<=L is sigma(x)=%s\n", simplify(subs(sigma2,xbar,x-L/2)))
+%% Problem 6
+clear;
+syms xbar x
+L = 144;
+h = L/2;
+E = 30e6;
+b = 3;
+c = 2;
+I = b*(2*c)^3/12;
+EI = E*I;
+
+q0 = 50;
+Ks = 2000;
+M0 = 10000;
+F0 = 2000;
+
+phi(1) = 1 - 3.*(xbar/h).^2 + 2.*(xbar/h).^2;
+phi(2) = -xbar.*(1-xbar/h).^2;
+phi(3) = 3.*(xbar/h).^2 - 2.*(xbar/h).^3;
+phi(4) = -xbar.*((xbar/h).^2 - (xbar/h));
+
+q1 = zeros(4,1);
+q2 = zeros(4,1);
+for ii = 1:4
+    q1(ii) = int(q0*phi(ii),xbar,0,h);
+    q2(ii) = 0;
+end
+q = [q1(1); q1(2); q1(3) + q2(1); q1(4) + q2(2); q2(3); q2(4)];
+
+k = @(ii,jj) int(EI*diff(diff(phi(ii)))*diff(diff(phi(jj))),xbar,0,h);
+K1 = zeros(4);
+K2 = zeros(4);
+for ii = 1:4
+    for jj = 1:4
+        K1(ii,jj) = k(ii,jj);
+        K2(ii,jj) = k(ii,jj);
+    end
+end
+K2(3,3) = K2(3,3) + Ks;
+Kg = zeros(6);
+for ii = 1:4
+    for jj = 1:4
+        Kg(ii,jj) = K1(ii,jj);
+    end
+end
+
+for ii = 1:4
+    for jj = 1:4
+        Kg(ii+2,jj+2) = Kg(ii+2,jj+2) + K2(ii,jj);
+    end
+end
+
+Qtop = Kg(1:3,1:3)*[0;0;0]-q(1:3);
+Q = [Qtop; -M0; F0; 0];
+DELbot = inv(Kg(4:6,4:6))*(q(1:3)+Q(4:6));
+DEL = [0;0;0;DELbot];
+Q(5) = Q(5) - Ks*DEL(5);
+
+w1 = 0;
+w2 = 0;
+for ii = 1:4
+    w1 = w1 + DEL(ii).*phi(ii);
+    w2 = w2 + DEL(ii+2).*phi(ii);
+end
+w1 = simplify(w1);
+w2 = simplify(w2);
+M1 = EI*diff(diff(w1));
+M2 = EI*diff(diff(w2));
+sigma1 = M1*c/I;
+sigma2 = M2*c/I;
+fprintf("\nProblem 6\n")
+fprintf("Q_equil force at left: %f lb\n", Q(1))
+fprintf("Q_equil moment at left: %f in*lb\n", Q(2))
+fprintf("Q_equil force at right: %f lb\n", Q(5))
+fprintf("Q_equil moment at right: %f in*lb\n", Q(6))
+Qdef(1) = subs(diff(M1),xbar,0);
+Qdef(2) = subs(M1,xbar,0);
+Qdef(3) = -subs(diff(M2),xbar,L/2);
+Qdef(4) = -subs(M2,xbar,L/2);
+fprintf("Q_def force at left: %f lb\n", Qdef(1))
+fprintf("Q_def moment at left: %f in*lb\n", Qdef(2))
+fprintf("Q_def force at right: %f lb\n", Qdef(3))
+fprintf("Q_def moment at right: %f in*lb\n", Qdef(4))
+
+xvec1 = linspace(0,L/2);
+xvec2 = linspace(L/2,L);
+figure
+hold on
+plot(xvec1, subs(w1, xbar, xvec1))
+plot(xvec2, subs(w2, xbar, xvec2-L/2))
+title("Problem 6 w(x)")
+xlabel("x (in)")
+ylabel("Vertical displacement (in)")
+hold off
+figure
+hold on
+plot(xvec1, subs(sigma1, xbar, xvec1))
+plot(xvec2, subs(sigma2, xbar, xvec2-L/2))
+title("Problem 6 \sigma(x)")
+xlabel("x (in)")
+ylabel("Bending Stress (psi)")
+hold off
+
+fprintf("vertical dispalacement for 0<=x<=L/2 is w(x)=%s\n", subs(w1,xbar,x))
+fprintf("vertical dispalacement for L/2<=x<=L is w(x)=%s\n", simplify(subs(w2,xbar,x-L/2)))
+fprintf("bending stress for 0<=x<=L/2 is sigma(x)=%s\n", subs(sigma1,xbar,x))
+fprintf("bending stress for L/2<=x<=L is sigma(x)=%s\n", simplify(subs(sigma2,xbar,x-L/2)))
+
+##### SOURCE END #####
+--></body></html>

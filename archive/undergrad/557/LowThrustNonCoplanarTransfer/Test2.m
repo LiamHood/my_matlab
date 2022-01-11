@@ -1,0 +1,853 @@
+% ltot.m            October 22, 2013
+
+% low-thrust orbit transfer between non-coplanar circular orbits
+
+% integrated solution with Edelbaum yaw steering
+
+% Orbital Mechanics with MATLAB
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+clear all;
+clf( figure(10) ) ;
+
+global req mu dtr rtd rkcoef beta0
+
+global v1 tdflag thracc
+
+% initialize rkf78 method
+
+rkcoef = 1;
+
+% Rotation Formulas
+RotMat = @(u,ang) [ cos(ang) + u(1)^2*(1-cos(ang)) , u(1)*u(2)*(1-cos(ang)) - u(3)*sin(ang) , u(1)*u(3)*(1-cos(ang)) + u(2)*sin(ang) ; ...
+                    u(2)*u(1)*(1-cos(ang)) + u(3)*sin(ang) , cos(ang) + u(2)^2*(1-cos(ang)) , u(2)*u(3)*(1-cos(ang)) - u(1)*sin(ang) ; ...
+                    u(3)*u(1)*(1-cos(ang)) - u(2)*sin(ang) , u(3)*u(2)*(1-cos(ang)) + u(1)*sin(ang) , cos(ang) + u(3)^2*(1-cos(ang)) ] ;
+
+Rotx = @(ang) [1 0 0; 0 cos(ang) -sin(ang); 0 sin(ang) cos(ang)] ;
+Roty = @(ang) [cos(ang) 0 sin(ang); 0 1 0; -sin(ang) 0 cos(ang)] ;
+Rotz = @(ang) [cos(ang) -sin(ang) 0; sin(ang) cos(ang) 0; 0 0 1] ;
+AxisRot = @(R,ang) [ R(3,2)-R(2,3) ; R(1,3)-R(3,1) ; R(2,1)-R(1,2) ]/(2*sin(ang)) ;
+AngRot = @(R) acos( ( trace(R) - 1 )/2 ) ;
+
+
+%%%%%%%%%%%%%%%%%%%%%% request inputs %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+clc; home;
+
+% read astrodynamic constants and conversion factors
+% while (1)
+% 
+%     fprintf('\n\nplease input the central body ("Earth","Luna")\n');
+% 
+%     cb = input('? ');
+% 
+%     if isempty( cb )
+%     else
+%         break;
+%     end
+% 
+% end
+cb = "Luna" ;
+if contains( cb , "Earth" )
+    om_constants;
+elseif contains( cb , "Luna" )
+    om_constants_moon;
+end
+%     
+% 
+% while (1)
+% 
+%     fprintf('\n\nplease input the initial semi-major axis (kilometers)\n');
+% 
+%     alt1 = input('? ');
+% 
+%     if (alt1 > 0.0)
+%         break;
+%     end
+% 
+% end
+alt1 = 8000 ;
+% while (1)
+% 
+%     fprintf('\nplease input the final semi-major axis (kilometers)\n');
+% 
+%     alt2 = input('? ');
+% 
+%     if (alt2 > 0.0)
+%         break;
+%     end
+% 
+% end
+alt2 = 8000 ;
+% while (1)
+% 
+%     fprintf('\nplease input the initial orbital inclination (degrees)');
+%     fprintf('\n(0 <= inclination <= 180)\n');
+% 
+%     inc1 = input('? ');
+% 
+%     if (inc1 >= 0.0 && inc1 <= 180.0)
+%         break;
+%     end
+% 
+% end
+inc1 = 45 ;
+% while (1)
+% 
+%     fprintf('\nplease input the final orbital inclination (degrees)');
+%     fprintf('\n(0 <= inclination <= 180)\n');
+% 
+%     inc2 = input('? ');
+% 
+%     if (inc2 >= 0.0 && inc2 <= 180.0)
+%         break;
+%     end
+% 
+% end
+inc2 = 55 ;
+% while (1)
+% 
+%     fprintf('\nplease input the initial RAAN (degrees)');
+%     fprintf('\n(0 <= RAAN <= 360)\n');
+% 
+%     raan0 = input('? ');
+% 
+%     if (raan0 >= 0.0 && raan0 <= 360.0)
+%         break;
+%     end
+% 
+% end
+raan0 = 40 ;
+% while (1)
+% 
+%     fprintf('\nplease input the final RAAN (degrees)');
+%     fprintf('\n(0 <= RAAN <= 360)\n');
+% 
+%     raanf = input('? ');
+% 
+%     if (raanf >= 0.0 && raanf <= 360.0)
+%         break;
+%     end
+% 
+% end
+raanf = 30 ;
+% while (1)
+% 
+%     fprintf('\nplease input the thrust (Newtons)\n');
+% 
+%     thrust = input('? ');
+% 
+%     if (thrust > 0)
+%         break;
+%     end
+% 
+% end
+thrust = 0.014 ;
+% while (1)
+% 
+%     fprintf('\nplease input the Isp (s)\n');
+% 
+%     Isp = input('? ');
+% 
+%     if (Isp > 0)
+%         break;
+%     end
+% 
+% end
+Isp = 1100 ;
+% while (1)
+% 
+%     fprintf('\nplease input the mass (kg)\n');
+% 
+%     massi = input('? ');
+% 
+%     if (massi > 0)
+%         break;
+%     end
+% 
+% end
+massi = 180 ;
+
+tacc = thrust/massi ;
+% convert thrust acceleration to km/sec^2
+
+thracc = tacc / 1000.0;
+
+% convert inclinations to radians
+
+inc1 = inc1 * dtr;
+
+inc2 = inc2 * dtr;
+
+raan0 = raan0 * dtr ;
+raanf = raanf * dtr ;
+
+dinct = inc2 - inc1 ;
+draan = raanf - raan0 ;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% solve the orbit transfer problem %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% calculate total plane change
+
+ba = acos( cos( inc1 )*cos( inc2 ) + sin( inc1 )*sin( inc2 )*cos( draan ) );
+uinter = acos( ( sin( inc2 )*cos( draan ) - cos( ba )*sin( inc1 ) )/( sin( ba )*cos( inc1 ) ) ) ;
+
+if sign(dinct) == 1
+    if sign(ba) == 1 
+        ba = -ba ;
+    end
+elseif sign(dinct) ~= 1
+    if sign(ba) == 1
+        ba = -ba ;
+    end
+end
+% check for coplanar orbits
+
+if (ba == 0)
+    
+    ba = 1.0e-8;
+    
+end
+
+% compute radii of initial and final orbits (kilometers)
+
+r1 = alt1 ;
+
+r2 = alt2 ;
+
+% compute "local circular velocity" of initial and final orbits
+
+v1 = sqrt(mu / r1);
+
+v2 = sqrt(mu / r2);
+
+% initial yaw angle
+
+beta0 = atan3(sin(0.5 * pi * ba), (v1/v2) - cos(0.5 * pi * ba));
+
+% delta-v
+
+dvt = v1 * cos(beta0) - v1 * sin(beta0) / tan(0.5 * pi * ba + beta0);
+
+% thrust duration
+
+tdur = dvt / thracc;
+
+thrdur_sec = tdur;
+
+if (tdur < 3600.0)
+    
+    % minutes
+    
+    tdflag = 1;
+    
+    tdur = tdur / 60.0;
+    
+elseif (tdur < 86400.0)
+    
+    % hours
+    
+    tdflag = 2;
+    
+    tdur = tdur / 3600.0;
+    
+else
+    
+    % days
+    
+    tdflag = 3;
+    
+    tdur = tdur / 86400.0;
+    
+end
+
+dtstep = tdur / 100.0;
+
+tsim = -dtstep;
+
+for i = 1:1:101
+    
+    tsim = tsim + dtstep;
+    
+    if (tdflag == 1)
+        
+        tsec = 60.0 * tsim;
+        
+    elseif (tdflag == 2)
+        
+        tsec = 3600.0 * tsim;
+        
+    else
+        
+        tsec = 86400.0 * tsim;
+        
+    end
+    
+    t(i) = tsim;
+    
+    beta(i) = rtd * atan3(v1 * sin(beta0), (v1 * cos(beta0) ...
+        - thracc * tsec));
+    
+%     tmp1 = atan((thracc * tsec - v1 * cos(beta0))/(v1 * sin(beta0)));
+%     
+%     dinc = rtd * (2/pi) * (tmp1 + 0.5 * pi - beta0);
+%     
+%     inc(i) = rtd * inc1 - dinc;
+    
+    v(i) = 1000.0 * sqrt(v1 * v1 - 2.0 * v1 * thracc * tsec * cos(beta0) ...
+        + thracc * thracc * tsec * tsec);
+    
+    sma(i) = 1.0e6 * mu / (v(i) * v(i));
+    
+end
+
+% print analytic results
+
+clc; home;
+
+fprintf('\n   Low-thrust Orbit Transfer Analysis \n\n');
+
+fprintf('initial orbit altitude      %10.4f kilometers \n', alt1);
+
+fprintf('initial orbit inclination   %10.4f degrees \n', inc1 * rtd);
+
+fprintf('initial RAAN                %10.4f degrees \n', raan0);
+
+fprintf('initial orbit velocity      %10.4f meters/second \n\n', 1000.0 * v1);
+
+fprintf('final orbit altitude        %10.4f kilometers \n', alt2);
+
+fprintf('final orbit inclination     %10.4f degrees \n', inc2 * rtd);
+
+fprintf('final RAAN                %10.4f degrees \n', raanf);
+
+fprintf('final orbit velocity        %10.4f meters/second \n\n', 1000.0 * v2);
+
+fprintf('total inclination change    %10.4f degrees\n', -rtd * dinct);
+
+fprintf('total delta-v               %10.4f meters/second \n', 1000.0 * dvt);
+
+if (tdflag == 1)
+    
+    fprintf('thrust duration             %10.4f minutes \n', tdur);
+    
+elseif (tdflag == 2)
+    
+    fprintf('thrust duration             %10.4f hours \n', tdur);
+    
+else
+    
+    fprintf('thrust duration             %10.4f days \n', tdur);
+    
+end
+
+fprintf('initial yaw angle           %10.4f degrees \n', rtd * beta0);
+
+fprintf('thrust acceleration         %10.6f meters/second^2 \n', tacc);
+
+fprintf('mass used                   %10.4f kg \n' , (thrust/(Isp*9.81))*thrdur_sec ) ;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% create integrated solution
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% initial semimajor axis (kilometers)
+
+oev_initial(1) = r1;
+
+% initial orbital eccentricity (nd)
+
+oev_initial(2) = 0.0;
+
+% initial orbital inclination (radians)
+
+oev_initial(3) = pi/4;
+
+% initial argument of periapsis (radians)
+
+oev_initial(4) = 0.0 * dtr;
+
+% initial RAAN (radians)
+
+oev_initial(5) = 0 ;
+
+% initial true anomaly (radians)
+
+oev_initial(6) = 0.0;
+
+% actual semimajor axis (kilometers)
+
+oev_act(1) = r1;
+
+% actual orbital eccentricity (nd)
+
+oev_act(2) = 0.0;
+
+% actual orbital inclination (radians)
+
+oev_act(3) = inc1;
+
+% actual argument of periapsis (radians)
+
+oev_act(4) = 0.0 * dtr;
+
+% actual RAAN (radians)
+
+oev_act(5) = raan0 ;
+
+% actual true anomaly (radians)
+
+oev_act(6) = 0.0;
+
+% convert user-defined classical orbital elements to eci state vector
+
+[reci_initial, veci_initial] = orb2eci(mu, oev_initial);
+
+[ract, vact] = orb2eci(mu, oev_act);
+RotF0 = Rotx(-pi/4) ;
+RotFinc = Rotx(inc1) ;
+RotFraan = Rotz(raan0) ;
+hv = cross(ract,vact)/norm(cross(ract,vact)) ;
+RotFu = RotMat(hv,uinter) ;
+RmatF = RotFu*RotFraan*RotFinc*RotF0 ;
+
+reci_disp_initial = RmatF*(reci_initial) ;
+veci_disp_initial = RmatF*(veci_initial) ;
+
+% convert eci state vector to modified equinoctial orbital elements
+
+mee_initial = eci2mee(mu, reci_initial, veci_initial);
+
+% data generation step size (seconds)
+
+deltat = 1800.0d0;
+
+% final simulation time (seconds)
+
+tfinal = thrdur_sec;
+
+% number of differential equations
+
+neq = 6;
+
+% truncation error tolerance
+
+tetol = 1.0d-12;
+
+tf = 0.0d0;
+
+nplot = 1;
+
+[reci, veci] = mee2eci(mu, mee_initial(1:6));
+
+oev_wrk = eci2orb1 (mu, reci_disp_initial , veci_disp_initial);
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% initial graphics data
+%%%%%%%%%%%%%%%%%%%%%%%
+
+% simulation time (seconds)
+
+xplot(nplot) = 0.0;
+
+% x position coordinate (kilometers)
+
+yplot1(nplot) = reci_disp_initial(1) / req;
+
+% y position coordinate (kilometers)
+
+yplot2(nplot) = reci_disp_initial(2) / req;
+
+% z position component (kilometers)
+
+yplot3(nplot) = reci_disp_initial(3) / req;
+
+% yaw angle (degrees)
+
+yplot4(nplot) = rtd * beta0;
+
+% semimajor axis (kilometers)
+
+yplot5(nplot) = oev_wrk(1);
+
+% orbital eccentricity (nd)
+
+yplot6(nplot) = oev_wrk(2);
+
+% orbital inclination (degrees)
+
+yplot7(nplot) = rtd * oev_wrk(3);
+
+% RAAN (degrees)
+
+yplot8(nplot) = rtd * oev_wrk(5);
+
+% integrate equations of motion and create data arrays
+
+while (1)
+    
+    h = 10.0d0;
+    
+    ti = tf;
+    
+    tf = ti + deltat;
+    
+    if (tf > tfinal)
+        
+        tf = tfinal;
+        
+    end
+    
+    mee_final = rkf78 ('meeeqm', neq, ti, tf, h, tetol, mee_initial);
+    
+    [reci, veci] = mee2eci(mu, mee_final(1:6));
+    oev_calc = eci2orb1 (mu, reci, veci);
+    % transformation
+    reci_tran = RmatF*(reci') ;
+    veci_tran = RmatF*(veci') ;
+    oev_wrk = eci2orb1 (mu, reci_tran, veci_tran);
+    
+    pmee = mee_final(1);
+    fmee = mee_final(2);
+    gmee = mee_final(3);
+    hmee = mee_final(4);
+    xkmee = mee_final(5);
+    xlmee = mee_final(6);
+    
+    % current yaw angle (radians)
+    
+    beta_tmp = atan3(v1 * sin(beta0), (v1 * cos(beta0) - thracc * tf));
+    
+    % current argument of latitude (radians)
+    
+    arglat = mod(oev_calc(4) + oev_calc(6) , 2.0 * pi);
+    
+    if (arglat >= 0.0 && arglat < 0.5 * pi)
+        
+        beta_wrk = -beta_tmp;
+        
+    end
+    
+    if (arglat > 0.5 * pi && arglat < pi)
+        
+        beta_wrk = beta_tmp;
+        
+    end
+    
+    if (arglat > pi && arglat < 1.5 * pi)
+        
+        beta_wrk = beta_tmp;
+        
+    end
+    
+    if (arglat > 1.5 * pi && arglat < 2.0 * pi)
+        
+        beta_wrk = -beta_tmp;
+        
+    end
+    
+    % load data arrays for plotting
+    
+    nplot = nplot + 1;
+    
+    % simulation time (seconds)
+    
+    xplot(nplot) = ti;
+    
+    % x position coordinate (Earth radii)
+    
+    yplot1(nplot) = reci_tran(1) / req;
+    
+    % y position coordinate (Earth radii)
+    
+    yplot2(nplot) = reci_tran(2) / req;
+    
+    % z position component (Earth radii)
+    
+    yplot3(nplot) = reci_tran(3) / req;
+    
+    % yaw angle (degrees)
+    
+    yplot4(nplot) = rtd * beta_wrk;
+    
+    % semimajor axis (kilometers)
+    
+    yplot5(nplot) = oev_wrk(1);
+    
+    % orbital eccentricity (nd)
+    
+    yplot6(nplot) = oev_wrk(2);
+    
+    % orbital inclination (degrees)
+    
+    yplot7(nplot) = rtd * oev_wrk(3);
+
+    % RAAN (degrees)
+    
+    yplot8(nplot) = rtd * oev_wrk(5);
+    
+    if (tf == tfinal)
+        
+        break
+        
+    end
+    
+    % reload integration vector
+    
+    mee_initial = mee_final;
+    
+end
+
+% print results
+
+fprintf('\nfinal classical orbital elements and state vector - integrated solution');
+fprintf('\n-----------------------------------------------------------------------\n');
+
+oeprint1(mu, oev_wrk, 2);
+
+[reci_final, veci_final] = orb2eci(mu, oev_wrk);
+
+svprint(reci_final, veci_final);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% display analytic solution graphics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+figure(1);
+
+plot(t, beta, 'LineWidth', 1.5);
+
+title('Low-thrust Orbit Transfer - analytic solution', 'FontSize', 16);
+
+if (tdflag == 1)
+    
+    xlabel('time since ignition (minutes)', 'FontSize', 12);
+    
+elseif (tdflag == 2)
+    
+    xlabel('time since ignition (hours)', 'FontSize', 12);
+    
+else
+    
+    xlabel('time since ignition (days)', 'FontSize', 12);
+    
+end
+
+ylabel('|yaw angle| (degrees)', 'FontSize', 12);
+
+grid;
+
+print -depsc -tiff -r300 ltot1.eps
+
+% figure(2);
+
+% plot(t, inc, 'LineWidth', 1.5);
+
+% title('Low-thrust Orbit Transfer - analytic solution', 'FontSize', 16);
+
+% if (tdflag == 1)
+%     
+%     xlabel('time since ignition (minutes)', 'FontSize', 12);
+%     
+% elseif (tdflag == 2)
+%     
+%     xlabel('time since ignition (hours)', 'FontSize', 12);
+%     
+% else
+%     
+%     xlabel('time since ignition (days)', 'FontSize', 12);
+%     
+% end
+% 
+% ylabel('orbital inclination (degrees)', 'FontSize', 12);
+% 
+% grid;
+% 
+% print -depsc -tiff -r300 ltot2.eps
+% 
+figure(3);
+
+plot(t, v, 'LineWidth', 1.5);
+
+title('Low-thrust Orbit Transfer - analytic solution', 'FontSize', 16);
+
+if (tdflag == 1)
+    
+    xlabel('time since ignition (minutes)', 'FontSize', 12);
+    
+elseif (tdflag == 2)
+    
+    xlabel('time since ignition (hours)', 'FontSize', 12);
+    
+else
+    
+    xlabel('time since ignition (days)', 'FontSize', 12);
+    
+end
+
+ylabel('velocity (meters/second)', 'FontSize', 12);
+
+grid;
+
+print -depsc -tiff -r300 ltot3.eps
+
+figure(4);
+
+plot(t, sma, 'LineWidth', 1.5);
+
+title('Low-thrust Orbit Transfer - analytic solution', 'FontSize', 16);
+
+if (tdflag == 1)
+    
+    xlabel('time since ignition (minutes)', 'FontSize', 12);
+    
+elseif (tdflag == 2)
+    
+    xlabel('time since ignition (hours)', 'FontSize', 12);
+    
+else
+    
+    xlabel('time since ignition (days)', 'FontSize', 12);
+    
+end
+
+ylabel('semimajor axis (kilometers)', 'FontSize', 12);
+
+grid;
+
+print -depsc -tiff -r300 ltot4.eps
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% display integrated solution graphics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+figure(5);
+
+plot(xplot / 86400.0, yplot4, 'LineWidth', 1.5);
+
+title('Low-thrust Orbit Transfer - integrated solution', 'FontSize', 16);
+
+xlabel('time since ignition (days)', 'FontSize', 12);
+
+ylabel('yaw angle (degrees)', 'FontSize', 12);
+
+grid;
+
+print -depsc -tiff -r300 ltot5.eps;
+
+figure(6);
+
+plot(xplot / 86400.0, yplot5, 'LineWidth', 1.5);
+
+title('Low-thrust Orbit Transfer - integrated solution', 'FontSize', 16);
+
+xlabel('time since ignition (days)', 'FontSize', 12);
+
+ylabel('semimajor axis (kilometers)', 'FontSize', 12);
+
+grid;
+
+print -depsc -tiff -r300 ltot6.eps;
+
+figure(7);
+
+plot(xplot / 86400.0, yplot6, 'LineWidth', 1.5);
+
+title('Low-thrust Orbit Transfer - integrated solution', 'FontSize', 16);
+
+xlabel('time since ignition (days)', 'FontSize', 12);
+
+ylabel('orbital eccentricity', 'FontSize', 12);
+
+grid;
+
+print -depsc -tiff -r300 ltot7.eps;
+
+figure(8);
+
+plot(xplot / 86400.0, yplot7, 'LineWidth', 1.5);
+
+title('Low-thrust Orbit Transfer - integrated solution', 'FontSize', 16);
+
+xlabel('time since ignition (days)', 'FontSize', 12);
+
+ylabel('orbital inclination (degrees)', 'FontSize', 12);
+
+grid;
+
+print -depsc -tiff -r300 ltot8.eps;
+
+figure(9);
+
+plot(xplot / 86400.0, yplot8, 'LineWidth', 1.5);
+
+title('Low-thrust Orbit Transfer - integrated solution', 'FontSize', 16);
+
+xlabel('time since ignition (days)', 'FontSize', 12);
+
+ylabel('RAAN (degrees)', 'FontSize', 12);
+
+grid;
+
+print -depsc -tiff -r300 ltot9.eps;
+
+figure(10);
+
+% create axes vectors
+
+xaxisx = [1 1.5];
+xaxisy = [0 0];
+xaxisz = [0 0];
+
+yaxisx = [0 0];
+yaxisy = [1 1.5];
+yaxisz = [0 0];
+
+zaxisx = [0 0];
+zaxisy = [0 0];
+zaxisz = [1 1.5];
+
+hold on;
+
+grid on;
+
+% plot earth
+
+[x y z] = sphere(24);
+
+h = surf(x, y, z);
+
+colormap([127/255 1 222/255]);
+
+set (h, 'edgecolor', [1 1 1]);
+
+% plot coordinate system axes
+
+plot3(xaxisx, xaxisy, xaxisz, '-g', 'LineWidth', 1);
+
+plot3(yaxisx, yaxisy, yaxisz, '-r', 'LineWidth', 1);
+
+plot3(zaxisx, zaxisy, zaxisz, '-b', 'LineWidth', 1);
+
+% plot transfer orbit
+
+plot3(yplot1, yplot2, yplot3, '-b', 'LineWidth', 1);
+
+xlabel('X coordinate (ER)', 'FontSize', 12);
+
+ylabel('Y coordinate (ER)', 'FontSize', 12);
+
+zlabel('Z coordinate (ER)', 'FontSize', 12);
+
+title('Low-thrust Orbit Transfer', 'FontSize', 16);
+
+axis equal;
+
+view(50, 20);
+
+rotate3d on;
+print -depsc -tiff -r300 ltot10.eps;
+hold off

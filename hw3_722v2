@@ -1,0 +1,16 @@
+clear; close all; clc;
+syms x xa xb u1 u2 u3 xn xp u4 u5 q11 u6 u7 u8 u9
+
+k = @(psii,psij,xa_val,xb_val) int(4*diff(psii)*diff(psij)-2*psii*psij,x,xa_val,xb_val);
+f = @(psii) -int(psii*(x^2+1),x,xa,xb);
+
+xbar = x-xa;
+h = xb-xa;
+
+psia(1) = (xb-x)/(h);
+psia(2) = (xbar)/(h);
+
+psib(1) = (1-xbar/h)*(1-2*xbar/h);
+psib(2) = 2*xbar/h*(1-xbar/h);
+psib(3) = -xbar/h*(1-2*xbar/h);
+

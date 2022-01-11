@@ -1,0 +1,335 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ICGE2_final</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-11-14"><meta name="DC.source" content="ICGE2_final.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ICGE 2</a></li><li><a href="#3">3</a></li><li><a href="#4">4</a></li><li><a href="#5">Functions</a></li></ul></div><h2 id="1">ICGE 2</h2><p>Liam Hood, Michael Watkins, and Michael Randolph</p><pre class="codeinput">clear ; close <span class="string">all</span>; clc;
+<span class="keyword">function</span> ICGE2()
+</pre><pre class="codeinput">    L = 4 ; <span class="comment">% Cylinder length in meters</span>
+    RR = 0.25 ; <span class="comment">% Rocket radius in meters</span>
+    hn = 1 ; <span class="comment">% nose height in meters</span>
+    Mb = 600 ; <span class="comment">% Mass of body in kg</span>
+    Mn = 50 ; <span class="comment">% Mass of nose in kg</span>
+    rW = 0.2 ; <span class="comment">% radius of wheel in meters</span>
+    tW = 0.04 ; <span class="comment">% thickness of wheel in meters</span>
+    mW = 10 ; <span class="comment">% mass of wheel in kg</span>
+
+    <span class="comment">% inertia matrix of the rocket body</span>
+    Ib=[ (1/12)*Mb*(3*RR^2+L^2) , 0 , 0 ; <span class="keyword">...</span>
+        0 , (1/12)*Mb*(3*RR^2+L^2) , 0 ; <span class="keyword">...</span>
+        0 , 0 , 0.5*Mb*RR^2 ] ;
+
+    <span class="comment">% inertia matrix of the rocket nose</span>
+    In = [ ((1/10)*Mn*hn^2)+((3/20)*Mn*RR^2) , 0 , 0 ; <span class="keyword">...</span>
+        0 , ((1/10)*Mn*hn^2)+((3/20)*Mn*RR^2) , 0 ; <span class="keyword">...</span>
+        0 , 0 , (3/10)*Mn*RR^2 ] ;
+
+    <span class="comment">% inertia matrix of the wheel</span>
+    Iw=[ (1/12)*mW*(3*rW^2+tW^2) , 0 , 0 ; <span class="keyword">...</span>
+        0 , (1/12)*mW*(3*rW^2+tW^2) , 0 ; <span class="keyword">...</span>
+        0 , 0 , 0.5*mW*rW^2 ] ;
+
+    <span class="comment">% Centers of mass from bottom of rocket in meters</span>
+    CoM_rocket = [ 0 ; 0 ; (2*600+4.25*50)/650 ] ;
+    CoM_cone = [ 0 ; 0 ; 4.25 ] ;
+    CoM_body = [ 0 ; 0 ; 2 ] ;
+
+    <span class="comment">% distance of center of mass of piece from system center of mass</span>
+    rwc = [ 0 ; 0 ; 0 ] ;
+    rbc = CoM_rocket - CoM_body ;
+    rnc = CoM_rocket - CoM_cone ;
+
+    <span class="comment">% inertia matrix about rockets center of mass</span>
+    Jb = Ib - Mb*crossmatrix(rbc)*crossmatrix(rbc) ;
+    Jn = In - Mn*crossmatrix(rnc)*crossmatrix(rnc) ;
+    Ir = Jb + Jn ;
+
+    <span class="comment">% Set up</span>
+    opts = odeset( <span class="string">'AbsTol'</span> , 10^-8 , <span class="string">'RelTol'</span> , 10^-8 ) ;
+    tspan = [ 0 1000 ] ; <span class="comment">% Time span to integrate over</span>
+    dwrel = [ 0 ; 0 ; 0.05 ] ; <span class="comment">% angular acceleration</span>
+</pre><h2 id="3">3</h2><pre class="codeinput">    Td = [ 0 ; 0 ; 0 ] ;
+    state = [ 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ] ;
+    RocketAndWheelPlots( tspan , state , opts , dwrel , Td , Iw , Ir , <span class="string">'3 (no torque)'</span> ) ;
+</pre><h2 id="4">4</h2><pre class="codeinput">    Td = [ 0.1 ; 0 ; 0 ] ;
+    <span class="comment">%4a</span>
+    statea = [ 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ] ;
+    RocketAndWheelPlots( tspan , state , opts , dwrel , Td , Iw , Ir , <span class="string">'4a'</span> ) ;
+
+    <span class="comment">%4b</span>
+    stateb = [ 0 ; 0 ; 0 ; 0 ; 0 ; 0.1 ; 0 ; 0 ; 0 ] ;
+    RocketAndWheelPlots( tspan , stateb , opts , dwrel , Td , Iw , Ir , <span class="string">'4b'</span> ) ;
+
+    <span class="comment">%4c</span>
+    statec = [ 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 100 ] ;
+    RocketAndWheelPlots( tspan , statec , opts , dwrel , Td , Iw , Ir , <span class="string">'4c'</span> ) ;
+
+    <span class="comment">%4d</span>
+    stated = [ 0 ; 0 ; 0 ; 0 ; 0 ; 0.1 ; 0 ; 0 ; 100 ] ;
+    RocketAndWheelPlots( tspan , stated , opts , dwrel , Td , Iw , Ir , <span class="string">'4d'</span> ) ;
+</pre><h2 id="5">Functions</h2><pre class="codeinput">    <span class="keyword">function</span> [ across ] = crossmatrix( a )
+        across = [ 0 -a(3) a(2) ; <span class="keyword">...</span>
+                   a(3) 0 -a(1) ; <span class="keyword">...</span>
+                  -a(2) a(3) 0 ] ;
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> RocketAndWheelPlots( tspan , state , opts , dwrel , Td , Iw , Ir , name )
+
+        [t,state]=ode45( @RocketAndWheel , tspan , state , opts , dwrel , Td , Iw , Ir ) ;
+
+        figure( <span class="string">'Name'</span> , name , <span class="string">'NumberTitle'</span> , <span class="string">'off'</span> , <span class="string">'Position'</span> , [ 100 50 1000 650 ] ) ;
+
+        subplot(2,3,1)
+        plot( t , state(:,1) )
+        title( <span class="string">'Angular Displacemet X vs Time'</span> )
+        xlabel( <span class="string">'Time(s)'</span> )
+        ylabel( <span class="string">'Angular Displacement X (rad/s)'</span> )
+
+        subplot(2,3,2)
+        plot( t , state(:,2) )
+        title( <span class="string">'Angular Displacemet Y vs Time'</span> )
+        xlabel( <span class="string">'Time(s)'</span> )
+        ylabel( <span class="string">'Angular Displacement Y (rad/s)'</span> )
+
+        subplot(2,3,3)
+        plot( t , state(:,3) )
+        title( <span class="string">'Angular Displacemet Z vs Time'</span> )
+        xlabel( <span class="string">'Time(s)'</span> )
+        ylabel( <span class="string">'Angular Displacement Z (rad/s)'</span> )
+
+        subplot(2,3,4)
+        plot(t,state(:,4))
+        title( <span class="string">'Angular Velocity X vs Time'</span> )
+        xlabel( <span class="string">'Time(s)'</span> )
+        ylabel( <span class="string">'Angular Velocity X (rad/s)'</span> )
+
+        subplot(2,3,5)
+        plot(t,state(:,5))
+        title( <span class="string">'Angular Velocity Y vs Time'</span> )
+        xlabel( <span class="string">'Time(s)'</span> )
+        ylabel( <span class="string">'Angular Velocity Y (rad/s)'</span> )
+
+        subplot(2,3,6)
+        plot(t,state(:,6))
+        title( <span class="string">'Angular Velocity Z vs Time'</span> )
+        xlabel( <span class="string">'Time(s)'</span> )
+        ylabel( <span class="string">'Angular Velocity Z (rad/s)'</span> )
+
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> [ dstate ] = RocketAndWheel( t , state , dwrel , Td , Iw , Ir )
+
+        thetar = state(1:3) ;
+        wr = state(4:6) ;
+        wrel = state(7:9) ;
+        dstate = zeros( 9 , 1 ) ;
+
+        dwr = -inv( Ir+Iw ) * ( Iw*dwrel + crossmatrix(wr+wrel)*Iw*(wr+wrel) + crossmatrix(wr)*Ir*wr - Td ) ;
+        dstate(1:3) = wr ;
+        dstate(4:6) = dwr ;
+        dstate(7:9) = dwrel ;
+    <span class="keyword">end</span>
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ICGE 2 
+% Liam Hood, Michael Watkins, and Michael Randolph
+clear ; close all; clc;
+function ICGE2()
+    L = 4 ; % Cylinder length in meters
+    RR = 0.25 ; % Rocket radius in meters
+    hn = 1 ; % nose height in meters
+    Mb = 600 ; % Mass of body in kg
+    Mn = 50 ; % Mass of nose in kg
+    rW = 0.2 ; % radius of wheel in meters
+    tW = 0.04 ; % thickness of wheel in meters
+    mW = 10 ; % mass of wheel in kg
+
+    % inertia matrix of the rocket body
+    Ib=[ (1/12)*Mb*(3*RR^2+L^2) , 0 , 0 ; ...
+        0 , (1/12)*Mb*(3*RR^2+L^2) , 0 ; ...
+        0 , 0 , 0.5*Mb*RR^2 ] ;
+
+    % inertia matrix of the rocket nose
+    In = [ ((1/10)*Mn*hn^2)+((3/20)*Mn*RR^2) , 0 , 0 ; ...
+        0 , ((1/10)*Mn*hn^2)+((3/20)*Mn*RR^2) , 0 ; ...
+        0 , 0 , (3/10)*Mn*RR^2 ] ;
+
+    % inertia matrix of the wheel
+    Iw=[ (1/12)*mW*(3*rW^2+tW^2) , 0 , 0 ; ...
+        0 , (1/12)*mW*(3*rW^2+tW^2) , 0 ; ...
+        0 , 0 , 0.5*mW*rW^2 ] ;
+
+    % Centers of mass from bottom of rocket in meters
+    CoM_rocket = [ 0 ; 0 ; (2*600+4.25*50)/650 ] ;
+    CoM_cone = [ 0 ; 0 ; 4.25 ] ;
+    CoM_body = [ 0 ; 0 ; 2 ] ;
+
+    % distance of center of mass of piece from system center of mass
+    rwc = [ 0 ; 0 ; 0 ] ;
+    rbc = CoM_rocket - CoM_body ;
+    rnc = CoM_rocket - CoM_cone ;
+
+    % inertia matrix about rockets center of mass
+    Jb = Ib - Mb*crossmatrix(rbc)*crossmatrix(rbc) ;
+    Jn = In - Mn*crossmatrix(rnc)*crossmatrix(rnc) ;
+    Ir = Jb + Jn ;
+
+    % Set up 
+    opts = odeset( 'AbsTol' , 10^-8 , 'RelTol' , 10^-8 ) ;
+    tspan = [ 0 1000 ] ; % Time span to integrate over
+    dwrel = [ 0 ; 0 ; 0.05 ] ; % angular acceleration
+
+    %% 3 
+    Td = [ 0 ; 0 ; 0 ] ;
+    state = [ 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ] ;
+    RocketAndWheelPlots( tspan , state , opts , dwrel , Td , Iw , Ir , '3 (no torque)' ) ;
+
+    %% 4 
+    Td = [ 0.1 ; 0 ; 0 ] ;
+    %4a
+    statea = [ 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ] ;
+    RocketAndWheelPlots( tspan , state , opts , dwrel , Td , Iw , Ir , '4a' ) ;
+
+    %4b
+    stateb = [ 0 ; 0 ; 0 ; 0 ; 0 ; 0.1 ; 0 ; 0 ; 0 ] ;
+    RocketAndWheelPlots( tspan , stateb , opts , dwrel , Td , Iw , Ir , '4b' ) ;
+
+    %4c
+    statec = [ 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 0 ; 100 ] ;
+    RocketAndWheelPlots( tspan , statec , opts , dwrel , Td , Iw , Ir , '4c' ) ;
+
+    %4d
+    stated = [ 0 ; 0 ; 0 ; 0 ; 0 ; 0.1 ; 0 ; 0 ; 100 ] ;
+    RocketAndWheelPlots( tspan , stated , opts , dwrel , Td , Iw , Ir , '4d' ) ;
+
+    %% Functions
+
+    function [ across ] = crossmatrix( a )
+        across = [ 0 -a(3) a(2) ; ...
+                   a(3) 0 -a(1) ; ...
+                  -a(2) a(3) 0 ] ;
+    end
+
+    function RocketAndWheelPlots( tspan , state , opts , dwrel , Td , Iw , Ir , name )
+
+        [t,state]=ode45( @RocketAndWheel , tspan , state , opts , dwrel , Td , Iw , Ir ) ;
+
+        figure( 'Name' , name , 'NumberTitle' , 'off' , 'Position' , [ 100 50 1000 650 ] ) ;
+
+        subplot(2,3,1)
+        plot( t , state(:,1) )
+        title( 'Angular Displacemet X vs Time' )
+        xlabel( 'Time(s)' )
+        ylabel( 'Angular Displacement X (rad/s)' )
+
+        subplot(2,3,2)
+        plot( t , state(:,2) )
+        title( 'Angular Displacemet Y vs Time' )
+        xlabel( 'Time(s)' )
+        ylabel( 'Angular Displacement Y (rad/s)' )
+
+        subplot(2,3,3)
+        plot( t , state(:,3) )
+        title( 'Angular Displacemet Z vs Time' )
+        xlabel( 'Time(s)' )
+        ylabel( 'Angular Displacement Z (rad/s)' )
+
+        subplot(2,3,4)
+        plot(t,state(:,4))
+        title( 'Angular Velocity X vs Time' )
+        xlabel( 'Time(s)' )
+        ylabel( 'Angular Velocity X (rad/s)' )
+
+        subplot(2,3,5)
+        plot(t,state(:,5))
+        title( 'Angular Velocity Y vs Time' )
+        xlabel( 'Time(s)' )
+        ylabel( 'Angular Velocity Y (rad/s)' )
+
+        subplot(2,3,6)
+        plot(t,state(:,6))
+        title( 'Angular Velocity Z vs Time' )
+        xlabel( 'Time(s)' )
+        ylabel( 'Angular Velocity Z (rad/s)' )
+
+    end
+
+    function [ dstate ] = RocketAndWheel( t , state , dwrel , Td , Iw , Ir )
+
+        thetar = state(1:3) ;
+        wr = state(4:6) ;
+        wrel = state(7:9) ;
+        dstate = zeros( 9 , 1 ) ;
+
+        dwr = -inv( Ir+Iw ) * ( Iw*dwrel + crossmatrix(wr+wrel)*Iw*(wr+wrel) + crossmatrix(wr)*Ir*wr - Td ) ;
+        dstate(1:3) = wr ;
+        dstate(4:6) = dwr ;
+        dstate(7:9) = dwrel ;
+    end
+end
+##### SOURCE END #####
+--></body></html>

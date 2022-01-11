@@ -1,0 +1,14 @@
+clear ; close all ; clc ;
+RawData{1} = xlsread( 'Specimen_RawData_1.csv' ) ;
+RawData{2} = xlsread( 'Specimen_RawData_2.csv' ) ;
+RawData{3} = xlsread( 'Specimen_RawData_3.csv' ) ;
+RawData{4} = xlsread( 'Specimen_RawData_4.csv' ) ;
+RawData{5} = xlsread( 'Specimen_RawData_5.csv' ) ;
+RawData{6} = xlsread( 'Specimen_RawData_6.csv' ) ;
+RawData{7} = xlsread( 'Specimen_RawData_7.csv' ) ;
+RawData{8} = xlsread( 'Specimen_RawData_8.csv' ) ;
+RawData{9} = xlsread( 'Specimen_RawData_9.csv' ) ;
+RawData{10} = xlsread( 'Specimen_RawData_10.csv' ) ;
+RawData{11} = xlsread( 'Specimen_RawData_11.csv' ) ;
+RawData{12} = xlsread( 'Specimen_RawData_12.csv' ) ;
+save( 'RawData.mat' ) ;
