@@ -1,0 +1,52 @@
+clear; close all; clc;
+
+theta = @(t,J,T) (T/(2*J))*t^2;
+omega = @(t,J,T) (T/J)*t;
+J = 1.5;
+l = 2;
+
+t = 0:.1:1.1;
+
+Ttra = [1,2,3,4];
+
+Ttes = [.5, 1.5, 2.5, 3.5, 4.5, 5.5];
+
+n = length(Ttra);
+m = length(t);
+for ii = 1:n
+    for jj = 1:m
+        tra((ii-1)*m+jj,:) = [t(jj),theta(t(jj),J,Ttra(ii)),omega(t(jj),J, ...
+            Ttra(ii)),Ttra(ii),l*cos(theta(t(jj),J,Ttra(ii))),l*sin(theta(t(jj),J,Ttra(ii)))];
+    end
+end
+
+n = length(Ttes);
+m = length(t);
+for ii = 1:n
+    for jj = 1:m
+        tes((ii-1)*m+jj,:) = [t(jj),theta(t(jj),J,Ttes(ii)),omega(t(jj),J, ...
+            Ttes(ii)),Ttes(ii),l*cos(theta(t(jj),J,Ttes(ii))),l*sin(theta(t(jj),J,Ttes(ii)))];
+    end
+end
+
+figure
+axis([-3,3,-3,3],'square')
+hold on
+for ii = 1:4
+    plot(tra(1+n*(ii-1):n*ii,5),tra(1+n*(ii-1):n*ii,6),'.')
+end
+xlabel('x1')
+ylabel('x2')
+title('Training Data')
+legend('T=1','T=2','T=3','T=4','Location','southwest')
+
+figure
+axis([-3,3,-3,3],'square')
+hold on
+for ii = 1:m
+    plot(tes(1+n*(ii-1):n*ii,5),tes(1+n*(ii-1):n*ii,6),'.')
+end
+xlabel('x1')
+ylabel('x2')
+title('Testing Data')
+legend('T=.5','T=1.5','T=2.5','T=3.5','T=4.5','T=5.5','Location','southwest')
