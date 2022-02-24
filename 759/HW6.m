@@ -6,7 +6,6 @@ l1 = 1.6;
 l2 = 1.6;
 n = 1e1;
 m = 1e1;
-p = 1;
 
 x2math = @(theta1, theta2, l1, l2) l1*cosd(theta1 - 90) + l2*sind(theta2 + theta1 - 180);
 y2math = @(theta1, theta2, l1, l2, h) h + l1*sind(theta1 - 90) - l2*cosd(theta2 + theta1 - 180);
@@ -18,8 +17,7 @@ min2 = 35;
 max2 = 90;
 t_th1 = linspace(min1,max1,n)';
 t_th2 = linspace(min2,max2,m)';
-% t_th1 = min1 + (max1 - min1)*sum(rand(n,p),2)/p;
-% t_th2 = min2 + (max2 - min2)*sum(rand(m,p),2)/p;
+
 for ii = 1:n
     for jj = 1:m
         t_x2(n*(ii-1)+jj,1) = x2math(t_th1(ii), t_th2(jj), l1, l2);
