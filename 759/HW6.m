@@ -4,8 +4,8 @@ clear; close all; clc;
 h = 1;
 l1 = 1.6;
 l2 = 1.6;
-n = 5;
-m = 5;
+n = 10;
+m = 10;
 
 x2math = @(theta1, theta2, l1, l2) l1*cosd(theta1 - 90) + l2*sind(theta2 + theta1 - 180);
 y2math = @(theta1, theta2, l1, l2, h) h + l1*sind(theta1 - 90) - l2*cosd(theta2 + theta1 - 180);
@@ -21,6 +21,7 @@ kk = 0;
 for ii = 1:n
     for jj = 1:m
         if (t_th1(ii) + t_th2(jj)) < 220 && (t_th1(ii) + t_th2(jj)) > 155
+%         if (t_th1(ii) + t_th2(jj)) < 260 && (t_th1(ii) + t_th2(jj)) > 130
             kk = kk + 1;
 %             n*(ii-1)+jj
             t_x2(kk,1) = x2math(t_th1(ii), t_th2(jj), l1, l2);
@@ -40,8 +41,8 @@ plot([2,2], [0,1], "r")
 plot([0,0], [0,1], "k")
 hold off
 title("Training Data")
-xlabel("x1")
-ylabel("x2")
+xlabel("x")
+ylabel("y")
 
 
 %% Testing Data
@@ -109,7 +110,7 @@ tlra_tes = [test_x1, test_y1_1, zeros(11,1), zeros(11,1);
 
 %% Show Test
 
-load("test_9.mat")
+load("test_30.mat")
 
 r_x2(:,1) = x2math(results(:,1), results(:,2), l1, l2);
 r_y2(:,1) = y2math(results(:,1), results(:,2), l1, l2, h);
@@ -150,9 +151,9 @@ plot([1,1], [0,1], "r")
 plot([2,2], [0,1], "r")
 plot([0,0], [0,1], "k")
 hold off
-title("Results of Test 1")
-xlabel("x1")
-ylabel("x2")
+title("Results of Test 1 Final")
+xlabel("x")
+ylabel("y")
 legend("Target Points", "Robot position based on NN output")
 
 figure
@@ -166,9 +167,9 @@ plot([1,1], [0,1], "r")
 plot([2,2], [0,1], "r")
 plot([0,0], [0,1], "k")
 hold off
-title("Results of Test 2")
-xlabel("x1")
-ylabel("x2")
+title("Results of Test 2 Final")
+xlabel("x")
+ylabel("y")
 legend("Target Points", "Robot position based on NN output")
 
 
@@ -183,7 +184,7 @@ plot([1,1], [0,1], "r")
 plot([2,2], [0,1], "r")
 plot([0,0], [0,1], "k")
 hold off
-title("Results of Test 3")
-xlabel("x1")
-ylabel("x2")
+title("Results of Test 3 Final")
+xlabel("x")
+ylabel("y")
 legend("Target Points", "Robot position based on NN output")
