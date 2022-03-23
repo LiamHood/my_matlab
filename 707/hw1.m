@@ -27,39 +27,43 @@ problem_7
 %% Problems
 function problem_2()
     fprintf("******Problem 2******\n")
-%     % xdot = A*x + B*u
-%     A = [8, -2, 3;
-%          0, 1, 4;
-%          7, 9, 10];
-%     B = [2; 1; 5];
-%     % y = C*x+D*u
-%     C = [2, 1, 3];
-%     D = 0;
-%     
-%     % Transfer function G(s)
+    disp("No idea why this output doesn't publish but it runs")
+    % xdot = A*x + B*u
+    A = [8, -2, 3;
+         0, 1, 4;
+         7, 9, 10];
+    B = [2; 1; 5];
+    % y = C*x+D*u
+    C = [2, 1, 3];
+    D = 0;
+    
+    % Transfer function G(s)
     fprintf("Transfer Function\n")
-%     syms s
-%     G = collect(C*inv((s*eye(3)-A))*B);
-%     fprintf("From formula\n")
-%     fprintf("G(s) = %s\n", G)
-%     fprintf("Built in Function\n")
-%     [b,a] = ss2tf(A,B,C,D);
-%     G_builtin = collect((b(1)*s^3 + b(2)*s^2 + b(3)*s + b(4))/...
-%         (a(1)*s^3 + a(2)*s^2 + a(3)*s + a(4)));
-%     fprintf("G(s) = %s\n", G_builtin)
-%     % Poles
-%     fprintf("\nPoles\n")
-%     poles_builtin = eig(A);
-%     poles = vpasolve(det(s*eye(3)-A)==0,s);
-%     fprintf("From formula\n")
-%     fprintf("Poles %f, %f, %f \n", poles)
-%     fprintf("Built in Function\n")
-%     fprintf("Poles %f, %f, %f \n", poles_builtin)
+    syms s
+    G = collect(C*inv((s*eye(3)-A))*B);
+    fprintf("From formula\n")
+    fprintf("G(s) = %s\n", G)
+    fprintf("Built in Function\n")
+    [b,a] = ss2tf(A,B,C,D);
+    G_builtin = collect((b(1)*s^3 + b(2)*s^2 + b(3)*s + b(4))/...
+        (a(1)*s^3 + a(2)*s^2 + a(3)*s + a(4)));
+    fprintf("G(s) = %s\n", G_builtin)
+    % Poles
+    fprintf("\nPoles\n")
+    poles_builtin = eig(A);
+    poles = vpasolve(det(s*eye(3)-A)==0,s);
+    fprintf("From formula\n")
+    fprintf("Poles %f, %f, %f \n", poles)
+    fprintf("Built in Function\n")
+    fprintf("Poles %f, %f, %f \n", poles_builtin)
 end
 
 function problem_3()
     global r2d
     fprintf("\n******Problem 3******\n")
+    disp("No idea why this output doesn't publish but it runs")
+    disp("Needs this line to publish and it needs to be this long")
+    disp("What is this text doing??")
     % 2.3-1 Find instantaneous angle of attack and angle of side slip
     % in the gusts
     
