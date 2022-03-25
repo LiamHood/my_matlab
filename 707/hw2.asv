@@ -47,13 +47,15 @@ function problem1a()
             4.0639, -.77013, -.169190;
             0, 0, 10];
     B = [0, 0; 0, 1; 10, 0];
+    sys = ss(A, B, eye(3), 0);
     [vec, poles] = eig(A);
    fprintf("Open Loop Poles are \\lamda = \n\t%f + %fi \n\t%f + %fi \n\t%f + %fi\n", ...
         [real(poles(1,1)), imag(poles(1,1)), real(poles(2,2)), imag(poles(2,2)), ...
         real(poles(3,3)), imag(poles(3,3))])
 
     cont_matrix = [B, A*B, A^2*B];
-    fprintf("Controllable since controllability matrix is rank %i and A is rank %i\n", [rank(cont_matrix), rank(A)])
+    fprintf("Controllable since controllability matrix is rank %i and A is rank %i\n", ...
+        [rank(cont_matrix), rank(A)])
     
     lam1 = -2+2i;
     des_lambda = [ lam1, conj(lam1), -15];

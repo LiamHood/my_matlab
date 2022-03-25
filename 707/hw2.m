@@ -1,9 +1,9 @@
 clear; close all; clc;
 
 problem1()
-problem1a()
+% problem1a()
 
-problem2()
+% problem2()
 
 %% Functions
 function problem1()
@@ -24,7 +24,7 @@ function problem1()
     des_lambda = [ lam1, conj(lam1), -15];
     I3 = eye(3);
     D = diag([1, 1, 1]);
-    vec1 = [0.20 + .35i, -.98 + .07i, 0]';
+    vec1 = [0.20 - .35i, -.98 - .07i, 0]';
     des_vec = [vec1, conj(vec1), [0; 0; 1]];
     uv = @(lambda,vec) pinv([lambda.*I3 - A, B; D, zeros(3,2)])*[0;0;0;vec];
     for ii = 1:3
@@ -54,7 +54,8 @@ function problem1a()
         real(poles(3,3)), imag(poles(3,3))])
 
     cont_matrix = [B, A*B, A^2*B];
-    fprintf("Controllable since controllability matrix is rank %i and A is rank %i\n", [rank(cont_matrix), rank(A)])
+    fprintf("Controllable since controllability matrix is rank %i and A is rank %i\n", ...
+        [rank(cont_matrix), rank(A)])
     
     lam1 = -2+2i;
     des_lambda = [ lam1, conj(lam1), -15];
