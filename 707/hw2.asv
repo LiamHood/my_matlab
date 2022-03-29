@@ -30,7 +30,7 @@ function problem1()
     vec3 = [0; 0; 1];
     des_vec = [vec1, vec2, vec3];
     
-    EigStructAssign(A, B, C, des_poles, des_vec)
+    EigStructAssign(A, B, C, des_poles, des_vec);
     
 end
 
@@ -53,7 +53,9 @@ function problem2()
     vec2 = conj(vec1);
     des_vec = [vec1, vec2];
     
-    EigStructAssign(A, B, C, des_poles, des_vec)
+    EigStructAssign(A, B, C, des_poles, des_vec);
+    fprintf("The acuator pole is moved from -15 to 9.5 now that we are not \n")
+    fprintf("able to directly assign the actuator pole\n\n")
 end
 
 function problem3()
@@ -73,19 +75,22 @@ function problem3()
     vec2 = conj(vec1);
     des_vec = [vec1, vec2];
     
-    EigStructAssign(A, B, C, des_poles, des_vec)
+    EigStructAssign(A, B, C, des_poles, des_vec);
+    fprintf("The actuator pole has moved increasingly positive to 12.15\n\n")
 end
 
 function problem4()
-fprintf("\nProblem 3:\n")
+fprintf("\nProblem 4:\n")
     A = [0, 1;
         -2, -3];
+    poles = eig(A);
+    fprintf("Open Loop Poles are \\lamda = \n")
+    disp(poles)
     B = [0; 2];
-    C = [1, 0];
-    Ackermann(A, B, C)p
+    Ackermann(A, B);
 end
 
-function K = Ackermann(A, B, C)
+function K = Ackermann(A, B)
     n = length(A);
 
     syms s
@@ -104,7 +109,7 @@ function K = Ackermann(A, B, C)
     disp(K)
 end
 
-function EigStructAssign(A, B, C, des_lambda, des_vec)
+function K = EigStructAssign(A, B, C, des_lambda, des_vec)
     poles = eig(A);
     fprintf("Open Loop Poles are \\lamda = \n")
     disp(poles)

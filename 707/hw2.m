@@ -8,6 +8,7 @@ problem3()
 
 problem4()
 
+
 %% Functions
 
 function problem1()
@@ -54,6 +55,8 @@ function problem2()
     des_vec = [vec1, vec2];
     
     EigStructAssign(A, B, C, des_poles, des_vec);
+    fprintf("The acuator pole is moved from -15 to 9.5 now that we are not \n")
+    fprintf("able to directly assign the actuator pole\n\n")
 end
 
 function problem3()
@@ -74,18 +77,22 @@ function problem3()
     des_vec = [vec1, vec2];
     
     EigStructAssign(A, B, C, des_poles, des_vec);
+    fprintf("The actuator pole has moved increasingly positive to 12.15\n\n")
 end
 
 function problem4()
-fprintf("\nProblem 3:\n")
+fprintf("\nProblem 4:\n")
     A = [0, 1;
         -2, -3];
+    poles = eig(A);
+    fprintf("Open Loop Poles are \\lamda = \n")
+    disp(poles)
+    fprintf("The poles are negative so the open loop system is stable\n")
     B = [0; 2];
-    C = [1, 0];
-    Ackermann(A, B, C);
+    Ackermann(A, B);
 end
 
-function K = Ackermann(A, B, C)
+function K = Ackermann(A, B)
     n = length(A);
 
     syms s
