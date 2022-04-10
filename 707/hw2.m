@@ -89,14 +89,18 @@ fprintf("\nProblem 4:\n")
     disp(poles)
     fprintf("The poles are negative so the open loop system is stable\n")
     B = [0; 2];
-    Ackermann(A, B);
+    Ackermann(A, B, [-3, -5]);
 end
 
-function K = Ackermann(A, B)
+function K = Ackermann(A, B, lambda)
     n = length(A);
 
     syms s
-    fdes_s = collect((s+3)*(s+5));
+    funs = 1;
+    for lam = lambda
+        funs = funs*(s-lam);
+    end
+    fdes_s = collect(funs);
     coef = sym2poly(fdes_s);
     fdes_A = coef(1).*A*A + coef(2).*A + coef(3).*eye(n);
 
