@@ -1,8 +1,8 @@
 clear; close all; clc;
 load('given.mat')
-A = Ebar\Abar;
-B = Ebar\Bbar;
-C =  [0 1 0 0; 0 0 0 1];
+A = Ebar\Abar
+B = Ebar\Bbar
+C =  [0 1 0 0; 0 0 0 1]
 % x = [alpha, q, VT, theta]
 % angle of attack, pitch rate, true air speed, pitch angle
 
@@ -15,6 +15,7 @@ U3 = A*A*B;
 U4 = A*A*A*B;
 U = [U1 U2 U3 U4];
 fprintf("Controllability\n")
+disp(U)
 fprintf("\tRank of controllability should be %i and is %i\n", [rank(A), rank(U)])
 fprintf("\tTherefore is controllable\n")
 
@@ -26,6 +27,7 @@ O3 = Cq*A*A;
 O4 = Cq*A*A*A;
 O = [O1; O2; O3; O4];
 fprintf("Observability with only pitch rate feedback\n")
+disp(O)
 fprintf("\tRank of observability should be %i and is %i\n", [rank(A), rank(O)])
 fprintf("\tTherefore is observable\n")
 
@@ -37,6 +39,7 @@ O3 = Ctheta*A*A;
 O4 = Ctheta*A*A*A;
 O = [O1; O2; O3; O4];
 fprintf("Observability with only pitch feedback\n")
+disp(O)
 fprintf("\tRank of observability should be %i and is %i\n", [rank(A), rank(O)])
 fprintf("\tTherefore is observable\n")
 
@@ -49,7 +52,7 @@ disp(poles)
 fprintf("\tAll real parts of poles are negative so open loop system is stable\n")
 figure()
 opt = stepDataOptions;
-opt.StepAmplitude = 10;
+opt.StepAmplitude = -1.2;
 step(sso,opt)
 figure()
 initial(sso, [0, 0, 0, 10])
@@ -57,16 +60,21 @@ initial(sso, [0, 0, 0, 10])
 %% Part B
 fprintf("***************Part B***************\n")
 wn_sp = 16;
-dr_sp = .9;
-lam1 = dr_sp + 1i*wn_sp;
+dr_sp = .8;
+lam1 = -dr_sp + 1i*wn_sp;
 lam2 = conj(lam1);
 lambda = [lam1, lam2, poles(3), poles(4)];
 Kack = Ackermann(A, B, lambda);
 fprintf("Ackermann's Formula\n")
 fprintf("\t Gains are K = [%f  %f  %f  %f] \n", Kack)
 
-% [ol_vec,ol_lam] = eig(A);
-% Kstruc = EigStructAssign(A, B, C, lambda, ol_vec)
+[ol_vec,ol_lam] = eig(A);
+new_vec1 = [1+i*-1; -1+i*1; 0; 0]
+new_vec3 = [0; 0; 1+i*-1; -1+i*1]
+new_vec2 = conj(new_vec1)
+new_vec4 = conj(new_vec2)
+new_vec = [new_vec1, new_vec2, new_vec3, new_vec4]
+Kstruc = EigStructAssign(A, B, C, lambda, new_vec);
 
 %% Part C
 fprintf("***************Part C***************\n")
@@ -118,7 +126,7 @@ end
 
 function K = EigStructAssign(A, B, C, des_lambda, des_vec)
     poles = eig(A);
-    fprintf("Open Loop Poles are \\lamda = \n")
+%     fprintf("Open Loop Poles are \\lamda = \n")
     disp(poles)
     
     n = length(A);
@@ -127,7 +135,7 @@ function K = EigStructAssign(A, B, C, des_lambda, des_vec)
     for ii = 1:n
         Con = [Con, A^(ii-1)*B];
     end
-    fprintf("Controllable since controllability matrix is rank %i and A is rank %i\n\n", [rank(Con), rank(A)])
+%     fprintf("Controllable since controllability matrix is rank %i and A is rank %i\n\n", [rank(Con), rank(A)])
 
     
     m = size(B,2);
