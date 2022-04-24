@@ -46,13 +46,22 @@ function problem2()
     C = [1, 0, 0;
          0, 1, 0];
     
+%     lam1 = -2+2i;
+%     lam2 = conj(lam1);
+%     des_poles = [lam1, lam2];
+% 
+%     vec1 = [0.20 - .35i, -.98 - .07i]';
+%     vec2 = conj(vec1);
+%     des_vec = [vec1, vec2];
     lam1 = -2+2i;
     lam2 = conj(lam1);
-    des_poles = [lam1, lam2];
+    lam3 = -15;
+    des_poles = [lam1, lam2, lam3];
 
-    vec1 = [0.20 - .35i, -.98 - .07i]';
+    vec1 = [0.20 - .35i, -.98 - .07i, 0]';
     vec2 = conj(vec1);
-    des_vec = [vec1, vec2];
+    vec3 = [0; 0; 1];
+    des_vec = [vec1, vec2, vec3];
     
     EigStructAssign(A, B, C, des_poles, des_vec);
     fprintf("The acuator pole is moved from -15 to 9.5 now that we are not \n")
@@ -68,15 +77,23 @@ function problem3()
     C = [1, 0, 0;
          0, 1, 0];
     
+%     lam1 = -2+2i;
+%     lam2 = conj(lam1);
+%     des_poles = [lam1, lam2];
+% 
+%     vec1 = [0.20 - .35i, -.98 - .07i]';
+%     vec2 = conj(vec1);
+%     des_vec = [vec1, vec2];
     lam1 = -2+2i;
     lam2 = conj(lam1);
-    des_poles = [lam1, lam2];
+    lam3 = -15;
+    des_poles = [lam1, lam2, lam3];
 
-    vec1 = [0.20 - .35i, -.98 - .07i]';
+    vec1 = [0.20 - .35i, -.98 - .07i, 0]';
     vec2 = conj(vec1);
-    des_vec = [vec1, vec2];
-    
-    EigStructAssign(A, B, C, des_poles, des_vec);
+    vec3 = [0; 0; 1];
+    des_vec = [vec1, vec2, vec3];
+    EigStructAssign(A, B, C, des_poles(1:2), des_vec(1:3,1:2));
     fprintf("The actuator pole has moved increasingly positive to 12.15\n\n")
 end
 
@@ -138,7 +155,7 @@ function K = EigStructAssign(A, B, C, des_lambda, des_vec)
         vd(:,ii) = uvii(1:n);
         ud(:,ii) = uvii(n+1:end);
     end
-    K = ud*inv(C*vd);
+    K = ud*pinv(C*vd);
     fprintf("Control Gains are K = \n")
     disp(K)
     poles = eig(A-B*K*C);

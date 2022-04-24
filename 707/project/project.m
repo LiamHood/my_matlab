@@ -2,7 +2,9 @@ clear; close all; clc;
 load('given.mat')
 A = Ebar\Abar
 B = Ebar\Bbar
-C =  [0 1 0 0; 0 0 0 1]
+C =  [0 1 0 0;
+      0 0 0 1]
+% C = eye(4)
 % x = [alpha, q, VT, theta]
 % angle of attack, pitch rate, true air speed, pitch angle
 
@@ -74,25 +76,46 @@ new_vec3 = [0; 0; 1+i*-1; -1+i*1]
 new_vec2 = conj(new_vec1)
 new_vec4 = conj(new_vec2)
 new_vec = [new_vec1, new_vec2, new_vec3, new_vec4]
-Kstruc = EigStructAssign(A, B, C, lambda, new_vec);
+Kstruc = EigStructAssign(A, B, C, lambda(1:2), new_vec(1:2,1:2));
+ssc = ss(A-B*Kstruc*C,zeros(length(A),1),C,0);
+figure()
+initial(ssc, [0, 0, 0, 10])
+vd1 = [eye(4), zeros(4,1)];
+
 
 %% Part C
 fprintf("***************Part C***************\n")
 alpha_max = 5;
 q_max = 10;
 VT_max = 100;
-theta_max = 20;
-demax = 20;
-Q = diag([1/alpha_max^2, 1/q_max^2, 0, 1/theta_max^2]);
+theta_max = 10;
+demax = 10;
+Q = diag([1/alpha_max^2, 1/q_max^2, 1/VT_max^2, 1/theta_max^2]);
 R = 1/demax^2;
+% R = 1e-16;
 [Klqr, Slqr, CLPlqr] = lqr(sso, Q, R);
 ssc = ss(A-B*Klqr,zeros(length(A),1),C,0);
 disp("Solution to Riccati")
 disp(Slqr)
 disp("Gains")
 disp(Klqr)
-figure(1)
+figure()
 initial(ssc, [0, 0, 0, 10])
+
+
+Ktlqr = outputLQR(A, B, C, Q, R, 0, 1e-8);
+% ssc = ss(A-B*Ktlqr*C,zeros(length(A),1),C,0);
+% disp("Gains")
+% disp(Klqr)
+% figure()
+% initial(ssc, [0, 0, 0, 10])
+% Ktlqr = outputLQR(A, B, C, Q, R, [0, 0, 0, 10]');
+% ssc = ss(A-B*Ktlqr*C,zeros(length(A),1),C,0);
+% disp("Gains")
+% disp(Klqr)
+% figure()
+% initial(ssc, [0, 0, 0, 10])
+
 
 %% Functions
 
@@ -162,4 +185,60 @@ function K = EigStructAssign(A, B, C, des_lambda, des_vec)
     disp(des_vec)
     fprintf("Achievable Eigen Vectors are v = \n")
     disp(vd)
+end
+
+function K = outputLQR(A, B, C, Q, R, x0, tol)
+    n = length(A);
+    m = size(B,2);
+    p = size(C,1);
+    P = sym("P", [n n]);
+    S = sym("S", [n n]);
+%     syms P S
+    if x0 == 0
+        x0 = zeros(n,1);
+    end
+    X = x0*x0';
+    X = eye(n);
+    kk = 0;
+    Kk = zeros(m,p);
+    Ak = A - B*Kk*C;
+    eqPk = 0 == Ak.'*P + P*Ak + C.'*Kk.'*R*Kk*C + Q;
+    eqSk = 0 == Ak*S + S*S.' + X;
+    sol = vpasolve([eqSk],[S]);
+%     Pk = sol.Pk
+    Sk = zeros(n);
+    Pk = zeros(n);
+    Sk1 = zeros(n);
+    Pk1 = zeros(n);
+    for ii = 1:n
+        for jj = 1:n
+            Sk(ii,jj) = eval(['sol.S', int2str(ii), '_', int2str(jj)]);
+            Pk(ii,jj) = eval(['sol.P', int2str(ii), '_', int2str(jj)]);
+        end
+    end
+    Jk = (1/2)*trace(Pk*X);
+    alpha = 1e-2;
+    err  = 1;
+    while err > tol
+        Ak = A - B*Kk*C;
+        eqPk = 0 == Ak'*P + P*Ak + C'*Kk'*R*Kk*C + Q;
+        eqSk = 0 == Ak*S + S*S' + X;
+        sol = vpasolve([eqPk,eqSk],[S,P]);
+        for ii = 1:n
+            for jj = 1:n
+                Sk1(ii,jj) = eval(['sol.S', int2str(ii), '_', int2str(jj)]);
+                Pk1(ii,jj) = eval(['sol.P', int2str(ii), '_', int2str(jj)]);
+            end
+        end
+        Jk1 = (1/2)*trace(Pk1*X);
+        deltaK = inv(R)*B'*Pk1*Sk1*C'*inv(C*Sk1*C')-Kk;
+        Kk1 = Kk + alpha*deltaK;
+        err = abs(Jk1-Jk);
+        kk = kk + 1;
+        Sk = Sk1;
+        Pk = Pk1;
+        Jk = Jk1;
+        Kk = Kk1;
+    end
+    K = Kk;
 end
