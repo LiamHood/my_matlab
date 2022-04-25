@@ -92,12 +92,6 @@ ii = 1;
 while ntt1(end) < 25
     % Calculated based on needed heading angles, propagating normally 
     theta_needed(ii) = atan2((x_tes(ii+1)-nx1(ii)),(y_tes(ii+1)-ny1(ii)));
-    if ii > 1
-        dif = abs(theta_needed(ii-1) - theta_needed(ii));
-        if dif > pi
-            theta_needed(ii) = theta_needed(ii) + 2*pi;
-        end
-    end
     theta_calc = atan((x_tes(ii+1)-x_tes(ii))/(y_tes(ii+1)-y_tes(ii)));
     nrt1(ii) = net([theta_needed(ii); nthetat1(ii); nthetadott1(ii); dt]);
     disp(ii)
