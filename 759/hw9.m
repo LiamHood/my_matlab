@@ -1,9 +1,9 @@
 close all; clear; clc;
 
-T = 1;
+T = 5;
 V = 15;
-dt = .2;
-tend = 25;
+dt = .1;
+tend = 100;
 
 t_tes(1) = 0;
 x_tes(1) = -80;
@@ -29,9 +29,9 @@ theta2(1) = pi;
 thetadot2(1) = 0;
 ii = 1;
 while t1(end) < tend
-    r1(ii) = .2+(pi/2)*sin((2*pi/T)*t1(ii));
+    r1(ii) = .4 + (pi/2)*sin((2*pi/T)*t1(ii));
     [t1(ii+1), x1(ii+1), y1(ii+1), theta1(ii+1), thetadot1(ii+1)] = prop(t1(ii), x1(ii), y1(ii), theta1(ii), thetadot1(ii), r1(ii), dt, T, V);
-    r2(ii) = -(.2+(pi/2)*sin((2*pi/T)*t2(ii)));
+    r2(ii) = -(.3 + (pi/2)*cos((2*pi/T)*t2(ii)));
     [t2(ii+1), x2(ii+1), y2(ii+1), theta2(ii+1), thetadot2(ii+1)] = prop(t2(ii), x2(ii), y2(ii), theta2(ii), thetadot2(ii), r2(ii), dt, T, V);
     ii = ii + 1;
 end
@@ -42,16 +42,22 @@ tra_input =    [theta1(2:end), theta2(2:end);
                 dt*ones(1,length(r1)), dt*ones(1,length(r2))];
 tra_target = [r1, r2];
 
-net = feedforwardnet(2,'trainlm');
-net = configure(net, tra_input, tra_target);
-net.layers{1}.transferFcn = 'tansig';
-% net.layers{2}.transferFcn = 'tansig';
-net.trainParam.show = 50;
-net.trainParam.lr = .05;
-net.trainParam.epochs = 10000;
-net.trainParam.goal = 1e-12;
-net = train(net, tra_input, tra_target);
-disp(perform(net,tra_input, tra_target))
+% net = feedforwardnet(2,'trainlm');
+% net = configure(net, tra_input, tra_target);
+% net.layers{1}.transferFcn = 'tansig';
+% % net.layers{2}.transferFcn = 'tansig';
+% net.trainParam.show = 50;
+% net.trainParam.lr = .05;
+% net.trainParam.epochs = 10000;
+% net.trainParam.goal = 1e-12;
+% net.divideParam.trainRatio = .750;
+% net.divideParam.valRatio = .250;
+% net.divideParam.testRatio = .00;
+% net = train(net, tra_input, tra_target);
+% disp(perform(net,tra_input, tra_target))
+
+load("net_tenth_second.mat")
+% load("net_1_second.mat")
 
 net_tra_output = net(tra_input);
 nr1 = net_tra_output(1:end/2);
@@ -91,7 +97,7 @@ nthetadott3(1) = 0;
 ii = 1;
 while ntt1(end) < 25
     % Calculated based on needed heading angles, propagating normally 
-    theta_needed(ii) = atan2((x_tes(ii+1)-nx1(ii)),(y_tes(ii+1)-ny1(ii)));
+    theta_needed(ii) = atan((x_tes(ii+1)-nx1(ii))/(y_tes(ii+1)-ny1(ii)));
     if ii > 1
         dif = abs(theta_needed(ii-1) - theta_needed(ii));
         if dif > pi
@@ -100,10 +106,10 @@ while ntt1(end) < 25
     end
     theta_calc = atan((x_tes(ii+1)-x_tes(ii))/(y_tes(ii+1)-y_tes(ii)));
     nrt1(ii) = net([theta_needed(ii); nthetat1(ii); nthetadott1(ii); dt]);
-    disp(ii)
-    disp("to nominal")
-    disp(theta_needed(ii))
-    disp(theta_calc)
+%     disp(ii)
+%     disp("to nominal")
+%     disp(theta_needed(ii))
+%     disp(theta_calc)
     [ntt1(ii+1), nxt1(ii+1), nyt1(ii+1), nthetat1(ii+1), nthetadott1(ii+1)] = prop(ntt1(ii), nxt1(ii), nyt1(ii), nthetat1(ii), nthetadott1(ii), nrt1(ii), dt, T, V);
     
     % Calculated based on current heading angle and original desired
@@ -123,17 +129,17 @@ figure(1)
 axis([-100, 100, -100, 100],'square')
 hold on
 plot(x_tes,y_tes,"k")
-% plot(x1, y1, "g")
-% plot(x2, y2, "b")
-% plot(nx1, ny1, ".r")
-% plot(nx2, ny2, ".r")
+plot(x1, y1, "g")
+plot(x2, y2, "b")
+plot(nx1, ny1, ".r")
+plot(nx2, ny2, ".r")
 plot(nxt1, nyt1, "-.")
-plot(nxt2, nyt2, ".")
+plot(nxt2, nyt2, "*")
 plot(nxt3, nyt3, ".")
 xlabel("x [m]")
 ylabel("y [m]")
 title("Path")
-legend("Target", ...
+legend("Target", "Training1", "Training2", "Net Training 1", "Net Training 2", ...
     "Propagation with Control based on Nominals" , "Propagation with Control based on Actuals", "One Step Ahead", "Location", "bestoutside")
 %     "Training1", "Training2", "Net Training 1", "Net Training 2", ...
     
@@ -146,7 +152,7 @@ plot(t2, theta2, "b")
 plot(nt1, ntheta1, ".r")
 plot(nt2, ntheta2, ".r")
 plot(ntt1, nthetat1, ".")
-plot(ntt2, nthetat2, ".")
+plot(ntt2, nthetat2, "*")
 plot(ntt3, nthetat3, ".")
 xlabel("Time [s]")
 ylabel("Heading Angle [radians]")
@@ -161,7 +167,7 @@ plot(t2, thetadot2, "b")
 plot(nt1, nthetadot1, ".r")
 plot(nt2, nthetadot2, ".r")
 plot(ntt1, nthetadott1, ".")
-plot(ntt2, nthetadott2, ".")
+plot(ntt2, nthetadott2, "*")
 plot(ntt3, nthetadott3, ".")
 xlabel("Time [s]")
 ylabel("Turning Rate [radians/s]")
@@ -176,7 +182,7 @@ plot(t2(1:end-1), r2, "b")
 plot(nt1(1:end-1), nr1, ".r")
 plot(nt2(1:end-1), nr2, ".r")
 plot(ntt1(1:end-1), nrt1, ".")
-plot(ntt2(1:end-1), nrt2, ".")
+plot(ntt2(1:end-1), nrt2, "*")
 plot(ntt3(1:end-1), nrt3, ".")
 xlabel("Time [s]")
 ylabel("Rudder Angle [radians]")
