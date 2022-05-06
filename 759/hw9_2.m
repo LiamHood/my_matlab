@@ -2,8 +2,8 @@ close all; clear; clc;
 
 T = 5;
 V = 15;
-dt = 1;
-tend = 25;
+dt = .1;
+tend = 100;
 
 t_tes(1) = 0;
 x_tes(1) = -80;
@@ -36,32 +36,39 @@ while t1(end) < tend
     ii = ii + 1;
 end
 
-tra_input =    [theta1(2:end), theta2(2:end);
+tra_input =    [x1(2:end), x2(2:end);
+                y1(2:end), y2(2:end);
+                theta1(2:end), theta2(2:end);
+                x1(1:end-1), x2(1:end-1);
+                y1(1:end-1), y2(1:end-1);
                 theta1(1:end-1), theta2(1:end-1);
                 thetadot1(1:end-1), thetadot2(1:end-1);
                 dt*ones(1,length(r1)), dt*ones(1,length(r2))];
-tra_target = [r1, r2];
+tra_target = [r1, r2;
+              x1(2:end), x2(2:end);
+              y1(2:end), y2(2:end)];
 
-% net = feedforwardnet(2,'trainlm');
-% net = configure(net, tra_input, tra_target);
-% net.layers{1}.transferFcn = 'tansig';
-% % net.layers{2}.transferFcn = 'tansig';
-% net.trainParam.show = 50;
-% net.trainParam.lr = .05;
-% net.trainParam.epochs = 10000;
-% net.trainParam.goal = 1e-12;
-% net.divideParam.trainRatio = .750;
-% net.divideParam.valRatio = .250;
-% net.divideParam.testRatio = .00;
-% net = train(net, tra_input, tra_target);
+net = feedforwardnet(2,'trainlm');
+net = configure(net, tra_input, tra_target);
+net.layers{1}.transferFcn = 'tansig';
+% net.layers{2}.transferFcn = 'tansig';
+net.trainParam.show = 50;
+net.trainParam.lr = .05;
+net.trainParam.epochs = 10000;
+net.trainParam.goal = 1e-12;
+net.divideParam.trainRatio = .750;
+net.divideParam.valRatio = .250;
+net.divideParam.testRatio = .00;
+net = train(net, tra_input, tra_target);
 % disp(perform(net,tra_input, tra_target))
 
 % load("net_tenth_second.mat")
-load("net_1_second.mat")
+% load("net_1_second_xy.mat")
+% load("net_1_second_xy_pred.mat")
 
 net_tra_output = net(tra_input);
-nr1 = net_tra_output(1:end/2);
-nr2 = net_tra_output(end/2+1:end);
+nr1 = net_tra_output(1,1:end/2);
+nr2 = net_tra_output(1,end/2+1:end);
 nt1(1) = 0;
 nx1(1) = -80;
 ny1(1) = 0;
@@ -80,6 +87,9 @@ while nt1(end) < tend
 end
 
 ntt1(1) = 0;
+% nxt1(1) = -70;
+% nyt1(1) = -10;
+% nthetat1(1) = 3*pi/4;
 nxt1(1) = -80;
 nyt1(1) = 0;
 nthetat1(1) = 0;
@@ -92,11 +102,13 @@ nthetadott2(1) = 0;
 ii = 1;
 while ntt1(end) < 25
     % Calculated based on current heading angle and original desired
-    nrt1(ii) = net([theta_tes(ii+1); nthetat1(ii); nthetadott1(ii); dt]);
+    temp = net([x_tes(ii+1); y_tes(ii+1); theta_tes(ii+1); nxt1(ii); nyt1(ii); nthetat1(ii); nthetadott1(ii); dt]);
+    nrt1(ii) = temp(1);
     [ntt1(ii+1), nxt1(ii+1), nyt1(ii+1), nthetat1(ii+1), nthetadott1(ii+1)] = prop(ntt1(ii), nxt1(ii), nyt1(ii), nthetat1(ii), nthetadott1(ii), nrt1(ii), dt, T, V);
     
     % One step ahead controller
-    nrt2(ii) = net([theta_tes(ii+1); theta_tes(ii); nthetadott2(ii); dt]);
+    temp = net([x_tes(ii+1); y_tes(ii+1); theta_tes(ii+1); x_tes(ii); y_tes(ii); theta_tes(ii); nthetadott2(ii); dt]);
+    nrt2(ii) = temp(1);
     [ntt2(ii+1), nxt2(ii+1), nyt2(ii+1), nthetat2(ii+1), nthetadott2(ii+1)] = prop(t_tes(ii), x_tes(ii), y_tes(ii), theta_tes(ii), nthetadott2(ii), nrt2(ii), dt, T, V);
     ii = ii + 1;
 end

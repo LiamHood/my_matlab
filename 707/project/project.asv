@@ -112,10 +112,9 @@ disp(Slqr)
 disp("Gains")
 disp(Klqr)
 figure()
-initial(ssc, [0, 0, 0, deg2rad(10)])
-inp = randn(201,1)/10;
+initial(ssc, [0, 0, 0, 10])
 figure()
-lsim(ssc, inp, linspace(0, 10, 201), [0 0 0 deg2rad(10)])
+lsim(ssc, [])
 
 %% Part D
 Umat = [B, eye(4)];
@@ -124,7 +123,7 @@ sys2 = ss(A, Umat, C, 0);
 reg = lqgreg(Kest, Klqr);
 disp(eig(reg))
 figure()
-closed_loop = feedback(sys2, -reg);
+closed_loop = feedback(sso, -reg);
 initial(closed_loop, [0 0 0 deg2rad(10) 0 0 0 0], linspace(0, 10, 201))
 figure()
 lsim(closed_loop, inp, linspace(0, 10, 201), [0 0 0 deg2rad(10) 0 0 0 0])

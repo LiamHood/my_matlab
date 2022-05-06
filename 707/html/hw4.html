@@ -1,0 +1,510 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>hw4</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-05-06"><meta name="DC.source" content="hw4.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Problem 1</a></li><li><a href="#3">Problem 2</a></li><li><a href="#4">Problem 3</a></li><li><a href="#5">Functions</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+</pre><h2 id="2">Problem 1</h2><pre class="codeinput">problem1()
+</pre><img vspace="5" hspace="5" src="hw4_01.png" alt=""> <img vspace="5" hspace="5" src="hw4_02.png" alt=""> <img vspace="5" hspace="5" src="hw4_03.png" alt=""> <img vspace="5" hspace="5" src="hw4_04.png" alt=""> <img vspace="5" hspace="5" src="hw4_05.png" alt=""> <img vspace="5" hspace="5" src="hw4_06.png" alt=""> <img vspace="5" hspace="5" src="hw4_07.png" alt=""> <h2 id="3">Problem 2</h2><pre class="codeinput">A = [-1.01887 0.90506;
+     0.82225 -1.07741];
+B = [-.00215; -.17555];
+C = [0 1];
+D = 0;
+sys0 = ss(A, B, C, D);
+eig(sys0)
+
+<span class="comment">%a</span>
+Qn = [4 2;
+      2 1];
+Rn = .7;
+Umat = [B eye(2)];
+sys2 = ss(A, Umat, C, D);
+fprintf(<span class="string">"Problem 2\n"</span>)
+fprintf(<span class="string">"a. observer gains\n"</span>)
+[Kest, L, P] = kalman(sys2, Qn, Rn);
+disp(L)
+
+<span class="comment">%b</span>
+n = -3.5*(1/sqrt(2));
+w = 3.5*sqrt(1-(1/sqrt(2))^2);
+des_poles = [n+i*w; n-i*w];
+Kack = acker(A, B, des_poles);
+fprintf(<span class="string">"b. controller gains by ackermann's formula \n"</span>)
+disp(Kack)
+
+<span class="comment">%c</span>
+reg = lqgreg(Kest,Kack);
+closed_loop = feedback(sys0, -reg);
+fprintf(<span class="string">"c. closed loop poles \n"</span>)
+disp(eig(closed_loop))
+figure()
+step(closed_loop)
+title(<span class="string">"Step input Problem 2"</span>)
+</pre><pre class="codeoutput">
+ans =
+
+   -0.1850
+   -1.9113
+
+Problem 2
+a. observer gains
+    1.8568
+    1.2981
+
+b. controller gains by ackermann's formula 
+  -56.3591  -15.5642
+
+c. closed loop poles 
+  -2.4749 + 2.4749i
+  -2.4749 - 2.4749i
+  -1.6972 + 0.5679i
+  -1.6972 - 0.5679i
+
+</pre><img vspace="5" hspace="5" src="hw4_08.png" alt=""> <h2 id="4">Problem 3</h2><pre class="codeinput">clear;
+fprintf(<span class="string">"Problem 3\n"</span>)
+fprintf(<span class="string">"Linearization about (0,0) and Jacobian calculated on paper\n"</span>)
+A = [0 1; -1 0];
+B = [0; 1];
+G = eye(2);
+Q = eye(2);
+R = 1;
+C = [1 0];
+D = 0;
+Umat = [B G];
+sys = ss(A, Umat, C, D);
+[Kest, L, P] = kalman(sys, Q, R);
+[K,S,clp] = lqr(A,B,Q,R);
+fprintf(<span class="string">"Augmented Closed loop system is \n"</span>)
+fprintf(<span class="string">"d/dt[x; x_est] = A_aug*[x; x_est] + B_aug*r + G_aug*w - L_aug*nu\n"</span>)
+fprintf(<span class="string">"y = C_aug*[x; x_est] + nu\n"</span>)
+fprintf(<span class="string">"where \n"</span>)
+A_aug = [A-B*K, B*K; zeros(2), A-L*C]
+B_aug = [B; 0; 0]
+G_aug = [G; G]
+L_aug = [0; 0; L]
+C_aug = [ C 0 0]
+</pre><pre class="codeoutput">Problem 3
+Linearization about (0,0) and Jacobian calculated on paper
+Augmented Closed loop system is 
+d/dt[x; x_est] = A_aug*[x; x_est] + B_aug*r + G_aug*w - L_aug*nu
+y = C_aug*[x; x_est] + nu
+where 
+
+A_aug =
+
+         0    1.0000         0         0
+   -1.4142   -1.3522    0.4142    1.3522
+         0         0   -1.3522    1.0000
+         0         0   -1.4142         0
+
+
+B_aug =
+
+     0
+     1
+     0
+     0
+
+
+G_aug =
+
+     1     0
+     0     1
+     1     0
+     0     1
+
+
+L_aug =
+
+         0
+         0
+    1.3522
+    0.4142
+
+
+C_aug =
+
+     1     0     0     0
+
+</pre><h2 id="5">Functions</h2><pre class="codeinput"><span class="keyword">function</span> problem1()
+    fprintf(<span class="string">"Problem 1\n"</span>)
+    tol = 1e-8;
+    opts = odeset( <span class="string">'RelTol'</span> , tol , <span class="string">'AbsTol'</span> , tol ) ;
+    [ t , xz ] = ode45( @zerodynamics , [0, 20] , [1, 1, 1] , opts) ;
+    figure
+    hold <span class="string">on</span>
+    plot(t, xz(:, 1))
+    plot(t, xz(:, 2))
+    plot(t, xz(:, 3))
+    hold <span class="string">off</span>
+    title(<span class="string">"Zero Dynamics [1 1 1]"</span>)
+    xlabel(<span class="string">"Time"</span>)
+    ylabel(<span class="string">"Value of State"</span>)
+    legend(<span class="string">"x1"</span>, <span class="string">"x2"</span>, <span class="string">"x3"</span>)
+
+    [ t , xz ] = ode45( @zerodynamics , [0, 20] , [10, 10, 10] , opts) ;
+    figure
+    hold <span class="string">on</span>
+    plot(t, xz(:, 1))
+    plot(t, xz(:, 2))
+    plot(t, xz(:, 3))
+    hold <span class="string">off</span>
+    title(<span class="string">"Zero Dynamics [10 10 10]"</span>)
+    xlabel(<span class="string">"Time"</span>)
+    ylabel(<span class="string">"Value of State"</span>)
+    legend(<span class="string">"x1"</span>, <span class="string">"x2"</span>, <span class="string">"x3"</span>)
+
+    [ t , xz ] = ode45( @zerodynamics , [0, 20] , [10, 1, 1] , opts) ;
+    figure
+    hold <span class="string">on</span>
+    plot(t, xz(:, 1))
+    plot(t, xz(:, 2))
+    plot(t, xz(:, 3))
+    hold <span class="string">off</span>
+    title(<span class="string">"Zero Dynamics [10 1 1]"</span>)
+    xlabel(<span class="string">"Time"</span>)
+    ylabel(<span class="string">"Value of State"</span>)
+    legend(<span class="string">"x1"</span>, <span class="string">"x2"</span>, <span class="string">"x3"</span>)
+
+    [ t , xz ] = ode45( @zerodynamics , [0, 20] , [1, 10, 1] , opts) ;
+    figure
+    hold <span class="string">on</span>
+    plot(t, xz(:, 1))
+    plot(t, xz(:, 2))
+    plot(t, xz(:, 3))
+    hold <span class="string">off</span>
+    title(<span class="string">"Zero Dynamics [1 10 1]"</span>)
+    xlabel(<span class="string">"Time"</span>)
+    ylabel(<span class="string">"Value of State"</span>)
+    legend(<span class="string">"x1"</span>, <span class="string">"x2"</span>, <span class="string">"x3"</span>)
+
+    [ t , xz ] = ode45( @zerodynamics , [0, 20] , [1, 1, 10] , opts) ;
+    figure
+    hold <span class="string">on</span>
+    plot(t, xz(:, 1))
+    plot(t, xz(:, 2))
+    plot(t, xz(:, 3))
+    hold <span class="string">off</span>
+    title(<span class="string">"Zero Dynamics [1 1 10]"</span>)
+    xlabel(<span class="string">"Time"</span>)
+    ylabel(<span class="string">"Value of State"</span>)
+    legend(<span class="string">"x1"</span>, <span class="string">"x2"</span>, <span class="string">"x3"</span>)
+
+    fprintf(<span class="string">"For the zero dynamics, x2 and x3 return to zero but x1 just steadies  \n"</span>)
+    fprintf(<span class="string">"out at whatever value it is at when the x2 and x3 values steady out\n"</span>)
+    fprintf(<span class="string">"But the control is for designed for x1 so with the full closed loop\n"</span>)
+    fprintf(<span class="string">"x2 and x3 go to zero and x1 goes where commanded"</span>)
+
+    [ t , x ] = ode45( @prop_to_ref , [0, 20] , [10, 10, 10] , opts, 100) ;
+    figure
+    hold <span class="string">on</span>
+    plot(t, x(:, 1))
+    plot(t, x(:, 2))
+    plot(t, x(:, 3))
+    hold <span class="string">off</span>
+    title(<span class="string">"Command x1 to 100 with initial states of [10, 10, 10]"</span>)
+    xlabel(<span class="string">"Time"</span>)
+    ylabel(<span class="string">"Value of State"</span>)
+    legend(<span class="string">"x1"</span>, <span class="string">"x2"</span>, <span class="string">"x3"</span>)
+
+    [ t , x ] = ode45( @prop_to_ref , [0, 20] , [10, 10, 10] , opts, 0) ;
+    figure
+    hold <span class="string">on</span>
+    plot(t, x(:, 1))
+    plot(t, x(:, 2))
+    plot(t, x(:, 3))
+    hold <span class="string">off</span>
+    title(<span class="string">"Command x1 to zero with initial states of [10, 10, 10]"</span>)
+    xlabel(<span class="string">"Time"</span>)
+    ylabel(<span class="string">"Value of State"</span>)
+    legend(<span class="string">"x1"</span>, <span class="string">"x2"</span>, <span class="string">"x3"</span>)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> xdot = zerodynamics(t, x)
+    x1 = x(1);
+    x2 = x(2);
+    x3 = x(3);
+    f = [x1*x2+x3; -2*x2; sin(x1)+2*x1*x2];
+    g = [0; x1; 1];
+    G = x1^2+1;
+    dhdx = [1 0 0];
+    xdot = (eye(3)-g*(1/G)*dhdx)*f;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> xdot = prop_to_ref(t, x, r)
+    x1 = x(1);
+    x2 = x(2);
+    x3 = x(3);
+    rdd = 0;
+    e = r-x1;
+    k = 2;
+    f = [x1*x2+x3; -2*x2; sin(x1)+2*x1*x2];
+    g = [0; x1; 1];
+    G = x1^2+1;
+    dhdx = [1 0 0];
+    xdot = (eye(3)-g*(1/G)*dhdx)*f+g*(1/G)*(rdd + k*e);
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Problem 1
+For the zero dynamics, x2 and x3 return to zero but x1 just steadies  
+out at whatever value it is at when the x2 and x3 values steady out
+But the control is for designed for x1 so with the full closed loop
+x2 and x3 go to zero and x1 goes where commanded</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all; clc;
+%% Problem 1
+
+problem1()
+
+
+%% Problem 2
+A = [-1.01887 0.90506;
+     0.82225 -1.07741];
+B = [-.00215; -.17555];
+C = [0 1];
+D = 0;
+sys0 = ss(A, B, C, D);
+eig(sys0)
+
+%a
+Qn = [4 2;
+      2 1];
+Rn = .7;
+Umat = [B eye(2)];
+sys2 = ss(A, Umat, C, D);
+fprintf("Problem 2\n")
+fprintf("a. observer gains\n")
+[Kest, L, P] = kalman(sys2, Qn, Rn);
+disp(L)
+
+%b
+n = -3.5*(1/sqrt(2));
+w = 3.5*sqrt(1-(1/sqrt(2))^2);
+des_poles = [n+i*w; n-i*w];
+Kack = acker(A, B, des_poles);
+fprintf("b. controller gains by ackermann's formula \n")
+disp(Kack)
+
+%c
+reg = lqgreg(Kest,Kack);
+closed_loop = feedback(sys0, -reg);
+fprintf("c. closed loop poles \n")
+disp(eig(closed_loop))
+figure()
+step(closed_loop)
+title("Step input Problem 2")
+
+%% Problem 3
+clear;
+fprintf("Problem 3\n")
+fprintf("Linearization about (0,0) and Jacobian calculated on paper\n")
+A = [0 1; -1 0];
+B = [0; 1];
+G = eye(2);
+Q = eye(2);
+R = 1;
+C = [1 0];
+D = 0;
+Umat = [B G];
+sys = ss(A, Umat, C, D);
+[Kest, L, P] = kalman(sys, Q, R);
+[K,S,clp] = lqr(A,B,Q,R);
+fprintf("Augmented Closed loop system is \n")
+fprintf("d/dt[x; x_est] = A_aug*[x; x_est] + B_aug*r + G_aug*w - L_aug*nu\n")
+fprintf("y = C_aug*[x; x_est] + nu\n")
+fprintf("where \n")
+A_aug = [A-B*K, B*K; zeros(2), A-L*C]
+B_aug = [B; 0; 0]
+G_aug = [G; G]
+L_aug = [0; 0; L]
+C_aug = [ C 0 0]
+
+
+%% Functions
+function problem1()
+    fprintf("Problem 1\n")
+    tol = 1e-8;
+    opts = odeset( 'RelTol' , tol , 'AbsTol' , tol ) ;
+    [ t , xz ] = ode45( @zerodynamics , [0, 20] , [1, 1, 1] , opts) ;
+    figure
+    hold on
+    plot(t, xz(:, 1))
+    plot(t, xz(:, 2))
+    plot(t, xz(:, 3))
+    hold off
+    title("Zero Dynamics [1 1 1]")
+    xlabel("Time")
+    ylabel("Value of State")
+    legend("x1", "x2", "x3")
+
+    [ t , xz ] = ode45( @zerodynamics , [0, 20] , [10, 10, 10] , opts) ;
+    figure
+    hold on
+    plot(t, xz(:, 1))
+    plot(t, xz(:, 2))
+    plot(t, xz(:, 3))
+    hold off
+    title("Zero Dynamics [10 10 10]")
+    xlabel("Time")
+    ylabel("Value of State")
+    legend("x1", "x2", "x3")
+
+    [ t , xz ] = ode45( @zerodynamics , [0, 20] , [10, 1, 1] , opts) ;
+    figure
+    hold on
+    plot(t, xz(:, 1))
+    plot(t, xz(:, 2))
+    plot(t, xz(:, 3))
+    hold off
+    title("Zero Dynamics [10 1 1]")
+    xlabel("Time")
+    ylabel("Value of State")
+    legend("x1", "x2", "x3")
+
+    [ t , xz ] = ode45( @zerodynamics , [0, 20] , [1, 10, 1] , opts) ;
+    figure
+    hold on
+    plot(t, xz(:, 1))
+    plot(t, xz(:, 2))
+    plot(t, xz(:, 3))
+    hold off
+    title("Zero Dynamics [1 10 1]")
+    xlabel("Time")
+    ylabel("Value of State")
+    legend("x1", "x2", "x3")
+
+    [ t , xz ] = ode45( @zerodynamics , [0, 20] , [1, 1, 10] , opts) ;
+    figure
+    hold on
+    plot(t, xz(:, 1))
+    plot(t, xz(:, 2))
+    plot(t, xz(:, 3))
+    hold off
+    title("Zero Dynamics [1 1 10]")
+    xlabel("Time")
+    ylabel("Value of State")
+    legend("x1", "x2", "x3")
+
+    fprintf("For the zero dynamics, x2 and x3 return to zero but x1 just steadies  \n")
+    fprintf("out at whatever value it is at when the x2 and x3 values steady out\n")
+    fprintf("But the control is for designed for x1 so with the full closed loop\n")
+    fprintf("x2 and x3 go to zero and x1 goes where commanded")
+
+    [ t , x ] = ode45( @prop_to_ref , [0, 20] , [10, 10, 10] , opts, 100) ;
+    figure
+    hold on
+    plot(t, x(:, 1))
+    plot(t, x(:, 2))
+    plot(t, x(:, 3))
+    hold off
+    title("Command x1 to 100 with initial states of [10, 10, 10]")
+    xlabel("Time")
+    ylabel("Value of State")
+    legend("x1", "x2", "x3")
+
+    [ t , x ] = ode45( @prop_to_ref , [0, 20] , [10, 10, 10] , opts, 0) ;
+    figure
+    hold on
+    plot(t, x(:, 1))
+    plot(t, x(:, 2))
+    plot(t, x(:, 3))
+    hold off
+    title("Command x1 to zero with initial states of [10, 10, 10]")
+    xlabel("Time")
+    ylabel("Value of State")
+    legend("x1", "x2", "x3")
+
+end
+
+function xdot = zerodynamics(t, x)
+    x1 = x(1);
+    x2 = x(2);
+    x3 = x(3);
+    f = [x1*x2+x3; -2*x2; sin(x1)+2*x1*x2];
+    g = [0; x1; 1];
+    G = x1^2+1;
+    dhdx = [1 0 0];
+    xdot = (eye(3)-g*(1/G)*dhdx)*f;
+end
+
+function xdot = prop_to_ref(t, x, r)
+    x1 = x(1);
+    x2 = x(2);
+    x3 = x(3);
+    rdd = 0;
+    e = r-x1;
+    k = 2;
+    f = [x1*x2+x3; -2*x2; sin(x1)+2*x1*x2];
+    g = [0; x1; 1];
+    G = x1^2+1;
+    dhdx = [1 0 0];
+    xdot = (eye(3)-g*(1/G)*dhdx)*f+g*(1/G)*(rdd + k*e);
+end
+
+
+##### SOURCE END #####
+--></body></html>
