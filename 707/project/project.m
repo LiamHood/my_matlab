@@ -45,7 +45,10 @@ disp(O)
 fprintf("\tRank of observability should be %i and is %i\n", [rank(A), rank(O)])
 fprintf("\tTherefore is observable\n\n")
 
-sso = ss(A, B, C, 0);
+sso = ss(A, B, C, 0, ...
+    'StateName', {'alpha', 'q', 'VT', 'theta'}, ...
+    'InputName', {'elevator angle'}, ...
+    'OutputName', {'pitch', 'pitch rate'});
 poles = pole(sso);
 figure()
 pzplot(sso)
@@ -54,47 +57,90 @@ disp(poles)
 fprintf("\tAll real parts of poles are negative so open loop system is stable\n")
 figure()
 opt = stepDataOptions;
-opt.StepAmplitude = 10 ;
+opt.StepAmplitude = deg2rad(10) ;
 step(sso,opt)
 figure()
-initial(sso, [0, 0, 0, 10])
+initial(sso, [0, 0, 0, deg2rad(10)])
 
 %% Part B
 fprintf("***************Part B***************\n")
 wn_sp = 16;
 dr_sp = .8;
-lam1 = -dr_sp + 1i*wn_sp;
+n = -wn_sp*(dr_sp);
+w = wn_sp*sqrt(1-(dr_sp)^2);
+lam1 = n + 1i*w;
 lam2 = conj(lam1);
 lambda = [lam1, lam2, poles(3), poles(4)];
-Kack = Ackermann(A, B, lambda);
+Kack = acker(A, B, lambda);
+% Kack = Ackermann(A, B, lambda);
 fprintf("Ackermann's Formula\n")
-fprintf("\t Gains are K = [%f  %f  %f  %f] \n", Kack)
+fprintf("Desired Short Period Poles:\n")
+disp([lam1; lam2])
+fprintf("Gains are K = [%f  %f  %f  %f] \n", Kack)
+fprintf("Poles using Ackermann gains:\n")
+disp(eig(A-B*Kack))
 
-[ol_vec,ol_lam] = eig(A);
-new_vec1 = [1+i*-1; -1+i*1; 0; 0];
-new_vec3 = [0; 0; 1+i*-1; -1+i*1];
-new_vec2 = conj(new_vec1);
-new_vec4 = conj(new_vec2);
-new_vec = [new_vec1, new_vec2, new_vec3, new_vec4];
-Kstruc = EigStructAssign(A, B, C, lambda(1:2), new_vec(1:2,1:2));
-ssc = ss(A-B*Kstruc*C,zeros(length(A),1),C,0);
-figure()
-initial(ssc, [0, 0, 0, 10])
-vd1 = [eye(4), zeros(4,1)];
-
-% [ol_vec,ol_lam] = eig(A);
+[ol_vec, ol_lam] = eig(A);
 % new_vec1 = [1+i*-1; -1+i*1; 0; 0];
 % new_vec3 = [0; 0; 1+i*-1; -1+i*1];
 % new_vec2 = conj(new_vec1);
 % new_vec4 = conj(new_vec2);
 % new_vec = [new_vec1, new_vec2, new_vec3, new_vec4];
-% Kstruc = EigStructAssign(A, B, eye(4), lambda, new_vec);
-% ssc = ss(A-B*Kstruc,zeros(length(A),1),C,0);
-% figure()
-% initial(ssc, [0, 0, 0, 10])
-% vd1 = [eye(4), zeros(4,1)];
 
+% new_vec = [1-i, 1+i; 
+%            -1+i, -1-i];
+% new_vec = ol_vec([4,2],1:2)
+% O = zeros(2,1); 
+% D = [1 0 0 0;
+%      0 1 0 0;];
 
+% new_vec = ol_vec(:,1:2);
+% O = zeros(4,1);
+% D = eye(4);
+
+% I4 = eye(4);
+% M1 = [(lambda(1)*I4-A), B; D, O];
+% M1inv = pinv(M1);
+% M2 = [(lambda(2)*I4-A), B; D, O];
+% M2inv = pinv(M2);
+
+new_vec = [1-i, 1+i];
+O = zeros(1,1); 
+D = [1 0 0 0];
+
+I4 = eye(4);
+M1 = [(lambda(1)*I4-A), B; D, O];
+M1inv = inv(M1);
+M2 = [(lambda(2)*I4-A), B; D, O];
+M2inv = inv(M2);
+
+top_zeros = zeros(4,2);
+des = [top_zeros; new_vec];
+final1 = M1inv*des(:,1);
+v1 = final1(1:4);
+u1 = final1(5);
+final2 = M2inv*des(:,2);
+v2 = final2(1:4);
+u2 = final2(5);
+U = [u1, u2];
+V = [v1, v2];
+Kstruc = U*inv(C*V);
+Kstruc = -Kstruc;
+
+% Kstruc = EigStructAssign(A, B, C, lambda(1:2), new_vec);
+ssc = ss(A-B*Kstruc*C,zeros(length(A),1),C,0);
+figure()
+initial(ssc, [0, 0, 0, deg2rad(10)])
+vd1 = [eye(4), zeros(4,1)];
+fprintf("Eigenstructure Assignment\n")
+fprintf("Desired Short Period Poles:\n")
+disp([lam1; lam2])
+fprintf("Gains are K = [%f  %f] \n", Kstruc)
+fprintf("Poles using Eigenstructure Assignment gains:\n")
+[es_vec, es_lam] = eig(A-B*Kstruc*C);
+disp(es_lam)
+fprintf("Poles using Eigenstructure Assignment gains:\n")
+disp(es_vec)
 %% Part C
 fprintf("***************Part C***************\n")
 alpha_max = 5;
@@ -106,28 +152,37 @@ Q = diag([1/alpha_max^2, 1/q_max^2, 1/VT_max^2, 1/theta_max^2]);
 R = 1/demax^2;
 % R = 1e-16;
 [Klqr, Slqr, CLPlqr] = lqr(sso, Q, R);
-ssc = ss(A-B*Klqr,zeros(length(A),1),C,0);
+ssc = ss(A-B*Klqr,B,C,0, ...
+    'StateName', {'alpha', 'q', 'VT', 'theta'}, ...
+    'InputName', {'elevator angle'}, ...
+    'OutputName', {'pitch', 'pitch rate'});
 disp("Solution to Riccati")
 disp(Slqr)
 disp("Gains")
 disp(Klqr)
 figure()
 initial(ssc, [0, 0, 0, deg2rad(10)])
-inp = randn(201,1)/10;
+inp = randn(201,1)*10;
 figure()
 lsim(ssc, inp, linspace(0, 10, 201), [0 0 0 deg2rad(10)])
 
 %% Part D
 Umat = [B, eye(4)];
 sys2 = ss(A, Umat, C, 0);
-[Kest, L, P] = kalman(sys2, eye(4), 1);
+Qn = [4 2 1 0;
+      2 4 2 1;
+      1 2 4 2;
+      0 1 2 4];
+Qn = eye(4);
+Rn = 1;
+[Kest, L, P] = kalman(sys2, Qn, Rn);
 reg = lqgreg(Kest, Klqr);
 disp(eig(reg))
 figure()
-closed_loop = feedback(sys2, -reg);
-initial(closed_loop, [0 0 0 deg2rad(10) 0 0 0 0], linspace(0, 10, 201))
+closed_loop = feedback(sso, -reg);
+initial(closed_loop, [0 0 0 deg2rad(10) 0 0 0 0], linspace(0, 30, 301))
 figure()
-lsim(closed_loop, inp, linspace(0, 10, 201), [0 0 0 deg2rad(10) 0 0 0 0])
+lsim(closed_loop, inp, linspace(0, 30, 201), [0 0 0 deg2rad(10) 0 0 0 0])
 
 fprintf("***************Part D***************\n")
 disp("Solution to Riccati")
@@ -166,21 +221,9 @@ function K = Ackermann(A, B, lambda)
 end
 
 function K = EigStructAssign(A, B, C, des_lambda, des_vec)
-    poles = eig(A);
-%     fprintf("Open Loop Poles are \\lamda = \n")
-    disp(poles)
-    
     n = length(A);
-
-    Con = [];
-    for ii = 1:n
-        Con = [Con, A^(ii-1)*B];
-    end
-%     fprintf("Controllable since controllability matrix is rank %i and A is rank %i\n\n", [rank(Con), rank(A)])
-
-    
     m = size(B,2);
-    p = length(des_lambda);
+    p = size(des_vec,1);
 
     I = eye(n);
     D = diag(ones(1,p));
@@ -188,7 +231,7 @@ function K = EigStructAssign(A, B, C, des_lambda, des_vec)
     top = zeros(n,1);
     uv = @(lambda,vec) pinv([lambda.*I - A, B; D, O])*[top;vec];
 
-    for ii = 1:p
+    for ii = 1:length(des_lambda)
         uvii = uv(des_lambda(ii), des_vec(:,ii));
         vd(:,ii) = uvii(1:n);
         ud(:,ii) = uvii(n+1:end);

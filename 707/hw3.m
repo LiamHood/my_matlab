@@ -29,7 +29,7 @@ function problem3()
          0, 0];
     B = [0, 1]';
     Q = [1, 0;
-         0, a];
+         0, 1];
     R = 1;
     fprintf("Problem 3:\n")
     lqrprint(A, B, Q, R)
