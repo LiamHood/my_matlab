@@ -42,22 +42,22 @@ tra_input =    [theta1(2:end), theta2(2:end);
                 dt*ones(1,length(r1)), dt*ones(1,length(r2))];
 tra_target = [r1, r2];
 
-% net = feedforwardnet(2,'trainlm');
-% net = configure(net, tra_input, tra_target);
-% net.layers{1}.transferFcn = 'tansig';
-% % net.layers{2}.transferFcn = 'tansig';
-% net.trainParam.show = 50;
-% net.trainParam.lr = .05;
-% net.trainParam.epochs = 10000;
-% net.trainParam.goal = 1e-12;
-% net.divideParam.trainRatio = .750;
-% net.divideParam.valRatio = .250;
-% net.divideParam.testRatio = .00;
-% net = train(net, tra_input, tra_target);
-% disp(perform(net,tra_input, tra_target))
+net = feedforwardnet(2,'trainlm');
+net = configure(net, tra_input, tra_target);
+net.layers{1}.transferFcn = 'tansig';
+% net.layers{2}.transferFcn = 'tansig';
+net.trainParam.show = 50;
+net.trainParam.lr = .05;
+net.trainParam.epochs = 10000;
+net.trainParam.goal = 1e-12;
+net.divideParam.trainRatio = .750;
+net.divideParam.valRatio = .250;
+net.divideParam.testRatio = .00;
+net = train(net, tra_input, tra_target);
+disp(perform(net,tra_input, tra_target))
 
 % load("net_tenth_second.mat")
-load("net_1_second.mat")
+% load("net_1_second.mat")
 
 net_tra_output = net(tra_input);
 nr1 = net_tra_output(1:end/2);
