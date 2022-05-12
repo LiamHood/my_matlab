@@ -100,6 +100,7 @@ title("Ackermann gains Response to 10 Degree Initial Pitch")
 % new_vec2 = conj(new_vec1);
 % new_vec4 = conj(new_vec2);
 % new_vec = [new_vec1, new_vec2, new_vec3, new_vec4];
+
 % new_vec = [1-i, 1+i; 
 %            -1+i, -1-i];
 % new_vec = ol_vec([1,2],1:2)
@@ -110,11 +111,23 @@ title("Ackermann gains Response to 10 Degree Initial Pitch")
 new_vec = ol_vec(:,1:2);
 O = zeros(4,1);
 D = eye(4);
+
 I4 = eye(4);
 M1 = [(lambda(1)*I4-A), B; D, O];
 M1inv = pinv(M1);
 M2 = [(lambda(2)*I4-A), B; D, O];
 M2inv = pinv(M2);
+
+% new_vec = [ol_vec(1,1), ol_vec(1,2)];
+% O = zeros(1,1); 
+% D = [1 0 0 0];
+% 
+% I4 = eye(4);
+% M1 = [(lambda(1)*I4-A), B; D, O];
+% M1inv = inv(M1);
+% M2 = [(lambda(2)*I4-A), B; D, O];
+% M2inv = inv(M2);
+
 top_zeros = zeros(4,2);
 des = [top_zeros; new_vec];
 final1 = M1inv*des(:,1);
@@ -137,7 +150,7 @@ initial(ssc, [0, 0, 0, deg2rad(10)])
 title("Eigenstructure Assignment gains Response to 10 Degree Initial Pitch")
 
 vd1 = [eye(4), zeros(4,1)];
-fprintf("Eigenstructure Assignment using open loop eigen vectors\n")
+fprintf("Eigenstructure Assignment\n")
 fprintf("Desired Short Period Poles:\n")
 disp([lam1; lam2])
 fprintf("Gains are K = [%f  %f] \n", Kstruc)
@@ -146,50 +159,6 @@ fprintf("Poles using Eigenstructure Assignment gains:\n")
 disp(es_lam)
 fprintf("Achievable Eigen Vectors using Eigenstructure Assignment gains:\n")
 disp(es_vec)
-
-
-new_vec = [ol_vec(1,1), ol_vec(1,2)];
-O = zeros(1,1); 
-D = [1 0 0 0];
-I4 = eye(4);
-M1 = [(lambda(1)*I4-A), B; D, O];
-M1inv = inv(M1);
-M2 = [(lambda(2)*I4-A), B; D, O];
-M2inv = inv(M2);
-top_zeros = zeros(4,2);
-des = [top_zeros; new_vec];
-final1 = M1inv*des(:,1);
-v1 = final1(1:4);
-u1 = final1(5);
-final2 = M2inv*des(:,2);
-v2 = final2(1:4);
-u2 = final2(5);
-U = [u1, u2];
-V = [v1, v2];
-Kstruc = U*inv(C*V);
-
-% Kstruc = EigStructAssign(A, B, C, lambda(1:2), new_vec);
-ssc = ss(A-B*Kstruc*C,B,C,0, ...
-    'StateName', {'alpha', 'q', 'VT', 'theta'}, ...
-    'InputName', {'elevator angle'}, ...
-    'OutputName', {'pitch', 'pitch rate'});
-figure()
-initial(ssc, [0, 0, 0, deg2rad(10)])
-title("Eigenstructure Assignment gains Response to 10 Degree Initial Pitch")
-
-vd1 = [eye(4), zeros(4,1)];
-fprintf("Eigenstructure Assignment of only alpha \n")
-fprintf("Desired Short Period Poles:\n")
-disp([lam1; lam2])
-fprintf("Gains are K = [%f  %f] \n", Kstruc)
-fprintf("Poles using Eigenstructure Assignment gains:\n")
-[es_vec, es_lam] = eig(A-B*Kstruc*C);
-disp(es_lam)
-fprintf("Achievable Eigen Vectors using Eigenstructure Assignment gains:\n")
-disp(es_vec)
-fprintf("I am trying to change it as little as possible but for some reason\n" + ...
-    "a pole I am not trying to change is going unstable. With just two \n" + ...
-    "outputs only two sets of eigenvectors and values should be set\n")
 
 %% Part C
 fprintf("***************Part C***************\n")
@@ -224,32 +193,6 @@ title("LQR Response to 10 Degree Initial Pitch with noise")
 fprintf("***************Part D***************\n")
 Umat = [B, eye(4)];
 sys2 = ss(A, Umat, C, 0);
-
-inp_1deg = deg2rad(randn(201,1)*.1);
-w_1 = [];
-for ii = 1:length(inp_1deg)
-    w_1(:,ii) = B.*inp_1deg(ii);
-end
-Qn_1 = cov(w_1');
-% Qn = eye(4);
-Rn_1 = cov(inp_1deg)*.1;
-[Kest_1, L, P] = kalman(sys2, Qn_1, Rn_1);
-reg_1 = lqgreg(Kest_1, Klqr);
-closed_loop_1 = feedback(sso, -reg_1);
-disp("Solution with noise on input of noise with normal distribution \sigma=.1 degree")
-disp("standard deviation of .1 degree")
-disp("Solution to Observer Riccati")
-disp(P)
-disp("Observer Gains")
-disp(L)
-figure()
-initial(closed_loop, [0 0 0 deg2rad(10) 0 0 0 0], linspace(0, 30, 301))
-title("LQG Response to 10 Degree Initial Pitch without noise")
-figure()
-lsim(closed_loop_1, inp_1deg, linspace(0, 30, 201), [0 0 0 deg2rad(10) 0 0 0 0])
-title("LQG Response to 10 Degree Initial Pitch with input noise \sigma=.1 degree")
-
-
 w = [];
 for ii = 1:length(inp1deg)
     w(:,ii) = B.*inp1deg(ii);
@@ -262,17 +205,41 @@ reg = lqgreg(Kest, Klqr);
 % disp(eig(reg))
 closed_loop = feedback(sso, -reg);
 
-disp("Solution with noise on input of noise with normal distribution \sigma=1 degree")
+disp("Solution with noise on input of noise with normal distribution")
 disp("standard deviation of 1 degree")
 disp("Solution to Observer Riccati")
-disp(P)
+disp(Slqr)
 disp("Observer Gains")
 disp(L)
+
+figure()
+initial(closed_loop, [0 0 0 deg2rad(10) 0 0 0 0], linspace(0, 30, 301))
+title("LQG Response to 10 Degree Initial Pitch without noise")
 
 figure()
 lsim(closed_loop, inp1deg, linspace(0, 30, 201), [0 0 0 deg2rad(10) 0 0 0 0])
 title("LQG Response to 10 Degree Initial Pitch with input noise \sigma=1 degree")
 
+inp10deg = deg2rad(randn(201,1)*.1);
+w10 = [];
+for ii = 1:length(inp10deg)
+    w10(:,ii) = B.*inp10deg(ii);
+end
+Qn10 = cov(w10');
+% Qn = eye(4);
+Rn = cov(inp10deg)*.1;
+[Kest1, L, P] = kalman(sys2, Qn10, Rn);
+reg1 = lqgreg(Kest1, Klqr);
+closed_loop5 = feedback(sso, -reg1);
+disp("Solution with noise on input of noise with normal distribution")
+disp("standard deviation of .1 degree")
+disp("Solution to Observer Riccati")
+disp(Slqr)
+disp("Observer Gains")
+disp(L)
+figure()
+lsim(closed_loop5, inp10deg, linspace(0, 30, 201), [0 0 0 deg2rad(10) 0 0 0 0])
+title("LQG Response to 10 Degree Initial Pitch with input noise \sigma=.1 degree")
 
 inp10deg = deg2rad(randn(201,1)*10);
 w10 = [];
@@ -282,26 +249,25 @@ end
 Qn10 = cov(w10');
 % Qn = eye(4);
 Rn10 = cov(inp10deg);
-[Kest10, L, P] = kalman(sys2, Qn10, Rn10);
-reg10 = lqgreg(Kest10, Klqr);
-closed_loop10 = feedback(sso, -reg10);
-disp("Solution with noise on input of noise with normal distribution \sigma=10 degree")
+[Kest1, L, P] = kalman(sys2, Qn10, Rn10);
+reg1 = lqgreg(Kest1, Klqr);
+closed_loop5 = feedback(sso, -reg1);
+disp("Solution with noise on input of noise with normal distribution")
 disp("standard deviation of 10 degree")
 disp("Solution to Observer Riccati")
-disp(P)
+disp(Slqr)
 disp("Observer Gains")
 disp(L)
 figure()
-lsim(closed_loop10, inp10deg, linspace(0, 30, 201), [0 0 0 deg2rad(10) 0 0 0 0])
+lsim(closed_loop5, inp10deg, linspace(0, 30, 201), [0 0 0 deg2rad(10) 0 0 0 0])
 title("LQG Response to 10 Degree Initial Pitch with input noise \sigma=10 degree")
 
 disp("After testing with different magnitudes of noise it is clear that the")
 disp("the obvious conclusion is correct that the systems work better with ")
-disp("less noise. It seems like 10 degree standard deviation for the noise")
-disp("is far too much. The pitch rate seems more effected than the pitch by ")
-disp("the noise for some reason. Noise was modeled as a noisy input in lsim ")
-disp("and it was scaled to 10, 1, and .1 degrees. The input was shifted to  ")
-disp("radians before being input to lsim")
+disp("less noise. The pitch rate seems more effected than the pitch by the ")
+disp("noise for some reason. Noise was modeled as a noisy input in lsim and it")
+disp("was scaled to 10, 1, and .1 degrees. The input was shifted to radians ")
+disp("before being input to lsim")
 
 % %% Functions
 % 
