@@ -1,0 +1,134 @@
+function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tether_param, mu , tol )
+%     Based on https://arc.aiaa.org/doi/10.2514/1.12016
+% Uses Classical Orbital Elements a (semimajor axis), e (eccentricity), 
+% i (inclination), RAAN (right ascension of ascending node), aop (argument
+% of periapsis), ta (true anomaly)
+%
+% Considers electrodynamic force,
+% will at some point maybe: atmospheric drag, spherical harmonics,
+% third body of sun and moon, srp
+% tether is treated as dumbbell model, rigid with lumped masses at the end
+
+% tether_param = L, m1, m2, mt
+
+    opts = odeset('RelTol', tol, 'AbsTol', tol ) ;
+    [ t , states ] = ode45(@gauss_variations, tspan , ...
+        [ sc_state0 ; tether_state0], opts, tether_param, mu) ;
+
+
+    function dstate = gauss_variations(t, states, tether_param, mu)
+        a = states(1);
+        e = states(2);
+        i = states(3);
+        RAAN = states(4);
+        aop = states(5);
+        ta = states(6);
+
+        theta = states(7);
+        phi = states(8);
+        dtheta = states(9);
+        dphi = states(10);
+
+        I = states(11);
+        
+        [fr, fs, fw] = edt_forces(states, tether_param);
+        [Qtheta, Qphi] = edt_torque(states, tether_param);
+
+        p = a*(1-e^2);
+        h = sqrt(mu*p);
+        r = norm(states(1:3));
+        n = sqrt(mu/a^3);
+        u = aop + ta;
+        mstar = (m1+mt/2)*(m2+mt/2)/m-mt/6)
+        
+        % orbital elements using Vallado p.636
+        da = (2/(n*sqrt(1-e^2)))*(e*sin(ta)*fr + (p/r)*fs);
+        de = (sqrt(1-e^2)/(n*a))*(sin(ta)*fr + ...
+            (cos(ta)+(e+cos(ta))/(1+e*cos(ta)))*fs);
+        di = (r*cos(u)/(n*a^2*sqrt(1-e^2)))*fw;
+        dRAAN = (r*sin(u)/(n*a^2*sqrt(1-e^2)*sin(i)))*fw;
+        daop = (srqrt(1-e^2)/(n*a*e))*(-cos(ta)*fr + ...
+            sin(ta)*(1+r/p)*fs) - (r*cot(i)*sin(u)/h)*fw;
+        dta = h/r^2 + (1/(e*h))*(p*cos*(ta))*fr - (p+r)*sin(ta)*fs;
+        
+        % second derivative of true anomaly is found by assuming that most
+        % of the change in true anomaly is due to 
+        ddta = Fs/r;
+
+        % libration dynamics from Paul Williams paper
+        ddtheta = -ddta + 2*(dtheta + dta)*dphi*tan(phi) ...
+            - 3*(dstates(6)^2/(1+e*cos(ta)))*sin*(theta)*cos(theta) ...
+            + Qtheta/(mstar*L^2*cos(phi)^2);
+        ddphi = -((dtheta+dta)^2 ...
+            + 3*(dta^2/(1+e*cos(ta)))*cos(theta)^2)*sin(phi)*cos(phi) ...
+            + Qphi/(mstar*L^2);
+
+        dI = 0;
+        
+        dstate = [da; de; di; dRAAN; daop; dta; dtheta; dphi; ddtheta; ddphi; dI];
+    end
+
+    function [Bx, By, Bz] = MagField_NonTilted(states)
+        % Earth’s magnetic field vector in the Euler–Hill frame whose 
+        % components are defined by (assuming a nontilted dipole)
+        a = states(1);
+        e = states(2);
+        i = states(3);
+        RAAN = states(4);
+        aop = states(5);
+        ta = states(6);
+        p = a*(1-e^2);
+        
+        Bo = 3.12e-5;
+        Bo_over_R3 = Bo/(p/(1+e*cos(ta)))^3;
+
+        Bx = -2*Bo_over_R3*sin(aop + ta)*sin(i);
+        By = Bo_over_R3*cos(aop+ta)*sin(i);
+        Bz = Bo_over_R3*cos(i);
+    end
+
+    function [fr, ftheta, fh] = edt_forces(states, tether_param)
+        theta = states(7);
+        phi = states(8);
+        I = states(11);
+
+        L = tether_param(1);
+        m = sum(tether_param(2:4));
+
+        [Bx, By, Bz] = MagField_NonTilted(states);
+
+        fr = I*L/(m*(Bz*sin(theta)*cos(phi)-By*sin(phi)));
+        ftheta = I*L/(m*(Bx*sin(phi)-Bz*cos(theta)*cos(phi)));
+        fh = I*L/(m*(By*cos(theta)*cos(phi)-Bx*sin(theta)*cos(phi)));
+    end
+
+    function [Qtheta, Qphi] = edt_torque(states, tether_param)
+        % assumes a uniform current flowing in the tether. In the case 
+        % where the mass distribution is perfectly symmetrical, then the 
+        % net torque about the center of mass is zero. This is an ideal 
+        % scenario that is unlikely to be achieved in practice. This effect
+        % will still be present in bare-wire tethers, but the relationship
+        % is not as straightforward because of the nonuniform distribution 
+        % of the electric current.
+        theta = states(7);
+        phi = states(8);
+        I = states(11);
+
+        L = tether_param(1);
+        m1 = tether_param(2);
+        m2 = tether_param(3);
+        mt = tether_param(4);
+        m = sum(tether_param(2:4));
+
+        % nondimensional parameter that defines a measure of the average 
+        % moment arm of the electromagnetic torque acting on the tether 
+        % relative to the system center of mass
+        PHI = (m1^2-m2^2+mt*(m1-m2))/m^2; 
+        [Bx, By, Bz] = MagField_NonTilted(states);
+
+        Qtheta = (I*L^2/2)*PHI*cos(phi)*...
+            (sin(phi)*(Bx*cos(theta)+By*sin(theta))-Bz*cos(phi));
+        Qphi = -(I*L^2/2)*PHI*(By*cos(theta)-Bx*sin(theta));
+    end
+
+end
