@@ -39,6 +39,7 @@ function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tet
 
         [fr, fs, fw] = edt_forces(states, tether_param);
         [Qtheta, Qphi] = edt_torque(states, tether_param);
+        [GGtheta, GGphi] = gravity_grad_torque(states, tether_param, mu);
 
         p = a*(1-e^2);
         h = sqrt(mu*p);
@@ -66,10 +67,10 @@ function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tet
         % libration dynamics from Paul Williams paper
         ddtheta = -ddta + 2*(dtheta + dta)*dphi*tan(phi) ...
             - 3*(dta^2/(1+e*cos(ta)))*sin(theta)*cos(theta) ...
-            + Qtheta/(mstar*L^2*cos(phi)^2);
+            + (Qtheta+GGtheta)/(mstar*L^2*cos(phi)^2);
         ddphi = -((dtheta+dta)^2 ...
             + 3*(dta^2/(1+e*cos(ta)))*cos(theta)^2)*sin(phi)*cos(phi) ...
-            + Qphi/(mstar*L^2);
+            + (Qphi+GGphi)/(mstar*L^2);
 
         dI = 0;
         
@@ -137,6 +138,59 @@ function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tet
         Qtheta = (I*L^2/2)*PHI*cos(phi)*...
             (sin(phi)*(Bx*cos(theta)+By*sin(theta))-Bz*cos(phi));
         Qphi = -(I*L^2/2)*PHI*(By*cos(theta)-Bx*sin(theta));
+        Qtheta = 0;
+        Qphi = 0;
     end
 
+    function [GGtheta, GGphi] = gravity_grad_torque(states, tether_param, mu)
+        a = states(1);
+        e = states(2);
+        i = states(3);
+        RAAN = states(4);
+        aop = states(5);
+        ta = states(6);
+        theta = states(7);
+        phi = states(8);
+
+        L = tether_param(1);
+        m1 = tether_param(2);
+        m2 = tether_param(3);
+        mt = tether_param(4);
+        m = sum(tether_param(2:4));
+
+        [ r , v ] = coes2state( [sqrt(mu*a*(1-e^2)), i, e, RAAN, aop, ta] , mu );
+
+        % need L in terms ECI to get r new
+        GGtheta = 0;
+        GGphi = 0;
+%         grav_m1 = -mu*m1/r^3;
+%         grav_m2 = -mu*m2/(r-L*cos)^3;
+    end
+
+    function [ r , v ] = coes2state( COES , mu )
+    % h , inc , ecc , RAAN , omega , theta , a , rp , ra 
+            
+        h = COES(1) ;
+        inc = COES(2) ;
+        ecc = COES(3) ;
+        RAAN = COES(4) ;
+        omega = COES(5) ;
+        theta = COES(6) ;
+    
+        r_peri = (h^2/mu) * ( 1/( 1 + ecc*cos(theta) ) ) * [ cos( theta ) ; sin( theta ) ; 0 ] ;
+        v_peri = (mu/h) * [ -sin( theta ) ; ecc+cos(theta) ; 0 ] ;
+    
+        Q(1,1) = -sin(RAAN)*cos(inc)*sin(omega) + cos(RAAN)*cos(omega) ;
+        Q(1,2) = -sin(RAAN)*cos(inc)*cos(omega) - cos(RAAN)*sin(omega) ;
+        Q(1,3) = sin(RAAN)*sin(inc) ;
+        Q(2,1) = cos(RAAN)*cos(inc)*sin(omega) + sin(RAAN)*cos(omega) ;
+        Q(2,2) = cos(RAAN)*cos(inc)*cos(omega) - sin(RAAN)*sin(omega) ;
+        Q(2,3) = -cos(RAAN)*sin(inc) ;
+        Q(3,1) = sin(inc)*sin(omega) ;
+        Q(3,2) = sin(inc)*cos(omega) ;
+        Q(3,3) = cos(inc) ;
+    
+        r = Q*r_peri ;
+        v = Q*v_peri ;
+    end
 end
