@@ -10,11 +10,11 @@ aop0 = deg2rad(50);
 ta0 = 0;
 sc_state0 = [a0; e0; i0; RAAN0; aop0; ta0];
 
-tether_state0 = [0.1; 0; 0; 0; -1];
+tether_state0 = [0.1; 0; 0; 0; 1];
 
 L = 15;
-m1 = 1000;
-m2 = 25;
+m1 = 250;
+m2 = 150;
 mt = 20;
 tether_param = [L; m1; m2; mt];
 
