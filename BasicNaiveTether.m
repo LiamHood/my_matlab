@@ -61,7 +61,7 @@ function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tet
         % of the change in true anomaly is due to the h/r^2 term and then
         % uses 9-19 from Vallado for dh/dt, (dh/dt = r*Fs)
         ddta = fs/r;
-        ddta = 0;
+%         ddta = 0;
 
         % libration dynamics from Paul Williams paper
         ddtheta = -ddta + 2*(dtheta + dta)*dphi*tan(phi) ...
