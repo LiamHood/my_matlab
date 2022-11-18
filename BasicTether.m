@@ -1,10 +1,9 @@
-function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tether_param, mu , tol )
-%     Based on https://arc.aiaa.org/doi/10.2514/1.12016
+function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_param, mu , tol )
 % Uses Classical Orbital Elements a (semimajor axis), e (eccentricity), 
 % i (inclination), RAAN (right ascension of ascending node), aop (argument
 % of periapsis), ta (true anomaly)
 %
-% Considers electrodynamic force,
+% Considers electrodynamic force and gravity gradient
 % will at some point maybe: atmospheric drag, spherical harmonics,
 % third body of sun and moon, srp
 % tether is treated as dumbbell model, rigid with lumped masses at the end
@@ -24,29 +23,31 @@ function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tet
         aop = states(5);
         ta = states(6);
 
-        theta = states(7);
-        phi = states(8);
-        dtheta = states(9);
+        phi = states(7);
+        theta = states(8);
+        psi = states(9);
         dphi = states(10);
-
-        I = states(11);
-
+        dtheta = states(11);
+        dpsi = states(12);
+        
         L = tether_param(1);
         m1 = tether_param(2);
         m2 = tether_param(3);
         mt = tether_param(4);
         m = sum(tether_param(2:4));
+        Ix = tether_param(5);
+        Iy = tether_param(6);
+        Iz = tether_param(7);
 
         [fr, fs, fw] = edt_forces(states, tether_param);
-        [Qtheta, Qphi] = edt_torque(states, tether_param);
-        [GGtheta, GGphi] = gravity_grad_torque(states, tether_param, mu);
+        Tq = edt_torque(states, tether_param);
+        Tgg = gravity_grad_torque(states, tether_param, mu);
 
         p = a*(1-e^2);
         h = sqrt(mu*p);
         r = norm(states(1:3));
         n = sqrt(mu/a^3);
         u = aop + ta;
-        mstar = (m1+mt/2)*(m2+mt/2)/m-mt/6;
 
         % orbital elements using Vallado p.636
         da = (2/(n*sqrt(1-e^2)))*(e*sin(ta)*fr + (p/r)*fs);
@@ -56,25 +57,15 @@ function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tet
         dRAAN = (r*sin(u)/(n*a^2*sqrt(1-e^2)*sin(i)))*fw;
         daop = (sqrt(1-e^2)/(n*a*e))*(-cos(ta)*fr + ...
             sin(ta)*(1+r/p)*fs) - (r*cot(i)*sin(u)/h)*fw;
-        dta = h/r^2 + (1/(e*h))*(p*cos(ta))*fr - (p+r)*sin(ta)*fs;
+        dta = h/r^2 + (1/(e*h))*(p*cos(ta)*fr - (p+r)*sin(ta)*fs);
         
-        % second derivative of true anomaly is found by assuming that most
-        % of the change in true anomaly is due to the h/r^2 term and then
-        % uses 9-19 from Vallado for dh/dt, (dh/dt = r*Fs)
-%         ddta = fs/r;
-        ddta = 0;
-
-        % libration dynamics from Paul Williams paper
-        ddtheta = -ddta + 2*(dtheta + dta)*dphi*tan(phi) ...
-            - 3*(dta^2/(1+e*cos(ta)))*sin(theta)*cos(theta) ...
-            + (Qtheta+GGtheta)/(mstar*L^2*cos(phi)^2);
-        ddphi = -((dtheta+dta)^2 ...
-            + 3*(dta^2/(1+e*cos(ta)))*cos(theta)^2)*sin(phi)*cos(phi) ...
-            + (Qphi+GGphi)/(mstar*L^2);
-
-        dI = 0;
-        
-        dstate = [da; de; di; dRAAN; daop; dta; dtheta; dphi; ddtheta; ddphi; dI];
+        % dynamics from 16.1 of Spacecraft dynamics
+        wo = -sqrt(mu/r^3);
+        body_torque = Tgg+Tq;
+        ddphi = dpsi*wo + ((Iz-Iy)*(wo^2*phi+wo*dpsi)+body_torque(1))/Ix;
+        ddtheta = body_torque(2)/Iy;        
+        ddpsi = 0;
+        dstate = [da; de; di; dRAAN; daop; dta; dphi; dtheta; dpsi; ddphi; ddtheta; ddpsi];
     end
 
     function [Bx, By, Bz] = MagField_NonTilted(states)
@@ -97,9 +88,14 @@ function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tet
     end
 
     function [fr, ftheta, fh] = edt_forces(states, tether_param)
-        theta = states(7);
-        phi = states(8);
-        I = states(11);
+        theta = states(8);
+        phi = states(7);
+        current_type = tether_param(8);
+        if current_type == 0
+            I = tether_param(9);
+        elseif current_type == 1
+            I = tether_param(9);
+        end
 
         L = tether_param(1);
         m = sum(tether_param(2:4));
@@ -111,7 +107,7 @@ function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tet
         fh = I*L/m*(By*cos(theta)*cos(phi)-Bx*sin(theta)*cos(phi));
     end
 
-    function [Qtheta, Qphi] = edt_torque(states, tether_param)
+    function Tq = edt_torque(states, tether_param)
         % assumes a uniform current flowing in the tether. In the case 
         % where the mass distribution is perfectly symmetrical, then the 
         % net torque about the center of mass is zero. This is an ideal 
@@ -119,9 +115,14 @@ function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tet
         % will still be present in bare-wire tethers, but the relationship
         % is not as straightforward because of the nonuniform distribution 
         % of the electric current.
-        theta = states(7);
-        phi = states(8);
-        I = states(11);
+        phi = states(7);
+        theta = states(8);     
+        current_type = tether_param(8);
+        if current_type == 0
+            I = tether_param(9);
+        elseif current_type == 1
+            I = tether_param(9);
+        end
 
         L = tether_param(1);
         m1 = tether_param(2);
@@ -135,60 +136,58 @@ function [ t , states] = BasicNaiveTether( tspan , sc_state0, tether_state0, tet
         PHI = (m1^2-m2^2+mt*(m1-m2))/m^2; 
         [Bx, By, Bz] = MagField_NonTilted(states);
 
-        Qtheta = (I*L^2/2)*PHI*cos(phi)*...
+        Qtheta = (I*(L*1000)^2/2)*PHI*cos(phi)*...
             (sin(phi)*(Bx*cos(theta)+By*sin(theta))-Bz*cos(phi));
-        Qphi = -(I*L^2/2)*PHI*(By*cos(theta)-Bx*sin(theta));
+        Qphi = -(I*(L*1000)^2/2)*PHI*(By*cos(theta)-Bx*sin(theta));
+        Tq = [Qphi; Qtheta; 0];
     end
 
-    function [GGtheta, GGphi] = gravity_grad_torque(states, tether_param, mu)
+    function Tgg = gravity_grad_torque(states, tether_param, mu)
         a = states(1);
         e = states(2);
         i = states(3);
         RAAN = states(4);
         aop = states(5);
         ta = states(6);
-        theta = states(7);
-        phi = states(8);
+        phi = states(7);
+        theta = states(8);
+        psi = states(9);
 
-        L = tether_param(1);
-        m1 = tether_param(2);
-        m2 = tether_param(3);
-        mt = tether_param(4);
-        m = sum(tether_param(2:4));
-
-        [ r , v ] = coes2state( [sqrt(mu*a*(1-e^2)), i, e, RAAN, aop, ta] , mu );
+        Ix = tether_param(5);
+        Iy = tether_param(6);
+        Iz = tether_param(7);
+        inertia = [Ix, 0, 0; 0, Iy, 0; 0, 0, Iz];
         
-        % need L in terms ECI to get r new
-        GGtheta = 0;
-        GGphi = 0;
-%         grav_m1 = -mu*m1/r^3;
-%         grav_m2 = -mu*m2/(r-L*cos)^3;
-    end
+        [ rvec , vvec ] = coes2state( [sqrt(mu*a*(1-e^2)), i, e, RAAN, aop, ta] , mu );
+        r = norm(rvec);
 
-    function [ r , v ] = coes2state( COES , mu )
-    % h , inc , ecc , RAAN , omega , theta , a , rp , ra 
-            
-        h = COES(1) ;
-        inc = COES(2) ;
-        ecc = COES(3) ;
-        RAAN = COES(4) ;
-        omega = COES(5) ;
-        theta = COES(6) ;
-    
-        r_peri = (h^2/mu) * ( 1/( 1 + ecc*cos(theta) ) ) * [ cos( theta ) ; sin( theta ) ; 0 ] ;
-        v_peri = (mu/h) * [ -sin( theta ) ; ecc+cos(theta) ; 0 ] ;
-    
-        Q(1,1) = -sin(RAAN)*cos(inc)*sin(omega) + cos(RAAN)*cos(omega) ;
-        Q(1,2) = -sin(RAAN)*cos(inc)*cos(omega) - cos(RAAN)*sin(omega) ;
-        Q(1,3) = sin(RAAN)*sin(inc) ;
-        Q(2,1) = cos(RAAN)*cos(inc)*sin(omega) + sin(RAAN)*cos(omega) ;
-        Q(2,2) = cos(RAAN)*cos(inc)*cos(omega) - sin(RAAN)*sin(omega) ;
-        Q(2,3) = -cos(RAAN)*sin(inc) ;
-        Q(3,1) = sin(inc)*sin(omega) ;
-        Q(3,2) = sin(inc)*cos(omega) ;
-        Q(3,3) = cos(inc) ;
-    
-        r = Q*r_peri ;
-        v = Q*v_peri ;
+%         Dynamics from "Spacecraft Dynamics and Control"
+        Cbo = [cos(theta)*cos(psi), cos(theta)*sin(psi), -sin(theta);
+                sin(phi)*sin(theta)*cos(psi)-cos(theta)*sin(psi), ...
+                sin(phi)*sin(theta)*sin(psi)+cos(phi)*sin(psi), ...
+                sin(phi)*cos(theta);
+                cos(phi)*sin(theta)*cos(psi)+sin(phi)*sin(psi), ...
+                cos(phi)*sin(theta)*sin(psi)-sin(phi)*cos(psi), ...
+                cos(phi)*cos(theta)];
+        rb = Cbo*[0;0;-r];
+
+        % need L in terms ECI to get r new
+        rbcross = [0, -rb(3), rb(2);
+                    rb(3), 0, -rb(1);
+                    -rb(2), rb(2), 0];
+        Tgg = 3*mu/r^5 * rbcross*inertia*rb;
     end
+    
+    function I = OML(tether_param)
+        R = tether_param(10); %Tether radius (m)
+        L = tether_param(1)*1000; % Tether Length (m)
+        phiP = 100;%Cylindrical probe bias
+        N0 = 0;% ambient electron density
+        
+        
+        Ith = 2*pi*R*L*e*N0*sqrt(k)*Te/(2*pi*me);
+        I = Ith*sqrt(4*e*phiP/(pi*k*Te));
+
+    end
+    
 end

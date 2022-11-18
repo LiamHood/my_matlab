@@ -1,6 +1,3 @@
-syms x t c k s u a
+syms x t p(x) u(x) b a
 
-v = exp(-x^2-i*c*x);
-
-int(v,x)
-
+eq1 = int(u(x)*diff(p(x), x)*diff(u(x), x), x, a, b)
