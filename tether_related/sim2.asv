@@ -1,6 +1,6 @@
 clear; close all; clc;
 
-%% Defaults
+%% Inputs
 a0 = 6878;
 e0 = .02;
 i0_deg = 30;
@@ -19,10 +19,8 @@ m2 = 15;%kg
 mt = 20;%kg
 It = m2*(L*1000)^2 + mt*(1/3)*(L*1000)^2;
 Ia = 0;
-current_type = 2; % 0: constant, 2: controlled
-current_val = 3;
-
-%% Inputs
+current_type = 2;
+current_val = 0;
 menu1 = input("Run with defaults? [Y]/N", 's');
 if isempty(menu1)
     menu1 = 'Y';
@@ -128,7 +126,7 @@ for ii = 1:length(t)
 
     I(ii) = current_val;
     pe_p(ii) = m2*L*1000*(1-cos(states(ii,7)));
-    ke_p(ii) = (1/2)*It*(states(ii,10)*4)^2;
+    ke_p(ii) = (1/2)*It*states(ii,10)^2;
     if states(ii,7) < 0
         pe_p(ii) = -pe_p(ii);
     end
@@ -137,7 +135,7 @@ for ii = 1:length(t)
     end
     e_p(ii) = pe_p(ii) + ke_p(ii);
     pe_t(ii) = m2*L*1000*(1-cos(states(ii,8)));
-    ke_t(ii) = (1/2)*It*(states(ii,11)*4)^2;
+    ke_t(ii) = (1/2)*It*states(ii,11)^2;
     if states(ii,8) < 0
         pe_t(ii) = -pe_t(ii);
     end
@@ -220,13 +218,13 @@ xlabel('time [hours]')
 ylabel('Current [Amps]')
 
 subplot(3,1,2)
-plot(t,pe_p,t,ke_p,t,e_p,[t(1),tend(1)],[lim_e,lim_e],"r",[t(1),tend(1)],[-lim_e,-lim_e],"r")
+plot(t,pe_p,t,ke_p,t,e_p,[t(1),tend(1)],[lim_se,lim_se],"r",[t(1),tend(1)],[-lim_se,-lim_se],"r")
 xlabel('time [hours]')
 ylabel('roll energy [J/m]')
 legend("potential energy", "kinetic energy", "total energy","limit")
 
 subplot(3,1,3)
-plot(t,pe_t,t,ke_t,t,e_t,[t(1),tend(1)],[lim_e,lim_e],"r",[t(1),tend(1)],[-lim_e,-lim_e],"r")
+plot(t,spe_t,t,ske_t,t,se_t,[t(1),tend(1)],[lim_se,lim_se],"r",[t(1),tend(1)],[-lim_se,-lim_se],"r")
 xlabel('time [hours]')
 ylabel('pitch energy [J/m]')
 legend("potential energy", "kinetic energy", "total energy","limit")

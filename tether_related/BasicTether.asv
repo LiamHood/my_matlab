@@ -16,6 +16,8 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
 
 
     function dstate = gauss_variations(t, states, tether_param, mu)
+
+        % set orbit states with friendly names
         a = states(1);
         e = states(2);
         i = states(3);
@@ -23,6 +25,7 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
         aop = states(5);
         ta = states(6);
 
+        % set attitude states with friendly names
         phi = states(7);
         theta = states(8);
         psi = states(9);
@@ -30,6 +33,7 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
         dtheta = states(11);
         dpsi = states(12);
         
+        % set tether parameters with friendly names
         L = tether_param(1);
         m1 = tether_param(2);
         m2 = tether_param(3);
@@ -38,18 +42,61 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
         Ix = tether_param(5);
         Iy = tether_param(6);
         Iz = tether_param(7);
+        current_type = tether_param(8);
+        current_val = tether_param(9);
 
-        [fr, fs, fw] = edt_forces(states, tether_param);
-        Tq = edt_torque(states, tether_param);
+        if current_type == 0
+            I = current_val;
+        elseif current_type == 1
+            I = OML(tether_param);
+        elseif current_type == 2
+            % while energy is less than required to reach limit from 
+            limit_libration = 35;
+            I = current_val;
+            lim_e = m*L*1000*(1-cos(deg2rad(limit_libration)));
+            pe_p = m*L*1000*(1-cos(phi));
+            ke_p = (1/2)*Ix*(dphi*4)^2;
+%             ke_p = (1/2)*Ix*(dphi)^2;
+            if phi < 0
+                pe_p = -pe_p;
+            end
+            if dphi < 0
+                ke_p = -ke_p;
+            end
+            e_p = pe_p + ke_p;
+            pe_t = m*L*1000*(1-cos(theta));
+            ke_t = (1/2)*Iy*(dtheta*4)^2;
+%             ke_t = (1/2)*Iy*(dtheta)^2;
+            if theta < 0
+                pe_t = -pe_t;
+            end
+            if dtheta < 0
+                ke_t = -ke_t;
+            end
+            e_t = pe_t + ke_t;
+            if abs(e_p) > lim_e
+                I = 0;
+            elseif abs(e_t) > lim_e
+                I = 0;
+            end
+        end
+
+        % Find the instantaneous Lorentz force, Lorentz torque, and gravity
+        % gradient
+%         [Bx, By, Bz] = MagField_NonTilted(states);
+        [Bx, By, Bz] = MagField_igrf(states, t);
+        [fr, fs, fw] = edt_forces(states, tether_param, I, Bx, By, Bz);
+        Tq = edt_torque(states, tether_param, I, Bx, By, Bz);
         Tgg = gravity_grad_torque(states, tether_param, mu);
 
+        % Calculate supplementary orbital elements
         p = a*(1-e^2);
         h = sqrt(mu*p);
         r = norm(states(1:3));
         n = sqrt(mu/a^3);
         u = aop + ta;
 
-        % orbital elements using Vallado p.636
+        % orbital elements change using Vallado p.636
         da = (2/(n*sqrt(1-e^2)))*(e*sin(ta)*fr + (p/r)*fs);
         de = (sqrt(1-e^2)/(n*a))*(sin(ta)*fr + ...
             (cos(ta)+(e+cos(ta))/(1+e*cos(ta)))*fs);
@@ -59,7 +106,7 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
             sin(ta)*(1+r/p)*fs) - (r*cot(i)*sin(u)/h)*fw;
         dta = h/r^2 + (1/(e*h))*(p*cos(ta)*fr - (p+r)*sin(ta)*fs);
         
-        % dynamics from 16.1 of Spacecraft dynamics
+        % attitude change from 16.1 of Spacecraft dynamics
         wo = -sqrt(mu/r^3);
         body_torque = Tgg+Tq;
         ddphi = dpsi*wo + ((Iz-Iy)*(wo^2*phi+wo*dpsi)+body_torque(1))/Ix;
@@ -71,6 +118,8 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
     function [Bx, By, Bz] = MagField_NonTilted(states)
         % Earth’s magnetic field vector in the Euler–Hill frame whose 
         % components are defined by (assuming a nontilted dipole)
+
+        % Define variables
         a = states(1);
         e = states(2);
         i = states(3);
@@ -79,6 +128,7 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
         ta = states(6);
         p = a*(1-e^2);
         
+        % Calculate magnetic field based on https://doi.org/10.2514/1.12016
         Bo = 3.12e-5;
         Bo_over_R3 = Bo/(6378/(p/(1+e*cos(ta))))^3;
 
@@ -87,27 +137,80 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
         Bz = Bo_over_R3*cos(i);
     end
 
-    function [fr, ftheta, fh] = edt_forces(states, tether_param)
+    function [Bx, By, Bz] = MagField_igrf(states, t)
+        % Earth’s magnetic field vector in the Euler–Hill frame whose 
+        % components are defined by (assuming a nontilted dipole)
+
+        % Define variables
+        a = states(1);
+        e = states(2);
+        i = states(3);
+        RAAN = states(4);
+        aop = states(5);
+        ta = states(6);
+        p = a*(1-e^2);
+        
+        % calculate position a few ways
+        [ rvec , vvec ] = coes2state( [sqrt(mu*a*(1-e^2)), i, e, RAAN, aop, ta] , mu );
+        tsec = t;
+        tmin = 0;
+        thour = 12;
+        tday = 1;
+        while tsec >= 60
+            tsec = tsec - 60;
+            tmin = tmin + 1;
+        end
+        while tmin >= 60
+            tmin = tmin - 60;
+            thour = thour + 1;
+        end
+        while thour >= 24
+            thour = thour - 24;
+            tday = tday + 1;
+        end
+        time = [2023 1 tday thour tmin tsec];
+        [ rvec_ecef , vvec_ecef ] = eci2ecef(time, rvec, vvec);
+        LLA = ecef2lla(rvec_ecef'.*1000);
+        [B_NED,~,~,~,~] = igrfmagm(LLA(3),LLA(1),LLA(2),decyear(time),13);
+        [B_ECEFX, B_ECEFY, B_ECEFZ] = ned2ecefv(B_NED(1),B_NED(2),B_NED(3),LLA(1),LLA(2));
+        [r_eci, B_eci] = ecef2eci(time, rvec_ecef, [B_ECEFX, B_ECEFY, B_ECEFZ]);
+        y_eh_ineci = r_eci/norm(r_eci);
+        z_eh_ineci = cross(rvec,vvec)/norm(cross(rvec,vvec));
+        x_eh_ineci = cross(y_eh_ineci,z_eh_ineci)/norm(cross(y_eh_ineci,z_eh_ineci))
+        
+        %NEED IN LVLH
+        B_NED = B_NED*1e-9;
+        Bx = B_NED(1);
+        By = B_NED(2);
+        Bz = B_NED(3);
+
+        % Calculate magnetic field based on https://doi.org/10.2514/1.12016
+%         Bo = 3.12e-5;
+%         Bo_over_R3 = Bo/(6378/(p/(1+e*cos(ta))))^3;
+% 
+%         Bx = -2*Bo_over_R3*sin(aop + ta)*sin(i);
+%         By = Bo_over_R3*cos(aop+ta)*sin(i);
+%         Bz = Bo_over_R3*cos(i);
+    end
+
+    function [fr, ftheta, fh] = edt_forces(states, tether_param, I,  Bx, By, Bz)
+        % assumes a uniform current flowing in the tether
+        
+        % set states with friendly names
         theta = states(8);
         phi = states(7);
-        current_type = tether_param(8);
-        if current_type == 0
-            I = tether_param(9);
-        elseif current_type == 1
-            I = tether_param(9);
-        end
 
         L = tether_param(1);
         m = sum(tether_param(2:4));
 
-        [Bx, By, Bz] = MagField_NonTilted(states);
+        
 
         fr = I*L/m*(Bz*sin(theta)*cos(phi)-By*sin(phi));
         ftheta = I*L/m*(Bx*sin(phi)-Bz*cos(theta)*cos(phi));
         fh = I*L/m*(By*cos(theta)*cos(phi)-Bx*sin(theta)*cos(phi));
     end
 
-    function Tq = edt_torque(states, tether_param)
+    function Tq = edt_torque(states, tether_param, I, Bx, By, Bz)
         % assumes a uniform current flowing in the tether. In the case 
         % where the mass distribution is perfectly symmetrical, then the 
         % net torque about the center of mass is zero. This is an ideal 
@@ -117,13 +220,8 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
         % of the electric current.
         phi = states(7);
         theta = states(8);     
-        current_type = tether_param(8);
-        if current_type == 0
-            I = tether_param(9);
-        elseif current_type == 1
-            I = tether_param(9);
-        end
 
+        % set states with friendly names
         L = tether_param(1);
         m1 = tether_param(2);
         m2 = tether_param(3);
@@ -134,7 +232,6 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
         % moment arm of the electromagnetic torque acting on the tether 
         % relative to the system center of mass
         PHI = (m1^2-m2^2+mt*(m1-m2))/m^2; 
-        [Bx, By, Bz] = MagField_NonTilted(states);
 
         Qtheta = (I*(L*1000)^2/2)*PHI*cos(phi)*...
             (sin(phi)*(Bx*cos(theta)+By*sin(theta))-Bz*cos(phi));
@@ -143,6 +240,9 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
     end
 
     function Tgg = gravity_grad_torque(states, tether_param, mu)
+        % Finds the gravity gradient torque effecting the tether
+
+        % set states with friendly names
         a = states(1);
         e = states(2);
         i = states(3);
@@ -152,16 +252,18 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
         phi = states(7);
         theta = states(8);
         psi = states(9);
-
+    
+        % Make inertia matrix
         Ix = tether_param(5);
         Iy = tether_param(6);
         Iz = tether_param(7);
         inertia = [Ix, 0, 0; 0, Iy, 0; 0, 0, Iz];
         
+        % Calculate the position and velocity vector
         [ rvec , vvec ] = coes2state( [sqrt(mu*a*(1-e^2)), i, e, RAAN, aop, ta] , mu );
         r = norm(rvec);
 
-%         Dynamics from "Spacecraft Dynamics and Control"
+        % Dynamics from "Spacecraft Dynamics and Control"
         Cbo = [cos(theta)*cos(psi), cos(theta)*sin(psi), -sin(theta);
                 sin(phi)*sin(theta)*cos(psi)-cos(theta)*sin(psi), ...
                 sin(phi)*sin(theta)*sin(psi)+cos(phi)*sin(psi), ...
@@ -171,7 +273,7 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
                 cos(phi)*cos(theta)];
         rb = Cbo*[0;0;-r];
 
-        % need L in terms ECI to get r new
+        % transform inertia into eci
         rbcross = [0, -rb(3), rb(2);
                     rb(3), 0, -rb(1);
                     -rb(2), rb(2), 0];
@@ -179,11 +281,18 @@ function [ t , states] = BasicTether( tspan , sc_state0, tether_state0, tether_p
     end
     
     function I = OML(tether_param)
-        R = tether_param(10);
-        L = tether_param(1)*1000;
-        phiP = %Cylindrical probe bias
-        Ith = 2*pi*R*L*e*N0*sqrt(k)*Te/(2*pi*me);
-        I = Ith*sqrt(4*e*phiP/(pi*k*Te));
+        % Finds the OML current
+        e = 1.60217663e-19 ; % charge of an electron
+        me = 9.1093837e-31; % mass of an electron
+        R = tether_param(10); %Tether radius (m)
+        L = tether_param(1)*1000; % Tether Length (m)
+        p = R*2*pi; % Tether cross sectional parameter (m)
+        phiP = 100;%Cylindrical probe bias
+        N0 = 0;% ambient electron density
+        
+        
+        I = e*N0*(L*p/pi)*sqrt(2*e*phiP/me);
+
 
     end
     

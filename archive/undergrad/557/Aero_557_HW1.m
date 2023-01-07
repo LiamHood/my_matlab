@@ -6,11 +6,11 @@ clear ; close all ; clc ;
 pt = 'Problem number %u \n \n' ;
 
 
-%% 1
-fprintf( pt , 1 ) 
-% far distance, 10 periods
-HW1_P1()
-fprintf( ' \n' )
+% %% 1
+% fprintf( pt , 1 ) 
+% % far distance, 10 periods
+% HW1_P1()
+% fprintf( ' \n' )
 
 %% 2 
 fprintf( pt , 2 ) 

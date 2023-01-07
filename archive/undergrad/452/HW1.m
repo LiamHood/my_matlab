@@ -5,36 +5,36 @@ function HW1
 clear ; close all ; clc ;
 mu = 398600 ;
 stumpfTerms = 10 ;
-[ denomS , denomC ] = StumpffSetUp( stumpfTerms ) ;
+% [ denomS , denomC ] = StumpffSetUp( stumpfTerms ) ;
 pt = 'Problem number %u \n \n' ;
 
 
 %% 1
 fprintf( pt , 1 ) 
 % far distance, 10 periods
-HW1_P1(mu,denomS,denomC)
+HW1_P1(mu)
 fprintf( ' \n' )
-
-%% 2 
-fprintf( pt , 2 ) 
-% circular point in time
-HW1_P2(mu,denomS,denomC)
-fprintf( ' \n' )
-
-%% 3 
-fprintf( pt , 3 ) 
-% close range, 10 periods
-HW1_P3(mu,denomS,denomC)
-fprintf( ' \n' )
-
-%% 4 
-fprintf( pt , 4 ) 
-% close range, 15 min
-HW1_P4(mu,denomC,denomS)
+% 
+% %% 2 
+% fprintf( pt , 2 ) 
+% % circular point in time
+% HW1_P2(mu,denomS,denomC)
+% fprintf( ' \n' )
+% 
+% %% 3 
+% fprintf( pt , 3 ) 
+% % close range, 10 periods
+% HW1_P3(mu,denomS,denomC)
+% fprintf( ' \n' )
+% 
+% %% 4 
+% fprintf( pt , 4 ) 
+% % close range, 15 min
+% HW1_P4(mu,denomC,denomS)
 
 %% Work
 
-    function HW1_P1(mu,denomS,denomC)
+    function HW1_P1(mu)
         t = 0 ;
         tstep = .01 ; % step size in seconds
 
@@ -60,8 +60,8 @@ HW1_P4(mu,denomC,denomS)
         % propogation and calculations
         for ii = 2:(10*Period/tstep)
             Percent = 100*ii/(10*Period/tstep) ;
-            [ rA(:,ii) , vA(:,ii) ] = NewStateUV( rA(:,ii-1) , vA(:,ii-1) , tstep , mu , denomS , denomC ) ; % Step forward for target
-            [ rB(:,ii) , vB(:,ii) ] = NewStateUV( rB(:,ii-1) , vB(:,ii-1) , tstep , mu , denomS , denomC ) ; % Step forward for chaser
+            [ rA(:,ii) , vA(:,ii) ] = NewStateUV( rA(:,ii-1) , vA(:,ii-1) , tstep , mu ) ; % Step forward for target
+            [ rB(:,ii) , vB(:,ii) ] = NewStateUV( rB(:,ii-1) , vB(:,ii-1) , tstep , mu ) ; % Step forward for chaser
 %             [ rA(:,ii) , vA(:,ii) ] =  kepler  ( rA(:,ii-1) , vA(:,ii-1) , tstep ) ;
 %             [ rB(:,ii) , vB(:,ii) ] =  kepler  ( rB(:,ii-1) , vB(:,ii-1) , tstep ) ;
             
