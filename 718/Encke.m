@@ -11,7 +11,7 @@ function [t, state, COES] = Encke( dt , tspan , r0 , v0 , mu , forces , A , m, t
     t = tspan(1) ;
     ii = 2 ;
     dv = zeros(3,1) ;
-    while t(ii-1) < tspan(2) && norm(r(:,ii-1)) >= (Re + 150 ) 
+    while t(ii-1) < tspan(2) && COES(ii-1, 8) >= (Re + 120 ) 
         t(end)/(3600*24*365)
         % propagate unperturbed orbit
         [ r(:,ii) , v(:,ii) ] = NewStateUV( r(:,ii-1) , v(:,ii-1) , dt , mu  ) ; 

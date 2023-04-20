@@ -1,0 +1,278 @@
+clear; close all; clc;
+
+%% Inputs
+[tend, a0, e0, i0, RAAN0, aop0, ta0, ...
+    L, m1, m2, mt, It, Ia, current_type, current_val,...
+    phi0, theta0, psi0, dphi0, dtheta0, dpsi0] = load_inputs();
+
+tspan = [0; tend*60*60];
+sc_state0 = [a0; e0; i0; RAAN0; aop0; ta0];
+tether_state0 = [phi0; theta0; psi0; dphi0; dtheta0; dpsi0];
+tether_param = [L; m1; m2; mt; It; It; Ia];
+current_param = [current_type; current_val];
+
+mu = 398600;
+tol = 1e-12;
+[ t , states] = BasicTether( tspan , sc_state0, tether_state0, ...
+    tether_param, current_param, mu , tol );
+
+%% Plot the Results
+t = t/(60*60);
+a = states(:,1);
+e = states(:,2);
+i = rad2deg(states(:,3));
+RAAN = rad2deg(states(:,4));
+aop = rad2deg(states(:,5));
+ta = rad2deg(states(:,6));
+
+phi = rad2deg(states(:,7));
+theta = rad2deg(states(:,8));
+psi = rad2deg(states(:,9));
+dphi = rad2deg(states(:,10));
+dtheta = rad2deg(states(:,11));
+
+for ii = 1:length(t)
+    [ rvec(:,ii) , vvec(:,ii) ] = coes2state( [sqrt(mu*a(ii)*(1-e(ii)^2)), ...
+        i(ii), e(ii), RAAN(ii), aop(ii), ta(ii)] , mu );
+    r(ii) = norm(rvec(:,ii));
+    v(ii) = norm(vvec(:,ii));
+end
+
+figure
+plot3(rvec(1,:), rvec(2,:), rvec(3,:))
+xlabel("x")
+ylabel("y")
+zlabel("z")
+axis equal
+
+figure
+subplot(2,1,1)
+plot(t,r)
+xlabel('time [hours]')
+ylabel('Radius')
+
+subplot(2,1,2)
+plot(t,v)
+xlabel('time [hours]')
+ylabel('Velocity')
+
+figure
+subplot(3,2,1)
+plot(t, a)
+xlabel('time [hours]')
+ylabel('Semi-Major Axis [km]')
+
+subplot(3,2,2)
+plot(t, e)
+xlabel('time [hours]')
+ylabel('Eccentricity')
+
+subplot(3,2,3)
+plot(t, i)
+xlabel('time [hours]')
+ylabel('Inclination [degree]')
+
+subplot(3,2,4)
+plot(t, RAAN)
+xlabel('time [hours]')
+ylabel('Right Ascension of Ascending Node [degree]')
+
+subplot(3,2,5)
+plot(t, aop)
+xlabel('time [hours]')
+ylabel('Argument of Perigee [degree]')
+
+subplot(3,2,6)
+plot(t, ta)
+xlabel('time [hours]')
+ylabel('True Anomaly [degree]')
+
+figure
+subplot(2,1,1)
+plot(t, dtheta)
+xlabel('time [hours]')
+ylabel('In Plane Libration Rate [degree/s]')
+
+subplot(2,1,2)
+plot(t, dphi)
+xlabel('time [hours]')
+ylabel('Out of Plane Libration Rate [degree/s]')
+
+figure
+subplot(2,1,1)
+plot(t, theta)
+xlabel('time [hours]')
+ylabel('In Plane Libration [degree]')
+
+subplot(2,1,2)
+plot(t, phi)
+xlabel('time [hours]')
+ylabel('Out of Plane Libration [degree]')
+
+
+
+
+%% Functions
+
+function [tend,a0,e0,i0,RAAN0,aop0,ta0,...
+    L,m1,m2,mt,It,Ia,current_type,current_val,...
+    phi0, theta0, psi0, dphi0, dtheta0, dpsi0] = load_inputs()
+    
+    tend_def = 30;
+    a0_def = 6878;
+    e0_def = .02;
+    i0_deg_def = 30;
+    RAAN0_deg_def = 30;
+    aop0_deg_def = 50;
+    ta0_deg_def = 0;    
+    
+    L_def = 20;%km
+    m1_def = 250;%kg
+    m2_def = 150;%kg
+    mt_def = 20;%kg
+    It_def = m2_def*(L_def*1000)^2 + mt_def*(1/3)*(L_def*1000)^2;
+    Ia_def = 0;
+
+    current_type_def = 1; %"constant"
+    current_val_def = 1;
+    
+    phi0_def = 5;
+    theta0_def = 5;
+    psi0_def = 0;
+    dphi0_def = 0;
+    dtheta0_def = 0;
+    dpsi0_def = 0;
+    
+    menu1 = input("Run with defaults? Y/[N]: ", 's');
+    if isempty(menu1)
+        menu1 = 'N';
+        tend_def = 30;
+        a0 = a0_def;
+        e0 = e0_def;
+        i0_deg= i0_deg_def;
+        i0 = deg2rad(i0_deg);
+        RAAN0_deg = RAAN0_deg_def;
+        RAAN0 = deg2rad(RAAN0_deg);
+        aop0_deg = aop0_deg_def;
+        aop0 = deg2rad(aop0_deg);
+        ta0_deg = ta0_deg_def;
+        ta0 = deg2rad(ta0_deg);
+        
+        
+        L = L_def;%km
+        m1 = m1_def;%kg
+        m2 = m2_def;%kg
+        mt = mt_def;%kg
+        It = It_def;
+        Ia = Ia_def;
+    
+        current_type = current_type_def; %"constant"
+        current_val = current_val_def;
+        
+        phi0 = phi0_def;
+        theta0 = theta0_def;
+        psi0 = psi0_def;
+        dphi0 = dphi0_def;
+        dtheta0 = dtheta0_def;
+        dpsi0 = dpsi0_def;
+    end
+    if menu1 == 'N'
+        tend = input("Time [Hours] for simulation (default: "+num2str(tend_def)+"): ");
+        if isempty(tend)
+            tend = tend_def;
+        end
+        a0 = input("Semi-Major Axis [km] (default: "+num2str(a0_def)+"): ");
+        if isempty(a0)
+            a0 = a0_def;
+        end
+        e0 = input("Eccentricity (default: "+num2str(e0_def)+"): ");
+        if isempty(e0)
+            e0 = e0_def;
+        end
+        i0_deg = input("Inclination [degree] (default: "+num2str(i0_deg_def)+"): ");
+        if isempty(i0_deg)
+            i0_deg = i0_deg_def;
+        end
+        i0 = deg2rad(i0_deg);
+        RAAN0_deg = input("Right Ascension of Ascending Node [degree] (default: "+num2str(RAAN0_deg_def)+"): ");
+        if isempty(RAAN0_deg)
+            RAAN0_deg = RAAN0_deg_def;
+        end
+        RAAN0 = deg2rad(RAAN0_deg);
+        aop0_deg = input("Argument of Perigee [degree] (default: "+num2str(aop0_deg_def)+"): ");
+        if isempty(aop0_deg)
+            aop0_deg = aop0_deg_def;
+        end
+        aop0 = deg2rad(aop0_deg);
+        ta0_deg = input("True Anomaly [degree] (default: "+num2str(ta0_deg_def)+"): ");
+        if isempty(ta0_deg)
+            ta0_deg = ta0_deg_def;
+        end
+        ta0 = deg2rad(ta0_deg);
+        L = input("Tether length [km] (default "+num2str(L_def)+"): ");
+        if isempty(L)
+            L = L_def;
+        end
+        m1 = input("Mass of main satellite [kg] (default: "+num2str(m1_def)+"): ");
+        if isempty(m1)
+            m1 = m1_def;
+        end
+        m2 = input("Mass of subsatellite [kg] (default: "+num2str(m2_def)+"): ");
+        if isempty(m2)
+            m2 = m2_def;
+        end
+        mt = input("Mass of tether [kg] (default: "+num2str(mt_def)+"): ");
+        if isempty(mt)
+            mt = mt_def;
+        end
+        It = input("Moment of inertia rotating the tether (default: m2*(L*1000)^2 + mt*(1/3)*(L*1000)^2): ");
+        if isempty(It)
+            It = m2*(L*1000)^2 + mt*(1/3)*(L*1000)^2;
+        end
+        Ia = input("Moment of inertia about tether axis (default: "+num2str(Ia_def)+"): ");
+        if isempty(Ia)
+            Ia = Ia_def;
+        end
+        current_type = input("Type of Current control \n" + ...
+            "    1: constant \n" + ...
+            "    2: on-off libration \n" + ...
+            "    3: OML \n(default: "+num2str(current_type_def)+"): ");
+        if isempty(current_type)
+            current_type = current_type_def;
+        end
+        current_val = input("Value of Current [A for constant; proportion for OML; control law] (default: "+num2str(current_val_def)+"): ");
+        if isempty(current_val)
+            current_val = current_val_def;
+        end
+        phi0_deg = input("Starting Roll Angle [deg] (default: "+num2str(phi0_deg_def)+"): ");
+        if isempty(phi0_deg)
+            phi0_deg = 5;
+        end
+        phi0 = deg2rad(phi0_deg);
+        theta0_deg = input("Starting Pitch Angle [deg] (default: 5): ");
+        if isempty(theta0_deg)
+            theta0_deg = 5;
+        end
+        theta0 = deg2rad(theta0_deg);
+        psi0_deg = input("Starting Yaw Angle [deg] (default: 0): ");
+        if isempty(psi0_deg)
+            psi0_deg = 0;
+        end
+        psi0 = deg2rad(psi0_deg);
+        dphi0_deg = input("Starting Roll Rate [deg/s] (default: 0): ");
+        if isempty(dphi0_deg)
+            dphi0_deg = 0;
+        end
+        dphi0 = deg2rad(dphi0_deg);
+        dtheta0_deg = input("Starting Pitch Rate [deg/s] (default: 0): ");
+        if isempty(dtheta0_deg)
+            dtheta0_deg = 0;
+        end
+        dtheta0 = deg2rad(dtheta0_deg);
+        dpsi0_deg = input("Starting Yaw Rate [deg/s] (default: 0): ");
+        if isempty(dpsi0_deg)
+            dpsi0_deg = 0;
+        end
+        dpsi0 = deg2rad(dpsi0_deg);
+    end
+end

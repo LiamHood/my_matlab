@@ -15,41 +15,41 @@ function COES = state2coes( state, mu )
     ecc = norm( ECC ) ; % eccentricity
     N = cross( Kh , H ) ; % Node line
     n = norm( N ) ;
-if n ~= 0
-    RAAN = acos(N(1)/n) ; %Right ascension of ascending node
-    if N(2) < 0 
-        RAAN = 2*pi - RAAN ; %Right ascension of ascending node
-    end
-else
-    RAAN = 0 ;
-end 
-    
-if n ~= 0 
-    if ecc >= 0 
-        omega = acos(dot(N,ECC)/(n*ecc)) ; % Argument of perigee
-        if ECC(3) < 0 
-            omega = 2*pi - omega ; % Argument of perigee
+    if n ~= 0
+        RAAN = acos(N(1)/n) ; %Right ascension of ascending node
+        if N(2) < 0 
+            RAAN = 2*pi - RAAN ; %Right ascension of ascending node
+        end
+    else
+        RAAN = 0 ;
+    end 
+        
+    if n ~= 0 
+        if ecc >= 0 
+            omega = acos(dot(N,ECC)/(n*ecc)) ; % Argument of perigee
+            if ECC(3) < 0 
+                omega = 2*pi - omega ; % Argument of perigee
+            end
+        else
+            omega = 0 ;
         end
     else
         omega = 0 ;
     end
-else
-    omega = 0 ;
-end
-    
-if ecc > 0
-    theta = acos( dot( ECC , R )/( ecc*r ) ) ;         
-    if vr < 0 
-        theta = 2*pi - theta ; 
-    end
-else
-    cp = cross( N , R ) ;
-    if cp(3) >= 0
-        theta = acos( dot( N , R )/( n*r ) ) ;
+        
+    if ecc > 0
+        theta = real(acos( dot(ECC, R)/(ecc*r) ) );         
+        if vr < 0 
+            theta = 2*pi - theta ; 
+        end
     else
-        theta = 2*pi - acos( dot( N , R )/( n*r ) ) ;
+        cp = cross( N , R ) ;
+        if cp(3) >= 0
+            theta = acos( dot( N , R )/( n*r ) ) ;
+        else
+            theta = 2*pi - acos( dot( N , R )/( n*r ) ) ;
+        end
     end
-end
 
     a = (h^2)/( mu*( 1 - ecc^2 ) ) ; % semi-major axis
     rp = a*( 1 - ecc ) ;

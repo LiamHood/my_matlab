@@ -1,0 +1,16 @@
+clear; close all; clc;
+Re = 6378;
+Je = 237;
+Js = 1371;
+alt = 240;
+a_orbit = alt+Re;
+a = .33;
+F = .15;
+F_ecl = .7;
+ecl_prop = .367036;
+A_alpha = .3*.3*pi;
+A_eps = .3*.3*pi*4;
+alpha = 1;
+eps = 1;
+Q = 0;
+[T_no_ecl, T_ecl] = avg_temp(Re, Je, Js, a_orbit, a, F, F_ecl, ecl_prop, A_alpha, A_eps, alpha, eps, Q);
