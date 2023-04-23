@@ -29,11 +29,11 @@ r0v0 = [r0; v0 ];
 tend = 25/s2d;
 tspan = [0, tend];
 tol = 1e-8;
-dt = 4*3600;
+dt = 1*3600;
 forces = "drag, gravity, J2" ;
-% [t, state, COES] = Encke(dt, tspan, r0, v0, mu, forces, A, m, tol, Re);
+[t, state, COES] = Encke(dt, tspan, r0, v0, mu, forces, A, m, tol, Re);
 % [t, state, COES] = Cowell(tspan , [r0; v0], mu, tol, forces, A, m, Re);
-[t, state, COES] = VoP(tspan, [r0; v0], mu, tol, forces, A, m, Re);
+% [t, state, COES] = VoP(tspan, [r0; v0], mu, tol, forces, A, m, Re);
 
 for ii = 1:length(t)
     r(ii) = norm(state(1:3, ii));
