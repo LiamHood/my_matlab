@@ -1,0 +1,675 @@
+%General Mission Analysis Tool(GMAT) Script
+%Created: 2023-04-23 09:34:23
+
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft Sat;
+GMAT Sat.DateFormat = UTCGregorian;
+GMAT Sat.Epoch = '25 Apr 2023 05:12:00.000';
+GMAT Sat.CoordinateSystem = EarthMJ2000Eq;
+GMAT Sat.DisplayStateType = Keplerian;
+GMAT Sat.SMA = 6878.099999999993;
+GMAT Sat.ECC = 0.004999999999999274;
+GMAT Sat.INC = 82.21276899999999;
+GMAT Sat.RAAN = 190.6005999999999;
+GMAT Sat.AOP = 37.32869999999171;
+GMAT Sat.TA = 359.9999982924527;
+GMAT Sat.DryMass = 4;
+GMAT Sat.Cd = 2.2;
+GMAT Sat.Cr = 1.8;
+GMAT Sat.DragArea = 0.03;
+GMAT Sat.SRPArea = 0.03;
+GMAT Sat.SPADDragScaleFactor = 1;
+GMAT Sat.SPADSRPScaleFactor = 1;
+GMAT Sat.AtmosDensityScaleFactor = 1;
+GMAT Sat.ExtendedMassPropertiesModel = 'None';
+GMAT Sat.NAIFId = -10000001;
+GMAT Sat.NAIFIdReferenceFrame = -9000001;
+GMAT Sat.OrbitColor = Red;
+GMAT Sat.TargetColor = Teal;
+GMAT Sat.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+GMAT Sat.CdSigma = 1e+70;
+GMAT Sat.CrSigma = 1e+70;
+GMAT Sat.Id = 'SatId';
+GMAT Sat.Attitude = CoordinateSystemFixed;
+GMAT Sat.SPADSRPInterpolationMethod = Bilinear;
+GMAT Sat.SPADSRPScaleFactorSigma = 1e+70;
+GMAT Sat.SPADDragInterpolationMethod = Bilinear;
+GMAT Sat.SPADDragScaleFactorSigma = 1e+70;
+GMAT Sat.AtmosDensityScaleFactorSigma = 1e+70;
+GMAT Sat.ModelFile = 'aura.3ds';
+GMAT Sat.ModelOffsetX = 0;
+GMAT Sat.ModelOffsetY = 0;
+GMAT Sat.ModelOffsetZ = 0;
+GMAT Sat.ModelRotationX = 0;
+GMAT Sat.ModelRotationY = 0;
+GMAT Sat.ModelRotationZ = 0;
+GMAT Sat.ModelScale = 1;
+GMAT Sat.AttitudeDisplayStateType = 'Quaternion';
+GMAT Sat.AttitudeRateDisplayStateType = 'AngularVelocity';
+GMAT Sat.AttitudeCoordinateSystem = EarthMJ2000Eq;
+GMAT Sat.EulerAngleSequence = '321';
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft Sat2;
+GMAT Sat2.DateFormat = UTCGregorian;
+GMAT Sat2.Epoch = '25 Apr 2023 05:12:00.000';
+GMAT Sat2.CoordinateSystem = EarthMJ2000Eq;
+GMAT Sat2.DisplayStateType = Keplerian;
+GMAT Sat2.SMA = 6878.099999999999;
+GMAT Sat2.ECC = 0.004999999999999049;
+GMAT Sat2.INC = 82.21276899999999;
+GMAT Sat2.RAAN = 190.6005999999999;
+GMAT Sat2.AOP = 37.32869999999131;
+GMAT Sat2.TA = 240.0000000000046;
+GMAT Sat2.DryMass = 4;
+GMAT Sat2.Cd = 2.2;
+GMAT Sat2.Cr = 1.8;
+GMAT Sat2.DragArea = 0.03;
+GMAT Sat2.SRPArea = 0.03;
+GMAT Sat2.SPADDragScaleFactor = 1;
+GMAT Sat2.SPADSRPScaleFactor = 1;
+GMAT Sat2.AtmosDensityScaleFactor = 1;
+GMAT Sat2.ExtendedMassPropertiesModel = 'None';
+GMAT Sat2.NAIFId = -10000001;
+GMAT Sat2.NAIFIdReferenceFrame = -9000001;
+GMAT Sat2.OrbitColor = Red;
+GMAT Sat2.TargetColor = Teal;
+GMAT Sat2.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+GMAT Sat2.CdSigma = 1e+70;
+GMAT Sat2.CrSigma = 1e+70;
+GMAT Sat2.Id = 'SatId';
+GMAT Sat2.Attitude = CoordinateSystemFixed;
+GMAT Sat2.SPADSRPInterpolationMethod = Bilinear;
+GMAT Sat2.SPADSRPScaleFactorSigma = 1e+70;
+GMAT Sat2.SPADDragInterpolationMethod = Bilinear;
+GMAT Sat2.SPADDragScaleFactorSigma = 1e+70;
+GMAT Sat2.AtmosDensityScaleFactorSigma = 1e+70;
+GMAT Sat2.ModelFile = 'aura.3ds';
+GMAT Sat2.ModelOffsetX = 0;
+GMAT Sat2.ModelOffsetY = 0;
+GMAT Sat2.ModelOffsetZ = 0;
+GMAT Sat2.ModelRotationX = 0;
+GMAT Sat2.ModelRotationY = 0;
+GMAT Sat2.ModelRotationZ = 0;
+GMAT Sat2.ModelScale = 1;
+GMAT Sat2.AttitudeDisplayStateType = 'Quaternion';
+GMAT Sat2.AttitudeRateDisplayStateType = 'AngularVelocity';
+GMAT Sat2.AttitudeCoordinateSystem = EarthMJ2000Eq;
+GMAT Sat2.EulerAngleSequence = '321';
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft Sat3;
+GMAT Sat3.DateFormat = UTCGregorian;
+GMAT Sat3.Epoch = '25 Apr 2023 05:12:00.000';
+GMAT Sat3.CoordinateSystem = EarthMJ2000Eq;
+GMAT Sat3.DisplayStateType = Keplerian;
+GMAT Sat3.SMA = 6878.099999999975;
+GMAT Sat3.ECC = 0.005000000000000532;
+GMAT Sat3.INC = 82.21276899999999;
+GMAT Sat3.RAAN = 190.6005999999999;
+GMAT Sat3.AOP = 37.32870000001692;
+GMAT Sat3.TA = 260;
+GMAT Sat3.DryMass = 4;
+GMAT Sat3.Cd = 2.2;
+GMAT Sat3.Cr = 1.8;
+GMAT Sat3.DragArea = 0.03;
+GMAT Sat3.SRPArea = 0.03;
+GMAT Sat3.SPADDragScaleFactor = 1;
+GMAT Sat3.SPADSRPScaleFactor = 1;
+GMAT Sat3.AtmosDensityScaleFactor = 1;
+GMAT Sat3.ExtendedMassPropertiesModel = 'None';
+GMAT Sat3.NAIFId = -10000001;
+GMAT Sat3.NAIFIdReferenceFrame = -9000001;
+GMAT Sat3.OrbitColor = Red;
+GMAT Sat3.TargetColor = Teal;
+GMAT Sat3.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+GMAT Sat3.CdSigma = 1e+70;
+GMAT Sat3.CrSigma = 1e+70;
+GMAT Sat3.Id = 'SatId';
+GMAT Sat3.Attitude = CoordinateSystemFixed;
+GMAT Sat3.SPADSRPInterpolationMethod = Bilinear;
+GMAT Sat3.SPADSRPScaleFactorSigma = 1e+70;
+GMAT Sat3.SPADDragInterpolationMethod = Bilinear;
+GMAT Sat3.SPADDragScaleFactorSigma = 1e+70;
+GMAT Sat3.AtmosDensityScaleFactorSigma = 1e+70;
+GMAT Sat3.ModelFile = 'aura.3ds';
+GMAT Sat3.ModelOffsetX = 0;
+GMAT Sat3.ModelOffsetY = 0;
+GMAT Sat3.ModelOffsetZ = 0;
+GMAT Sat3.ModelRotationX = 0;
+GMAT Sat3.ModelRotationY = 0;
+GMAT Sat3.ModelRotationZ = 0;
+GMAT Sat3.ModelScale = 1;
+GMAT Sat3.AttitudeDisplayStateType = 'Quaternion';
+GMAT Sat3.AttitudeRateDisplayStateType = 'AngularVelocity';
+GMAT Sat3.AttitudeCoordinateSystem = EarthMJ2000Eq;
+GMAT Sat3.EulerAngleSequence = '321';
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft Sat4;
+GMAT Sat4.DateFormat = UTCGregorian;
+GMAT Sat4.Epoch = '25 Apr 2023 05:12:00.000';
+GMAT Sat4.CoordinateSystem = EarthMJ2000Eq;
+GMAT Sat4.DisplayStateType = Keplerian;
+GMAT Sat4.SMA = 6878.099999999974;
+GMAT Sat4.ECC = 0.00500000000000088;
+GMAT Sat4.INC = 82.21276899999999;
+GMAT Sat4.RAAN = 190.6005999999999;
+GMAT Sat4.AOP = 37.32870000001702;
+GMAT Sat4.TA = 279.9999999999999;
+GMAT Sat4.DryMass = 4;
+GMAT Sat4.Cd = 2.2;
+GMAT Sat4.Cr = 1.8;
+GMAT Sat4.DragArea = 0.03;
+GMAT Sat4.SRPArea = 0.03;
+GMAT Sat4.SPADDragScaleFactor = 1;
+GMAT Sat4.SPADSRPScaleFactor = 1;
+GMAT Sat4.AtmosDensityScaleFactor = 1;
+GMAT Sat4.ExtendedMassPropertiesModel = 'None';
+GMAT Sat4.NAIFId = -10000001;
+GMAT Sat4.NAIFIdReferenceFrame = -9000001;
+GMAT Sat4.OrbitColor = Red;
+GMAT Sat4.TargetColor = Teal;
+GMAT Sat4.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+GMAT Sat4.CdSigma = 1e+70;
+GMAT Sat4.CrSigma = 1e+70;
+GMAT Sat4.Id = 'SatId';
+GMAT Sat4.Attitude = CoordinateSystemFixed;
+GMAT Sat4.SPADSRPInterpolationMethod = Bilinear;
+GMAT Sat4.SPADSRPScaleFactorSigma = 1e+70;
+GMAT Sat4.SPADDragInterpolationMethod = Bilinear;
+GMAT Sat4.SPADDragScaleFactorSigma = 1e+70;
+GMAT Sat4.AtmosDensityScaleFactorSigma = 1e+70;
+GMAT Sat4.ModelFile = 'aura.3ds';
+GMAT Sat4.ModelOffsetX = 0;
+GMAT Sat4.ModelOffsetY = 0;
+GMAT Sat4.ModelOffsetZ = 0;
+GMAT Sat4.ModelRotationX = 0;
+GMAT Sat4.ModelRotationY = 0;
+GMAT Sat4.ModelRotationZ = 0;
+GMAT Sat4.ModelScale = 1;
+GMAT Sat4.AttitudeDisplayStateType = 'Quaternion';
+GMAT Sat4.AttitudeRateDisplayStateType = 'AngularVelocity';
+GMAT Sat4.AttitudeCoordinateSystem = EarthMJ2000Eq;
+GMAT Sat4.EulerAngleSequence = '321';
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft Sat5;
+GMAT Sat5.DateFormat = UTCGregorian;
+GMAT Sat5.Epoch = '25 Apr 2023 05:12:00.000';
+GMAT Sat5.CoordinateSystem = EarthMJ2000Eq;
+GMAT Sat5.DisplayStateType = Keplerian;
+GMAT Sat5.SMA = 6878.099999999976;
+GMAT Sat5.ECC = 0.005000000000000915;
+GMAT Sat5.INC = 82.21276899999999;
+GMAT Sat5.RAAN = 190.6005999999999;
+GMAT Sat5.AOP = 37.32870000001687;
+GMAT Sat5.TA = 300;
+GMAT Sat5.DryMass = 4;
+GMAT Sat5.Cd = 2.2;
+GMAT Sat5.Cr = 1.8;
+GMAT Sat5.DragArea = 0.03;
+GMAT Sat5.SRPArea = 0.03;
+GMAT Sat5.SPADDragScaleFactor = 1;
+GMAT Sat5.SPADSRPScaleFactor = 1;
+GMAT Sat5.AtmosDensityScaleFactor = 1;
+GMAT Sat5.ExtendedMassPropertiesModel = 'None';
+GMAT Sat5.NAIFId = -10000001;
+GMAT Sat5.NAIFIdReferenceFrame = -9000001;
+GMAT Sat5.OrbitColor = Red;
+GMAT Sat5.TargetColor = Teal;
+GMAT Sat5.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+GMAT Sat5.CdSigma = 1e+70;
+GMAT Sat5.CrSigma = 1e+70;
+GMAT Sat5.Id = 'SatId';
+GMAT Sat5.Attitude = CoordinateSystemFixed;
+GMAT Sat5.SPADSRPInterpolationMethod = Bilinear;
+GMAT Sat5.SPADSRPScaleFactorSigma = 1e+70;
+GMAT Sat5.SPADDragInterpolationMethod = Bilinear;
+GMAT Sat5.SPADDragScaleFactorSigma = 1e+70;
+GMAT Sat5.AtmosDensityScaleFactorSigma = 1e+70;
+GMAT Sat5.ModelFile = 'aura.3ds';
+GMAT Sat5.ModelOffsetX = 0;
+GMAT Sat5.ModelOffsetY = 0;
+GMAT Sat5.ModelOffsetZ = 0;
+GMAT Sat5.ModelRotationX = 0;
+GMAT Sat5.ModelRotationY = 0;
+GMAT Sat5.ModelRotationZ = 0;
+GMAT Sat5.ModelScale = 1;
+GMAT Sat5.AttitudeDisplayStateType = 'Quaternion';
+GMAT Sat5.AttitudeRateDisplayStateType = 'AngularVelocity';
+GMAT Sat5.AttitudeCoordinateSystem = EarthMJ2000Eq;
+GMAT Sat5.EulerAngleSequence = '321';
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft Sat6;
+GMAT Sat6.DateFormat = UTCGregorian;
+GMAT Sat6.Epoch = '25 Apr 2023 05:12:00.000';
+GMAT Sat6.CoordinateSystem = EarthMJ2000Eq;
+GMAT Sat6.DisplayStateType = Keplerian;
+GMAT Sat6.SMA = 6878.099999999971;
+GMAT Sat6.ECC = 0.005000000000000427;
+GMAT Sat6.INC = 82.21276899999999;
+GMAT Sat6.RAAN = 190.6005999999999;
+GMAT Sat6.AOP = 37.32870000002024;
+GMAT Sat6.TA = 319.9999999999967;
+GMAT Sat6.DryMass = 4;
+GMAT Sat6.Cd = 2.2;
+GMAT Sat6.Cr = 1.8;
+GMAT Sat6.DragArea = 0.03;
+GMAT Sat6.SRPArea = 0.03;
+GMAT Sat6.SPADDragScaleFactor = 1;
+GMAT Sat6.SPADSRPScaleFactor = 1;
+GMAT Sat6.AtmosDensityScaleFactor = 1;
+GMAT Sat6.ExtendedMassPropertiesModel = 'None';
+GMAT Sat6.NAIFId = -10000001;
+GMAT Sat6.NAIFIdReferenceFrame = -9000001;
+GMAT Sat6.OrbitColor = Red;
+GMAT Sat6.TargetColor = Teal;
+GMAT Sat6.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+GMAT Sat6.CdSigma = 1e+70;
+GMAT Sat6.CrSigma = 1e+70;
+GMAT Sat6.Id = 'SatId';
+GMAT Sat6.Attitude = CoordinateSystemFixed;
+GMAT Sat6.SPADSRPInterpolationMethod = Bilinear;
+GMAT Sat6.SPADSRPScaleFactorSigma = 1e+70;
+GMAT Sat6.SPADDragInterpolationMethod = Bilinear;
+GMAT Sat6.SPADDragScaleFactorSigma = 1e+70;
+GMAT Sat6.AtmosDensityScaleFactorSigma = 1e+70;
+GMAT Sat6.ModelFile = 'aura.3ds';
+GMAT Sat6.ModelOffsetX = 0;
+GMAT Sat6.ModelOffsetY = 0;
+GMAT Sat6.ModelOffsetZ = 0;
+GMAT Sat6.ModelRotationX = 0;
+GMAT Sat6.ModelRotationY = 0;
+GMAT Sat6.ModelRotationZ = 0;
+GMAT Sat6.ModelScale = 1;
+GMAT Sat6.AttitudeDisplayStateType = 'Quaternion';
+GMAT Sat6.AttitudeRateDisplayStateType = 'AngularVelocity';
+GMAT Sat6.AttitudeCoordinateSystem = EarthMJ2000Eq;
+GMAT Sat6.EulerAngleSequence = '321';
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft Sat7;
+GMAT Sat7.DateFormat = UTCGregorian;
+GMAT Sat7.Epoch = '25 Apr 2023 05:12:00.000';
+GMAT Sat7.CoordinateSystem = EarthMJ2000Eq;
+GMAT Sat7.DisplayStateType = Keplerian;
+GMAT Sat7.SMA = 6878.099999999976;
+GMAT Sat7.ECC = 0.005000000000000874;
+GMAT Sat7.INC = 82.21276899999999;
+GMAT Sat7.RAAN = 190.6005999999999;
+GMAT Sat7.AOP = 37.3287000000173;
+GMAT Sat7.TA = 339.9999999999996;
+GMAT Sat7.DryMass = 4;
+GMAT Sat7.Cd = 2.2;
+GMAT Sat7.Cr = 1.8;
+GMAT Sat7.DragArea = 0.03;
+GMAT Sat7.SRPArea = 0.03;
+GMAT Sat7.SPADDragScaleFactor = 1;
+GMAT Sat7.SPADSRPScaleFactor = 1;
+GMAT Sat7.AtmosDensityScaleFactor = 1;
+GMAT Sat7.ExtendedMassPropertiesModel = 'None';
+GMAT Sat7.NAIFId = -10000001;
+GMAT Sat7.NAIFIdReferenceFrame = -9000001;
+GMAT Sat7.OrbitColor = Red;
+GMAT Sat7.TargetColor = Teal;
+GMAT Sat7.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+GMAT Sat7.CdSigma = 1e+70;
+GMAT Sat7.CrSigma = 1e+70;
+GMAT Sat7.Id = 'SatId';
+GMAT Sat7.Attitude = CoordinateSystemFixed;
+GMAT Sat7.SPADSRPInterpolationMethod = Bilinear;
+GMAT Sat7.SPADSRPScaleFactorSigma = 1e+70;
+GMAT Sat7.SPADDragInterpolationMethod = Bilinear;
+GMAT Sat7.SPADDragScaleFactorSigma = 1e+70;
+GMAT Sat7.AtmosDensityScaleFactorSigma = 1e+70;
+GMAT Sat7.ModelFile = 'aura.3ds';
+GMAT Sat7.ModelOffsetX = 0;
+GMAT Sat7.ModelOffsetY = 0;
+GMAT Sat7.ModelOffsetZ = 0;
+GMAT Sat7.ModelRotationX = 0;
+GMAT Sat7.ModelRotationY = 0;
+GMAT Sat7.ModelRotationZ = 0;
+GMAT Sat7.ModelScale = 1;
+GMAT Sat7.AttitudeDisplayStateType = 'Quaternion';
+GMAT Sat7.AttitudeRateDisplayStateType = 'AngularVelocity';
+GMAT Sat7.AttitudeCoordinateSystem = EarthMJ2000Eq;
+GMAT Sat7.EulerAngleSequence = '321';
+
+%----------------------------------------
+%---------- Hardware Components
+%----------------------------------------
+
+% Attach FOV to antenna
+Create Antenna antenna1;
+GMAT antenna1.DirectionX = 1;
+GMAT antenna1.DirectionY = 0;
+GMAT antenna1.DirectionZ = 0;
+GMAT antenna1.SecondDirectionX = 0;
+GMAT antenna1.SecondDirectionY = 1;
+GMAT antenna1.SecondDirectionZ = 0;
+GMAT antenna1.HWOriginInBCSX = 0;
+GMAT antenna1.HWOriginInBCSY = 0;
+GMAT antenna1.HWOriginInBCSZ = 0;
+%----------------------------------------
+%---------- GroundStations
+%----------------------------------------
+% Create ConicalFOV object
+Create ConicalFOV cone1;
+GMAT cone1.Color = [0 0 255];
+GMAT cone1.Alpha = 255; % the field of view is opaque at 255
+GMAT cone1.FieldOfViewAngle = 5;
+
+%----------------------------------------
+%---------- GroundStations
+%----------------------------------------
+
+Create GroundStation NW_Kansas;
+GMAT NW_Kansas.OrbitColor = Thistle;
+GMAT NW_Kansas.TargetColor = DarkGray;
+GMAT NW_Kansas.CentralBody = Earth;
+GMAT NW_Kansas.StateType = Spherical;
+GMAT NW_Kansas.HorizonReference = Ellipsoid;
+GMAT NW_Kansas.Location1 = 40;
+GMAT NW_Kansas.Location2 = 258;
+GMAT NW_Kansas.Location3 = 0;
+GMAT NW_Kansas.Id = 'StationId';
+GMAT NW_Kansas.IonosphereModel = 'None';
+GMAT NW_Kansas.TroposphereModel = 'None';
+GMAT NW_Kansas.DataSource = 'Constant';
+GMAT NW_Kansas.Temperature = 295.1;
+GMAT NW_Kansas.Pressure = 1013.5;
+GMAT NW_Kansas.Humidity = 55;
+GMAT NW_Kansas.MinimumElevationAngle = 10;
+
+Create GroundStation GroundStation1;
+GMAT GroundStation1.OrbitColor = Thistle;
+GMAT GroundStation1.TargetColor = DarkGray;
+GMAT GroundStation1.CentralBody = Earth;
+GMAT GroundStation1.StateType = Spherical;
+GMAT GroundStation1.HorizonReference = Ellipsoid;
+GMAT GroundStation1.Location1 = 37.327;
+GMAT GroundStation1.Location2 = 238.09;
+GMAT GroundStation1.Location3 = 1.8395;
+GMAT GroundStation1.Id = 'StationId';
+GMAT GroundStation1.IonosphereModel = 'None';
+GMAT GroundStation1.TroposphereModel = 'None';
+GMAT GroundStation1.DataSource = 'Constant';
+GMAT GroundStation1.Temperature = 295.1;
+GMAT GroundStation1.Pressure = 1013.5;
+GMAT GroundStation1.Humidity = 55;
+GMAT GroundStation1.MinimumElevationAngle = 10;
+
+
+%----------------------------------------
+%---------- ForceModels
+%----------------------------------------
+
+Create ForceModel LowEarthProp_ForceModel;
+GMAT LowEarthProp_ForceModel.CentralBody = Earth;
+GMAT LowEarthProp_ForceModel.PrimaryBodies = {Earth};
+GMAT LowEarthProp_ForceModel.PointMasses = {Luna, Sun};
+GMAT LowEarthProp_ForceModel.Drag = None;
+GMAT LowEarthProp_ForceModel.SRP = Off;
+GMAT LowEarthProp_ForceModel.RelativisticCorrection = Off;
+GMAT LowEarthProp_ForceModel.ErrorControl = RSSStep;
+GMAT LowEarthProp_ForceModel.GravityField.Earth.Degree = 4;
+GMAT LowEarthProp_ForceModel.GravityField.Earth.Order = 4;
+GMAT LowEarthProp_ForceModel.GravityField.Earth.StmLimit = 100;
+GMAT LowEarthProp_ForceModel.GravityField.Earth.PotentialFile = 'JGM2.cof';
+GMAT LowEarthProp_ForceModel.GravityField.Earth.TideModel = 'None';
+
+%----------------------------------------
+%---------- Propagators
+%----------------------------------------
+
+Create Propagator LowEarthProp;
+GMAT LowEarthProp.FM = LowEarthProp_ForceModel;
+GMAT LowEarthProp.Type = RungeKutta89;
+GMAT LowEarthProp.InitialStepSize = 60;
+GMAT LowEarthProp.Accuracy = 9.999999999999999e-12;
+GMAT LowEarthProp.MinStep = 0.001;
+GMAT LowEarthProp.MaxStep = 2700;
+GMAT LowEarthProp.MaxStepAttempts = 50;
+GMAT LowEarthProp.StopIfAccuracyIsViolated = true;
+
+%----------------------------------------
+%---------- EventLocators
+%----------------------------------------
+
+Create EclipseLocator EclipseLocator1;
+GMAT EclipseLocator1.Spacecraft = Sat;
+GMAT EclipseLocator1.Filename = 'EclipseLocator1.txt';
+GMAT EclipseLocator1.OccultingBodies = {Earth};
+GMAT EclipseLocator1.InputEpochFormat = 'TAIModJulian';
+GMAT EclipseLocator1.InitialEpoch = '21545';
+GMAT EclipseLocator1.StepSize = 10;
+GMAT EclipseLocator1.FinalEpoch = '21545.138';
+GMAT EclipseLocator1.UseLightTimeDelay = true;
+GMAT EclipseLocator1.UseStellarAberration = true;
+GMAT EclipseLocator1.WriteReport = true;
+GMAT EclipseLocator1.RunMode = Automatic;
+GMAT EclipseLocator1.UseEntireInterval = true;
+GMAT EclipseLocator1.EclipseTypes = {'Umbra'};
+
+Create ContactLocator ContactLocator1;
+GMAT ContactLocator1.Target = Sat;
+GMAT ContactLocator1.Filename = 'ContactLocator1.txt';
+GMAT ContactLocator1.InputEpochFormat = 'TAIModJulian';
+GMAT ContactLocator1.InitialEpoch = '21545';
+GMAT ContactLocator1.StepSize = 10;
+GMAT ContactLocator1.FinalEpoch = '21545.138';
+GMAT ContactLocator1.UseLightTimeDelay = true;
+GMAT ContactLocator1.UseStellarAberration = true;
+GMAT ContactLocator1.WriteReport = true;
+GMAT ContactLocator1.RunMode = Automatic;
+GMAT ContactLocator1.UseEntireInterval = true;
+GMAT ContactLocator1.Observers = {GroundStation1};
+GMAT ContactLocator1.LightTimeDirection = Receive;
+GMAT ContactLocator1.LeftJustified = false;
+GMAT ContactLocator1.ReportPrecision = 6;
+GMAT ContactLocator1.ReportFormat = 'Legacy';
+GMAT ContactLocator1.IntervalStepSize = 0;
+GMAT ContactLocator1.ReportTimeFormat = 'UTCGregorian';
+
+Create ContactLocator ContactLocator2;
+GMAT ContactLocator2.Target = Sat2;
+GMAT ContactLocator2.Filename = 'ContactLocator2.txt';
+GMAT ContactLocator2.InputEpochFormat = 'TAIModJulian';
+GMAT ContactLocator2.InitialEpoch = '21545';
+GMAT ContactLocator2.StepSize = 10;
+GMAT ContactLocator2.FinalEpoch = '21545.138';
+GMAT ContactLocator2.UseLightTimeDelay = true;
+GMAT ContactLocator2.UseStellarAberration = true;
+GMAT ContactLocator2.WriteReport = true;
+GMAT ContactLocator2.RunMode = Automatic;
+GMAT ContactLocator2.UseEntireInterval = true;
+GMAT ContactLocator2.Observers = {GroundStation1};
+GMAT ContactLocator2.LightTimeDirection = Receive;
+GMAT ContactLocator2.LeftJustified = false;
+GMAT ContactLocator2.ReportPrecision = 6;
+GMAT ContactLocator2.ReportFormat = 'Legacy';
+GMAT ContactLocator2.IntervalStepSize = 0;
+GMAT ContactLocator2.ReportTimeFormat = 'UTCGregorian';
+
+Create ContactLocator ContactLocator3;
+GMAT ContactLocator3.Target = Sat3;
+GMAT ContactLocator3.Filename = 'ContactLocator3.txt';
+GMAT ContactLocator3.InputEpochFormat = 'TAIModJulian';
+GMAT ContactLocator3.InitialEpoch = '21545';
+GMAT ContactLocator3.StepSize = 10;
+GMAT ContactLocator3.FinalEpoch = '21545.138';
+GMAT ContactLocator3.UseLightTimeDelay = true;
+GMAT ContactLocator3.UseStellarAberration = true;
+GMAT ContactLocator3.WriteReport = true;
+GMAT ContactLocator3.RunMode = Automatic;
+GMAT ContactLocator3.UseEntireInterval = true;
+GMAT ContactLocator3.Observers = {GroundStation1};
+GMAT ContactLocator3.LightTimeDirection = Receive;
+GMAT ContactLocator3.LeftJustified = false;
+GMAT ContactLocator3.ReportPrecision = 6;
+GMAT ContactLocator3.ReportFormat = 'Legacy';
+GMAT ContactLocator3.IntervalStepSize = 0;
+GMAT ContactLocator3.ReportTimeFormat = 'UTCGregorian';
+
+Create ContactLocator ContactLocator4;
+GMAT ContactLocator4.Target = Sat4;
+GMAT ContactLocator4.Filename = 'ContactLocator4.txt';
+GMAT ContactLocator4.InputEpochFormat = 'TAIModJulian';
+GMAT ContactLocator4.InitialEpoch = '21545';
+GMAT ContactLocator4.StepSize = 10;
+GMAT ContactLocator4.FinalEpoch = '21545.138';
+GMAT ContactLocator4.UseLightTimeDelay = true;
+GMAT ContactLocator4.UseStellarAberration = true;
+GMAT ContactLocator4.WriteReport = true;
+GMAT ContactLocator4.RunMode = Automatic;
+GMAT ContactLocator4.UseEntireInterval = true;
+GMAT ContactLocator4.Observers = {GroundStation1};
+GMAT ContactLocator4.LightTimeDirection = Receive;
+GMAT ContactLocator4.LeftJustified = false;
+GMAT ContactLocator4.ReportPrecision = 6;
+GMAT ContactLocator4.ReportFormat = 'Legacy';
+GMAT ContactLocator4.IntervalStepSize = 0;
+GMAT ContactLocator4.ReportTimeFormat = 'UTCGregorian';
+
+Create ContactLocator ContactLocator5;
+GMAT ContactLocator5.Target = Sat5;
+GMAT ContactLocator5.Filename = 'ContactLocator5.txt';
+GMAT ContactLocator5.InputEpochFormat = 'TAIModJulian';
+GMAT ContactLocator5.InitialEpoch = '21545';
+GMAT ContactLocator5.StepSize = 10;
+GMAT ContactLocator5.FinalEpoch = '21545.138';
+GMAT ContactLocator5.UseLightTimeDelay = true;
+GMAT ContactLocator5.UseStellarAberration = true;
+GMAT ContactLocator5.WriteReport = true;
+GMAT ContactLocator5.RunMode = Automatic;
+GMAT ContactLocator5.UseEntireInterval = true;
+GMAT ContactLocator5.Observers = {GroundStation1};
+GMAT ContactLocator5.LightTimeDirection = Receive;
+GMAT ContactLocator5.LeftJustified = false;
+GMAT ContactLocator5.ReportPrecision = 6;
+GMAT ContactLocator5.ReportFormat = 'Legacy';
+GMAT ContactLocator5.IntervalStepSize = 0;
+GMAT ContactLocator5.ReportTimeFormat = 'UTCGregorian';
+
+Create ContactLocator ContactLocator6;
+GMAT ContactLocator6.Target = Sat6;
+GMAT ContactLocator6.Filename = 'ContactLocator6.txt';
+GMAT ContactLocator6.InputEpochFormat = 'TAIModJulian';
+GMAT ContactLocator6.InitialEpoch = '21545';
+GMAT ContactLocator6.StepSize = 10;
+GMAT ContactLocator6.FinalEpoch = '21545.138';
+GMAT ContactLocator6.UseLightTimeDelay = true;
+GMAT ContactLocator6.UseStellarAberration = true;
+GMAT ContactLocator6.WriteReport = true;
+GMAT ContactLocator6.RunMode = Automatic;
+GMAT ContactLocator6.UseEntireInterval = true;
+GMAT ContactLocator6.Observers = {GroundStation1};
+GMAT ContactLocator6.LightTimeDirection = Receive;
+GMAT ContactLocator6.LeftJustified = false;
+GMAT ContactLocator6.ReportPrecision = 6;
+GMAT ContactLocator6.ReportFormat = 'Legacy';
+GMAT ContactLocator6.IntervalStepSize = 0;
+GMAT ContactLocator6.ReportTimeFormat = 'UTCGregorian';
+
+Create ContactLocator ContactLocator7;
+GMAT ContactLocator7.Target = Sat7;
+GMAT ContactLocator7.Filename = 'ContactLocator7.txt';
+GMAT ContactLocator7.InputEpochFormat = 'TAIModJulian';
+GMAT ContactLocator7.InitialEpoch = '21545';
+GMAT ContactLocator7.StepSize = 10;
+GMAT ContactLocator7.FinalEpoch = '21545.138';
+GMAT ContactLocator7.UseLightTimeDelay = true;
+GMAT ContactLocator7.UseStellarAberration = true;
+GMAT ContactLocator7.WriteReport = true;
+GMAT ContactLocator7.RunMode = Automatic;
+GMAT ContactLocator7.UseEntireInterval = true;
+GMAT ContactLocator7.Observers = {GroundStation1};
+GMAT ContactLocator7.LightTimeDirection = Receive;
+GMAT ContactLocator7.LeftJustified = false;
+GMAT ContactLocator7.ReportPrecision = 6;
+GMAT ContactLocator7.ReportFormat = 'Legacy';
+GMAT ContactLocator7.IntervalStepSize = 0;
+GMAT ContactLocator7.ReportTimeFormat = 'UTCGregorian';
+
+%----------------------------------------
+%---------- Subscribers
+%----------------------------------------
+
+Create OrbitView DefaultOrbitView;
+GMAT DefaultOrbitView.SolverIterations = Current;
+GMAT DefaultOrbitView.UpperLeft = [ 0.1414581066376496 0 ];
+GMAT DefaultOrbitView.Size = [ 0.4542981501632209 0.4504579517069109 ];
+GMAT DefaultOrbitView.RelativeZOrder = 632;
+GMAT DefaultOrbitView.Maximized = false;
+GMAT DefaultOrbitView.Add = {Sat, Sat2, Sat3, Earth};
+GMAT DefaultOrbitView.CoordinateSystem = EarthMJ2000Eq;
+GMAT DefaultOrbitView.DrawObject = [ true true true true ];
+GMAT DefaultOrbitView.DataCollectFrequency = 1;
+GMAT DefaultOrbitView.UpdatePlotFrequency = 50;
+GMAT DefaultOrbitView.NumPointsToRedraw = 0;
+GMAT DefaultOrbitView.ShowPlot = true;
+GMAT DefaultOrbitView.MaxPlotPoints = 20000;
+GMAT DefaultOrbitView.ShowLabels = true;
+GMAT DefaultOrbitView.ViewPointReference = Earth;
+GMAT DefaultOrbitView.ViewPointVector = [ 30000 0 0 ];
+GMAT DefaultOrbitView.ViewDirection = Earth;
+GMAT DefaultOrbitView.ViewScaleFactor = 1;
+GMAT DefaultOrbitView.ViewUpCoordinateSystem = EarthMJ2000Eq;
+GMAT DefaultOrbitView.ViewUpAxis = Z;
+GMAT DefaultOrbitView.EclipticPlane = Off;
+GMAT DefaultOrbitView.XYPlane = On;
+GMAT DefaultOrbitView.WireFrame = Off;
+GMAT DefaultOrbitView.Axes = On;
+GMAT DefaultOrbitView.Grid = Off;
+GMAT DefaultOrbitView.SunLine = Off;
+GMAT DefaultOrbitView.UseInitialView = On;
+GMAT DefaultOrbitView.StarCount = 7000;
+GMAT DefaultOrbitView.EnableStars = On;
+GMAT DefaultOrbitView.EnableConstellations = On;
+
+Create GroundTrackPlot DefaultGroundTrackPlot;
+GMAT DefaultGroundTrackPlot.SolverIterations = Current;
+GMAT DefaultGroundTrackPlot.UpperLeft = [ 0.002176278563656148 0.4521232306411324 ];
+GMAT DefaultGroundTrackPlot.Size = [ 0.5935799782372143 0.4504579517069109 ];
+GMAT DefaultGroundTrackPlot.RelativeZOrder = 691;
+GMAT DefaultGroundTrackPlot.Maximized = false;
+GMAT DefaultGroundTrackPlot.Add = {GroundStation1, NW_Kansas, Sat, Sat2, Sat3, Sat4, Sat5, Sat6, Sat7};
+GMAT DefaultGroundTrackPlot.DataCollectFrequency = 1;
+GMAT DefaultGroundTrackPlot.UpdatePlotFrequency = 50;
+GMAT DefaultGroundTrackPlot.NumPointsToRedraw = 0;
+GMAT DefaultGroundTrackPlot.ShowPlot = true;
+GMAT DefaultGroundTrackPlot.MaxPlotPoints = 20000;
+GMAT DefaultGroundTrackPlot.CentralBody = Earth;
+GMAT DefaultGroundTrackPlot.TextureMap = 'ModifiedBlueMarble.jpg';
+
+
+%----------------------------------------
+%---------- Mission Sequence
+%----------------------------------------
+
+BeginMissionSequence;
+Propagate LowEarthProp(Sat) LowEarthProp(Sat2) LowEarthProp(Sat3) LowEarthProp(Sat4, Sat5, Sat6, Sat7) {Sat.ElapsedDays = 1};

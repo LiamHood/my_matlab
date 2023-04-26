@@ -1,0 +1,19 @@
+Je = 237;
+Js = 1371;
+a = .33;
+F = .15;
+F_ecl = .7;
+A_alpha = .3*.3*pi;
+A_eps = .3*.3*pi*4;
+alpha = 1;
+eps = 1;
+Q = 0;
+[T_no_ecl, T_ecl] = avg_temp(Re, Je, Js, a0, a, F, F_ecl, ecl_proportion, A_alpha, A_eps, alpha, eps, Q);
+
+n = sqrt(mu/a0^3);
+p = a0*(1-ecc0^2);
+J2 = -1.08262617385222e-3;
+dRAAN = (3*n*Re*J2/(2*p^2))*cos(inc0)
+we = 2*pi/(24*60*60)
+period = 2*pi*sqrt(a0^3/mu)
+gt_shift = (we-dRAAN)*period

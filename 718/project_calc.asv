@@ -12,14 +12,13 @@ r2d = 180/pi ;
 d2r = pi/180 ;
 % lla2eci([40,-102,COES_ref(8)],[2023,6,1,15,12,0])
 offsets = eci2lla([Re, 0, 0], [2023,4,25,5,12,0]);
-lat0 = 37;
-long0 = 95.12658;
-additional = (deg2rad(lat0)*Re/tan(inc0))/Re;
-GMAT_raan0 = 360-(rad2deg(additional)+long0+offsets(2));
-raan0 = 360-(additional+deg2rad(long0));
-omega0 = (deg2rad(lat0)*Re/sin(inc0))/Re;
+lat0 = 
+additional = (deg2rad(40)*Re/tan(inc0))/Re;
+GMAT_raan0 = 360-(rad2deg(additional)+102+offsets(2));
+raan0 = 360-(additional+deg2rad(102));
+omega0 = (deg2rad(40)*Re/sin(inc0))/Re;
 GMAT_omega0 = rad2deg(omega0);
-kbps = 1.6e7/413;
+
 theta0 = 0*d2r ;
 p = a0*( 1 - ecc0^2 ) ;
 h0 = sqrt( mu*p ) ;
