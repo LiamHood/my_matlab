@@ -38,7 +38,7 @@ r0v0 = [r0; v0 ];
 tend = 25/s2d;
 tspan = [0, tend];
 tol = 1e-8;
-dt = 2*3600;
+dt = 1*3600;
 forces = "drag" ;
 [t, state, COES] = Encke(dt, tspan, r0, v0, mu, forces, A, m, tol, Re);
 % [t, state, COES] = Cowell(tspan , [r0; v0], mu, tol, forces, A, m, Re);
@@ -51,20 +51,21 @@ end
 figure
 axis([t(1), t(end)*s2d, 0, a0*(1 + ecc0) - Re])
 hold on
-plot(t.*s2d, r-Re, ".")
+% plot(t.*s2d, r-Re, ".")
 plot(t.*s2d, COES( :,8 )-Re)
 plot(t.*s2d, COES( :,9 )-Re)
 plot(t.*s2d, COES( :,7 )-Re)
 ylabel( 'Altitude [km]' )
 xlabel( 'Time [year]' )
-legend( 'Altitude', 'Perigee' , 'Apogee', 'Semi-Major Axis' )
+legend( 'Perigee' , 'Apogee', 'Semi-Major Axis' )
+% 'Altitude',
 hold off
 % 
-% figure
-% axis([t(1), t(end)*s2d, 0, 360])
-% plot(t.*s2d, COES(:,4)./d2r, ".")
-% ylabel( 'RAAN [degree]' )
-% xlabel( 'Time [years]' )
+figure
+axis([t(1), t(end)*s2d, 0, 360])
+plot(t.*s2d, COES(:,4)./d2r, ".")
+ylabel( 'RAAN [degree]' )
+xlabel( 'Time [years]' )
 
 
 % figure

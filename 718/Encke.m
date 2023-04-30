@@ -1,5 +1,5 @@
 function [t, state, COES] = Encke( dt , tspan , r0 , v0 , mu , forces , A , m, tol, Re)
-
+    
     dr = zeros(3,1) ;
     eps = 0;
     f = 0;

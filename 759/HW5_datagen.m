@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 clear; close all; clc;
 
 theta = @(t,J,T) (T/(2*J))*t^2;
@@ -51,7 +50,7 @@ xlabel('x1')
 ylabel('x2')
 title('Testing Data')
 legend('T=.5','T=1.5','T=2.5','T=3.5','T=4.5','T=5.5','Location','southwest')
-=======
+
 clear; close all; clc;
 load("t_4_ESin.mat")
 
