@@ -4,6 +4,6 @@ function i = sso(a, e)
     Re = 6378.1;
     dRAAN_sunsyn = 1.991063853e-7;
     
-    cos_i = (-2*a^(7/2)*dRAAN_sunsyn*(1-e^2)^2)/(3*Re^2*J2*sqrt(mu));
+    cos_i = -(-2*a^(7/2)*dRAAN_sunsyn*(1-e^2)^2)/(3*Re^2*J2*sqrt(mu));
     i = acos(cos_i);
 end

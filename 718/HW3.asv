@@ -1,38 +1,12 @@
 clear; close all; clc;
-% problem1()
-% problem2()
+problem1()
+problem2()
 problem3()
-
-
-% Gs = (Km/R)*(C/(Isat*Iwheel))*(-Iwheel/C) = -Km/(R*Isat)
-% psidd = Gs*ein = -Km/(R*Isat)*ein
-% psi = 1/s^2*psidd = -Km/(R*Isat)*(1/s^2)*ein = a/s^2*ein = a/s^2*Gc*ea
-% psi = a/s^2*Gc*(psi_ref - psi
-% (1+(a/s^2)*Gc)*psi = (a/s^2)*Gc*psi_ref
-% psi/psi_ref = (a/s^2)*Gc/(1+(a/s^2)*Gc) = a*Gc/(s^2+a*Gc)
-% Controller design
-% eint = Kp*eat + Kd*eadt
-% eins = Kp*eas + Kd*s*eads = (Kp + Kd*s)*eas
-% eins/eas = Gc = Kp + Kd*s
-% psi/psi_ref = a*(Kp + Kd*s)/(s^2+a*(Kp + Kd*s)) 
-% psi/psi_ref = = a(Kp + Kd*s)/(s^2 + a*Kd*s + a*Kp) = Ns/Ds
-% Ds = s^2 + a*Kd*s + a*Kp = 0 = s^2 + 2*wn*damping*s + wn^2
-% a*Kp = wn^2
-% Kp = wn^2/a = -R*Ip*wn^2/Km
-% Kd = 2*wn*damping/a = -2*R*Ip*damping*wn/Km
-% t_s = 4/(damping*wn)
-
-
-
-
-
-
-
-
 
 %% Problems
 
 function problem1()
+fprintf('Problem 1:\n')
     a = 8378;
     Re = 6378.1;
     mu = 398600;
@@ -99,6 +73,7 @@ function problem1()
 end
 
 function problem2()
+fprintf('Problem 2:\n')
     Ip = 2000; % moment of inertia about principal axis, kg*m^2
     t_s = 5; % 5 second
     damping(1) = 0.65;
@@ -118,8 +93,14 @@ function problem2()
     parameters = [Ip, Kp(1), Kd(1), deg2rad(30)];
     [t, state] = ode45(@single_axis_control, tspan, state0, opts, parameters);
     
+    fprintf('For Maximum Damping: \n')
+    fprintf('\tProportional gain, Kp = %f\n', Kp(1))
+    fprintf('\tDerivative gain, Kd = %f\n', Kd(1))
+    fprintf('For Minimum Damping: \n')
+    fprintf('\tProportional gain, Kp = %f\n', Kp(2))
+    fprintf('\tDerivative gain, Kd = %f\n', Kd(2))
+
     figure
-    
     subplot(2,1,1)
     plot(t, rad2deg(state(:,1)))
     xlabel('Time [s]')
@@ -146,6 +127,7 @@ function problem2()
 end
 
 function problem3()
+    fprintf('Problem 3:\n')
     Isat = 500;
     Iwheel = .06;
     Km = .04; % Torque constant
@@ -173,9 +155,10 @@ function problem3()
     psid = state(:,2);
     ein = [];
     for ii = 1:length(t)
-        ein(ii) = Kp*(psi_ref-psi) - Kd*psid;
+        ein(ii) = Kp*(psi_ref-psi(ii)) - Kd*psid(ii);
     end
-    
+    fprintf('The maximum voltage required is %f which is less than the maximum \n', max(ein))
+    fprintf('so the ')
     figure
     subplot(2,1,1)
     plot(t, rad2deg(psi))
@@ -185,10 +168,21 @@ function problem3()
     plot(t, rad2deg(psid))
     xlabel('Time [s]')
     ylabel('Yaw Rate [degree/s]')
+
+    figure
+    hold on
+    plot(t,ein)
+    plot([t(1), t(end)], [ein_max, ein_max], '-r')
+    plot([t(1), t(end)], [-ein_max, -ein_max], '-r')
+    hold off
+    xlabel('Time [s]')
+    ylabel('Input Voltage [V]')
+    title('Compare Input Voltage to Limits')
 end
 %% Functions
 
 function [T, ecl_time, ecl_proportion] = eclipse(a, mu, Rb)
+
 % Finds orbital period, eclipse time in seconds, and eclipse proportion of
 % orbit
 % Needs inputs of semi-major axis, mu of central body, radius of central
@@ -206,6 +200,7 @@ function [T, ecl_time, ecl_proportion] = eclipse(a, mu, Rb)
 end
 
 function dstate = single_axis_control(t, state, parameters)
+    
     I = parameters(1);
     Kp = parameters(2);
     Kd = parameters(3);
